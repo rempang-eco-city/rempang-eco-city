@@ -2,24 +2,27 @@ import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import UMKMDetailContent from "@/components/pages/UMKMDetailContent";
-import { getUmkmBySlug, umkmCatalog } from "@/data/umkmCatalog";
+import { umkmCatalog } from "@/data/umkmCatalog";
 
 type PageProps = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
+};
+
+const getUmkmBySlug = (slug: string) => {
+  return umkmCatalog.find((item) => item.slug === slug);
 };
 
 export function generateStaticParams() {
   return umkmCatalog.map((item) => ({ slug: item.slug }));
 }
 
-export default function UMKMDetailPage({ params }: PageProps) {
-  const umkm = getUmkmBySlug(params.slug);
+export default async function UMKMDetailPage({ params }: PageProps) {
+  const { slug } = await params;
+  const umkm = getUmkmBySlug(slug);
 
-  if (!umkm) {
-    notFound();
-  }
+  if (!umkm) notFound();
 
   return (
     <main>

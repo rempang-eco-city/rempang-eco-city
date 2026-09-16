@@ -32,7 +32,7 @@ export default function KoperasiSection() {
 					className="text-center mb-12"
 				>
 					<h2 className="font-heading font-bold text-3xl md:text-4xl text-primary-blue mb-3">
-						Koperasi Rempang Eco City
+						Koperasi
 					</h2>
 				</motion.div>
 

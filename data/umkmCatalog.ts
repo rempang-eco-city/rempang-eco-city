@@ -1,205 +1,147 @@
-export type UMKMCategory =
-  | "Kuliner"
-  | "Kerajinan"
-  | "Jasa";
+export type UmkmCategory = "Kuliner" | "Kerajinan" | "Jasa";
 
-export type EcommercePlatform = "shopee" | "tokopedia" | "tiktokshop";
-
-export type EcommerceStore = {
-  platform: EcommercePlatform;
-  href: string;
+export type UmkmProduct = {
+  name: string;
+  price: string;
+  image: string;
 };
 
-export type UMKMItem = {
-  id: number;
+export type UmkmItem = {
+  id: string;
   slug: string;
   name: string;
-  brandName: string;
-  category: UMKMCategory;
-  cardDescription: string;
-  detailDescription: string;
-  products: string[];
+  category: UmkmCategory;
   image: string;
-  gallery: string[];
+  cardDescription: string;
+  description: string;
+  location: string;
+  owner: string;
   whatsapp: string;
-  ecommerce?: EcommerceStore[];
+  gallery: string[];
+  products: UmkmProduct[];
 };
 
-export const umkmCategories: Array<"Semua" | UMKMCategory> = [
-  "Semua",
-  "Kuliner",
-  "Kerajinan",
-  "Jasa",
-];
-
-export const umkmCatalog: UMKMItem[] = [
+export const umkmCatalog: UmkmItem[] = [
   {
-    id: 1,
-    slug: "kerajinan-rotan-rempang",
-    name: "Kerajinan Rotan Rempang",
-    brandName: "Sanggar Rotan Bahari",
-    category: "Kerajinan",
-    cardDescription:
-      "Produksi kerajinan rotan dan bambu untuk perlengkapan rumah serta souvenir khas Rempang.",
-    detailDescription:
-      "Sanggar Rotan Bahari adalah UMKM keluarga yang fokus pada kerajinan anyaman berbahan rotan lokal. Produk dibuat manual oleh perajin setempat dengan desain fungsional dan estetik untuk kebutuhan rumah, hampers, serta cendera mata wisata.",
-    products: [
-      "Keranjang anyaman",
-      "Tempat alat makan",
-      "Dekorasi dinding",
-      "Souvenir custom",
-    ],
-    image:
-      "https://images.unsplash.com/photo-1495521821757-a1efb6729352?q=80&w=1200&auto=format&fit=crop",
-    gallery: [
-      "https://images.unsplash.com/photo-1495521821757-a1efb6729352?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1616627561839-074385245ff6?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1573739028470-3e78f8ad5d6d?q=80&w=1200&auto=format&fit=crop",
-    ],
+    id: "ernawati-pastel",
+    slug: "ernawati-pastel",
+    name: "Ernawati Pastel",
+    category: "Kuliner",
+    image: "/images/umkm/Ernawati-Pastel/hero-ernawati-pastel.jpg",
+    cardDescription: "Pastel rumahan dengan cita rasa gurih dan renyah.",
+    description: "Melayani pesanan pastel untuk harian dan acara.",
+    location: "Rempang",
+    owner: "Ibu Ernawati",
     whatsapp: "https://wa.me/6281234567801",
-    ecommerce: [
-      { platform: "shopee", href: "https://shopee.co.id/" },
-      { platform: "tokopedia", href: "https://www.tokopedia.com/" },
+    gallery: [
+      "/images/umkm/Ernawati-Pastel/hero-ernawati-pastel.jpg",
+      "/images/umkm/Ernawati-Pastel/product-ep-1.jpeg",
+      "/images/umkm/Ernawati-Pastel/product-ep-2.jpeg",
+      "/images/umkm/Ernawati-Pastel/product-ep-3.jpeg",
+    ],
+    products: [
+      { name: "Pastel Original", price: "Mulai Rp 2.000/pcs", image: "/images/umkm/Ernawati-Pastel/product-ep-1.jpeg" },
+      { name: "Pastel Isi", price: "Mulai Rp 2.500/pcs", image: "/images/umkm/Ernawati-Pastel/product-ep-2.jpeg" },
+      { name: "Pastel Box", price: "Mulai Rp 25.000/box", image: "/images/umkm/Ernawati-Pastel/product-ep-3.jpeg" },
     ],
   },
   {
-    id: 2,
-    slug: "ikan-asap-khas-rempang",
-    name: "Ikan Asap Khas Rempang",
-    brandName: "Dapur Pesisir Rempang",
+    id: "home-cakes",
+    slug: "home-cakes",
+    name: "Home Cakes",
     category: "Kuliner",
-    cardDescription:
-      "Ikan asap berkualitas dengan teknik pengasapan tradisional dan cita rasa khas pesisir.",
-    detailDescription:
-      "Dapur Pesisir Rempang memproduksi olahan ikan asap dari hasil tangkapan nelayan lokal. Proses produksi dilakukan harian dengan standar kebersihan pangan untuk menjaga kualitas rasa, aroma, dan daya simpan produk.",
-    products: [
-      "Ikan asap tongkol",
-      "Ikan asap kembung",
-      "Sambal ikan asap",
-      "Paket frozen seafood",
-    ],
-    image:
-      "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?q=80&w=1200&auto=format&fit=crop",
-    gallery: [
-      "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1559847844-5315695dadae?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1559737558-2f5a35f4523b?q=80&w=1200&auto=format&fit=crop",
-    ],
+    image: "/images/umkm/Home-Cakes/umkm-home-cakes.jpg",
+    cardDescription: "Aneka kue dan dessert rumahan.",
+    description: "Melayani pesanan kue harian dan paket acara.",
+    location: "Rempang",
+    owner: "Home Cakes",
     whatsapp: "https://wa.me/6281234567802",
-    ecommerce: [
-      { platform: "shopee", href: "https://shopee.co.id/" },
-      { platform: "tiktokshop", href: "https://www.tiktok.com/shop" },
+    gallery: [
+      "/images/umkm/Home-Cakes/umkm-home-cakes.jpg",
+      "/images/umkm/Home-Cakes/umkm-hc-1.jpg",
+      "/images/umkm/Home-Cakes/umkm-hc-2.jpg",
+      "/images/umkm/Home-Cakes/umkm-hc-3.jpg",
+    ],
+    products: [
+      { name: "Donat/Kue", price: "Mulai Rp 8.000", image: "/images/umkm/Home-Cakes/umkm-hc-1.jpg" },
+      { name: "Snack Box", price: "Mulai Rp 20.000", image: "/images/umkm/Home-Cakes/umkm-hc-2.jpg" },
+      { name: "Paket Kue", price: "Mulai Rp 30.000", image: "/images/umkm/Home-Cakes/umkm-hc-3.jpg" },
     ],
   },
   {
-    id: 3,
-    slug: "souvenir-anyaman-rempang",
-    name: "Souvenir Anyaman Rempang",
-    brandName: "Galeri Anyam Pulau",
-    category: "Kerajinan",
-    cardDescription:
-      "Souvenir anyaman khas Rempang untuk oleh-oleh wisata dan kebutuhan dekorasi rumah.",
-    detailDescription:
-      "Galeri Anyam Pulau fokus pada produksi souvenir khas berbahan anyaman lokal. Produk dibuat oleh perajin binaan komunitas dengan desain khas pesisir Rempang yang cocok untuk kebutuhan oleh-oleh dan hadiah.",
-    products: [
-      "Tas anyaman mini",
-      "Dompet anyaman",
-      "Kotak hampers rotan",
-      "Souvenir custom event",
-    ],
-    image:
-      "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=1200&auto=format&fit=crop",
-    gallery: [
-      "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1543087903-1ac2ec7aa8a2?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1603252109303-2751441dd157?q=80&w=1200&auto=format&fit=crop",
-    ],
+    id: "katering-rf",
+    slug: "katering-rf",
+    name: "Katering RF",
+    category: "Kuliner",
+    image: "/images/umkm/Katering-RF/umkm-katering-rf.jpg",
+    cardDescription: "Layanan katering rumahan untuk harian dan acara.",
+    description: "Menyediakan nasi box dan paket konsumsi.",
+    location: "Rempang",
+    owner: "Katering RF",
     whatsapp: "https://wa.me/6281234567803",
-    ecommerce: [{ platform: "tokopedia", href: "https://www.tokopedia.com/" }],
-  },
-  {
-    id: 4,
-    slug: "jasa-wisata-alam-rempang",
-    name: "Jasa Wisata Alam Rempang",
-    brandName: "Rempang Explore Tour",
-    category: "Jasa",
-    cardDescription:
-      "Layanan paket wisata lokal, trip pulau, dan pendampingan guide berpengalaman.",
-    detailDescription:
-      "Rempang Explore Tour menyediakan jasa perjalanan wisata berbasis komunitas. Layanan mencakup city tour, wisata pantai, paket keluarga, serta sesi edukasi budaya lokal dengan pemandu tersertifikasi.",
-    products: [
-      "Open trip harian",
-      "Private tour keluarga",
-      "Paket edukasi budaya",
-      "Sewa kendaraan wisata",
-    ],
-    image:
-      "https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=1200&auto=format&fit=crop",
     gallery: [
-      "https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1527631746610-bca00a040d60?q=80&w=1200&auto=format&fit=crop",
+      "/images/umkm/Katering-RF/umkm-katering-rf.jpg",
+      "/images/umkm/Katering-RF/umkm-krf-1.jpg",
     ],
-    whatsapp: "https://wa.me/6281234567804",
-    ecommerce: [{ platform: "tiktokshop", href: "https://www.tiktok.com/shop" }],
+    products: [{ name: "Nasi Box", price: "Mulai Rp 25.000/box", image: "/images/umkm/Katering-RF/umkm-krf-1.jpg" }],
   },
   {
-    id: 5,
-    slug: "kue-tradisional-rempang",
-    name: "Kue Tradisional Rempang",
-    brandName: "Dapur Mak Cik Sari",
+    id: "nengcia-otak-otak",
+    slug: "nengcia-otak-otak",
+    name: "NengCia Otak-Otak",
     category: "Kuliner",
-    cardDescription:
-      "Olahan kue tradisional rumahan dengan bahan lokal untuk konsumsi harian dan acara.",
-    detailDescription:
-      "Dapur Mak Cik Sari fokus pada produksi kue tradisional Melayu dan jajanan pasar. Produk dibuat harian menggunakan bahan segar dan melayani pesanan untuk acara keluarga maupun kebutuhan katering ringan.",
-    products: [
-      "Kue lapis",
-      "Kue bingka",
-      "Paket snack box",
-      "Kue kering lokal",
-    ],
-    image:
-      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1200&auto=format&fit=crop",
-    gallery: [
-      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1551024601-bec78aea704b?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1464306076886-da185f6a9d05?q=80&w=1200&auto=format&fit=crop",
-    ],
+    image: "/images/umkm/NengCia-Otak-Otak/umkm-nengcia-otakotak.jpg",
+    cardDescription: "Otak-otak khas pesisir dengan bumbu gurih.",
+    description: "Melayani pesanan otak-otak harian dan acara.",
+    location: "Rempang",
+    owner: "NengCia",
     whatsapp: "https://wa.me/6281234567805",
+    gallery: [
+      "/images/umkm/NengCia-Otak-Otak/umkm-nengcia-otakotak.jpg",
+      "/images/umkm/NengCia-Otak-Otak/umkm-no-1.jpg",
+    ],
+    products: [{ name: "Otak-Otak", price: "Mulai Rp 20.000", image: "/images/umkm/NengCia-Otak-Otak/umkm-no-1.jpg" }],
   },
   {
-    id: 6,
-    slug: "katering-rumahan-rempang",
-    name: "Katering Rumahan Rempang",
-    brandName: "Dapur Pesisir Ibu Lina",
+    id: "peyek-shamellsha",
+    slug: "peyek-shamellsha",
+    name: "Peyek Shamellsha",
     category: "Kuliner",
-    cardDescription:
-      "Layanan katering rumahan dengan menu kuliner khas Rempang untuk acara keluarga dan komunitas.",
-    detailDescription:
-      "Dapur Pesisir Ibu Lina melayani katering harian dan pesanan acara dengan menu tradisional berbahan segar dari pasar lokal. Usaha ini berkembang lewat layanan antar, pemesanan online, dan kolaborasi dengan komunitas setempat.",
-    products: [
-      "Nasi box seafood",
-      "Paket prasmanan",
-      "Snack box tradisional",
-      "Menu harian rumah tangga",
-    ],
-    image:
-      "https://images.unsplash.com/photo-1523475472560-d2df97ec485c?q=80&w=1200&auto=format&fit=crop",
-    gallery: [
-      "https://images.unsplash.com/photo-1523475472560-d2df97ec485c?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1576867757603-05b134ebc379?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1200&auto=format&fit=crop",
-    ],
+    image: "/images/umkm/Peyek-Shamellsha/umkm-peyek-shamellsha.jpg",
+    cardDescription: "Peyek kacang renyah kemasan siap jual.",
+    description: "Cocok untuk camilan dan oleh-oleh.",
+    location: "Rempang",
+    owner: "Shamellsha",
     whatsapp: "https://wa.me/6281234567806",
-    ecommerce: [
-      { platform: "shopee", href: "https://shopee.co.id/" },
-      { platform: "tokopedia", href: "https://www.tokopedia.com/" },
-      { platform: "tiktokshop", href: "https://www.tiktok.com/shop" },
+    gallery: [
+      "/images/umkm/Peyek-Shamellsha/umkm-peyek-shamellsha.jpg",
+      "/images/umkm/Peyek-Shamellsha/umkm-ps-1.jpg",
+    ],
+    products: [{ name: "Peyek Kacang", price: "Mulai Rp 15.000/pack", image: "/images/umkm/Peyek-Shamellsha/umkm-ps-1.jpg" }],
+  },
+  {
+    id: "saemah-otak-otak",
+    slug: "saemah-otak-otak",
+    name: "Saemah Otak-Otak",
+    category: "Kuliner",
+    image: "/images/umkm/Saemah-Otak-Otak/hero-saemah-otakotak.jpg",
+    cardDescription: "Otak-otak daun khas lokal.",
+    description: "Diproduksi rumahan dengan bahan ikan segar.",
+    location: "Rempang",
+    owner: "Ibu Saemah",
+    whatsapp: "https://wa.me/6281234567807",
+    gallery: [
+      "/images/umkm/Saemah-Otak-Otak/hero-saemah-otakotak.jpg",
+      "/images/umkm/Saemah-Otak-Otak/umkm-so-1.jpeg",
+      "/images/umkm/Saemah-Otak-Otak/umkm-so-2.jpeg",
+      "/images/umkm/Saemah-Otak-Otak/umkm-so-3.jpeg",
+      "/images/umkm/Saemah-Otak-Otak/umkm-so-4.jpeg",
+    ],
+    products: [
+      { name: "Otak-Otak Daun", price: "Mulai Rp 20.000", image: "/images/umkm/Saemah-Otak-Otak/umkm-so-1.jpeg" },
+      { name: "Paket Otak-Otak", price: "Mulai Rp 35.000", image: "/images/umkm/Saemah-Otak-Otak/umkm-so-2.jpeg" },
     ],
   },
 ];
 
-export function getUmkmBySlug(slug: string) {
-  return umkmCatalog.find((item) => item.slug === slug);
-}
+export const umkmCategories = ["Semua", ...Array.from(new Set(umkmCatalog.map((item) => item.category)))];
