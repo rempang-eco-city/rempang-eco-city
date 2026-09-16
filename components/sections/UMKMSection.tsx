@@ -34,9 +34,9 @@ export default function UMKMSection() {
             </h2>
 
             <p className="text-lg text-text-secondary max-w-xl">
-              UMKM di Rempang Eco City merupakan tulang punggung ekonomi lokal — dari kerajinan,
-              pengolahan pangan, hingga jasa pariwisata. Program pemberdayaan difokuskan pada peningkatan
-              kualitas produk, akses pasar, dan pelatihan manajerial untuk mendorong daya saing usaha.
+              UMKM di Rempang Eco City menjadi penggerak ekonomi lokal melalui ragam usaha kuliner,
+              kerajinan, dan jasa. Program pemberdayaan difokuskan pada peningkatan kualitas produk,
+              akses pasar, serta penguatan kapasitas pelaku usaha agar semakin berdaya saing.
             </p>
           </motion.div>
 
@@ -52,17 +52,19 @@ export default function UMKMSection() {
             <div className="relative">
               <div ref={containerRef} className="umkm-carousel flex gap-4 overflow-x-auto pb-4">
                 {umkms.map((card) => (
-                  <article
+                  <Link
                     key={card.id}
-                    className={`group umkm-card w-[220px] md:w-[260px] bg-bg-light rounded-2xl border border-border-color overflow-hidden shadow-[0_8px_20px_rgba(15,23,42,0.03)] transition-all hover:shadow-[0_18px_36px_rgba(15,23,42,0.08)]`}
+                    href={card.href}
+                    className={`group umkm-card block w-[220px] md:w-[260px] bg-bg-light rounded-2xl border border-border-color overflow-hidden shadow-[0_8px_20px_rgba(15,23,42,0.03)] transition-all hover:shadow-[0_18px_36px_rgba(15,23,42,0.08)]`}
                   >
                     <div className="h-44 md:h-56 w-full overflow-hidden rounded-t-2xl">
                       <img src={card.image} alt={card.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                     </div>
                     <div className="p-4">
                       <h4 className="text-base font-semibold text-text-primary">{card.title}</h4>
+                      <p className="mt-1 line-clamp-2 text-sm text-text-secondary">{card.subtitle}</p>
                     </div>
-                  </article>
+                  </Link>
                 ))}
               </div>
 
