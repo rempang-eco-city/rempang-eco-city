@@ -143,6 +143,25 @@ export const umkmCatalog: UmkmItem[] = [
       { name: "Otak-Otak Mentah", price: "Mulai Rp 15.000", image: "/images/umkm/Saemah-Otak-Otak/umkm-so-2.jpeg" },
     ],
   },
+  {
+    id: "lilis-pastel",
+    slug: "lilis-pastel",
+    name: "Lilis Pastel",
+    category: "Kuliner",
+    image: "/images/umkm/Lilis-Pastel/umkm-lilis-pastel.jpg",
+    cardDescription: "Pastel rumahan dengan isian gurih untuk camilan dan acara.",
+    description: "Melayani pesanan pastel rumahan untuk kebutuhan harian, acara keluarga, dan snack box.",
+    location: "Rempang",
+    owner: "Ibu Lilis",
+    whatsapp: "https://wa.me/6281234567808",
+    gallery: [
+      "/images/umkm/Lilis-Pastel/umkm-lilis-pastel.jpg",
+      "/images/umkm/Lilis-Pastel/umkm-lp-1.jpg",
+    ],
+    products: [
+      { name: "Pastel Original", price: "Mulai Rp 2.000/pcs", image: "/images/umkm/Lilis-Pastel/umkm-lp-1.jpg" },
+    ],
+  },
 ];
 
 export const umkmCategories = ["Semua", ...Array.from(new Set(umkmCatalog.map((item) => item.category)))];
