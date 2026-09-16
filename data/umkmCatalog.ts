@@ -17,6 +17,7 @@ export type UmkmItem = {
   location: string;
   owner: string;
   whatsapp: string;
+  shopee?: string;
   gallery: string[];
   products: UmkmProduct[];
 };
