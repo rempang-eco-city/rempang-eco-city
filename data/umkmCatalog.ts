@@ -64,9 +64,9 @@ export const umkmCatalog: UmkmItem[] = [
       "/images/umkm/Home-Cakes/umkm-hc-3.jpg",
     ],
     products: [
-      { name: "Donat/Kue", price: "Mulai Rp 8.000", image: "/images/umkm/Home-Cakes/umkm-hc-1.jpg" },
-      { name: "Snack Box", price: "Mulai Rp 20.000", image: "/images/umkm/Home-Cakes/umkm-hc-2.jpg" },
-      { name: "Paket Kue", price: "Mulai Rp 30.000", image: "/images/umkm/Home-Cakes/umkm-hc-3.jpg" },
+      { name: "Risol Mayo", price: "Mulai Rp 8.000", image: "/images/umkm/Home-Cakes/umkm-hc-1.jpg" },
+      { name: "Donat 1//2 Lusin", price: "Mulai Rp 20.000", image: "/images/umkm/Home-Cakes/umkm-hc-2.jpg" },
+      { name: "Brownies", price: "Mulai Rp 30.000", image: "/images/umkm/Home-Cakes/umkm-hc-3.jpg" },
     ],
   },
   {
@@ -139,8 +139,8 @@ export const umkmCatalog: UmkmItem[] = [
       "/images/umkm/Saemah-Otak-Otak/umkm-so-4.jpeg",
     ],
     products: [
-      { name: "Otak-Otak Daun", price: "Mulai Rp 20.000", image: "/images/umkm/Saemah-Otak-Otak/umkm-so-1.jpeg" },
-      { name: "Paket Otak-Otak", price: "Mulai Rp 35.000", image: "/images/umkm/Saemah-Otak-Otak/umkm-so-2.jpeg" },
+      { name: "Otak-Otak Bakar", price: "Mulai Rp 20.000", image: "/images/umkm/Saemah-Otak-Otak/umkm-so-1.jpeg" },
+      { name: "Otak-Otak Mentah", price: "Mulai Rp 15.000", image: "/images/umkm/Saemah-Otak-Otak/umkm-so-2.jpeg" },
     ],
   },
 ];
