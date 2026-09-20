@@ -1,10 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, Eye, Search } from "lucide-react";
-import { umkmCatalog, umkmCategories } from "@/data/umkmCatalog";
+import type { UmkmListItem } from "@/lib/sanity/queries";
+
+type Props = {
+  umkms: UmkmListItem[];
+};
 
 const categoryBadgeClass: Record<string, string> = {
   Kuliner: "bg-[#dcfce7] text-[#166534]",
@@ -14,11 +18,16 @@ const categoryBadgeClass: Record<string, string> = {
   "Produk Lokal": "bg-[#d1fae5] text-[#065f46]",
 };
 
-export default function UMKMContent() {
+export default function UMKMContent({ umkms }: Props) {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("Semua");
 
-  const filteredUMKM = umkmCatalog.filter((umkm) => {
+  const umkmCategories = useMemo(
+    () => ["Semua", ...Array.from(new Set(umkms.map((item) => item.category)))],
+    [umkms]
+  );
+
+  const filteredUMKM = umkms.filter((umkm) => {
     const searchMatch =
       umkm.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       umkm.cardDescription.toLowerCase().includes(searchQuery.toLowerCase());
@@ -70,7 +79,7 @@ export default function UMKMContent() {
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
           {filteredUMKM.map((umkm, i) => (
             <motion.article
-              key={umkm.id}
+              key={umkm._id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}

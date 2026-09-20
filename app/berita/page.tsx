@@ -3,8 +3,11 @@ import Footer from "@/components/Footer";
 // Breadcrumb removed per request
 import PageHeader from "@/components/PageHeader";
 import BeritaContent from "@/components/pages/BeritaContent";
+import { getNewsArticles } from "@/lib/sanity/queries";
 
-export default function BeritaPage() {
+export default async function BeritaPage() {
+  const articles = await getNewsArticles();
+
   return (
     <main>
       <Navbar />
@@ -13,7 +16,7 @@ export default function BeritaPage() {
           title="Berita & Informasi"
           description="Kabar terbaru seputar Rempang Eco City"
         />
-        <BeritaContent />
+        <BeritaContent articles={articles} />
       </div>
       <Footer />
     </main>

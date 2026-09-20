@@ -6,8 +6,14 @@ import KoperasiSection from "@/components/sections/KoperasiSection";
 import PariwisataSection from "@/components/sections/PariwisataSection";
 import UMKMSection from "@/components/sections/UMKMSection";
 import BeritaTerbaru from "@/components/sections/BeritaTerbaru";
+import { getNewsArticles, getUmkmItems } from "@/lib/sanity/queries";
 
-export default function Home() {
+export default async function Home() {
+  const [articles, umkms] = await Promise.all([
+    getNewsArticles(),
+    getUmkmItems(),
+  ]);
+
   return (
     <main>
       <Navbar />
@@ -16,8 +22,8 @@ export default function Home() {
         <PetaWilayah />
         <KoperasiSection />
         <PariwisataSection />
-        <UMKMSection />
-        <BeritaTerbaru />
+        <UMKMSection umkms={umkms} />
+        <BeritaTerbaru articles={articles} />
       </div>
       <Footer />
     </main>

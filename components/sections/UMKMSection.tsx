@@ -3,9 +3,13 @@
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { umkms } from "@/data/umkms";
+import type { UmkmListItem } from "@/lib/sanity/queries";
 
-export default function UMKMSection() {
+type Props = {
+  umkms: UmkmListItem[];
+};
+
+export default function UMKMSection({ umkms }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
 
@@ -53,16 +57,16 @@ export default function UMKMSection() {
               <div ref={containerRef} className="umkm-carousel flex gap-4 overflow-x-auto pb-4">
                 {umkms.map((card) => (
                   <Link
-                    key={card.id}
-                    href={card.href}
+                    key={card._id}
+                    href={`/umkm/${card.slug}`}
                     className={`group umkm-card block w-[220px] md:w-[260px] bg-bg-light rounded-2xl border border-border-color overflow-hidden shadow-[0_8px_20px_rgba(15,23,42,0.03)] transition-all hover:shadow-[0_18px_36px_rgba(15,23,42,0.08)]`}
                   >
                     <div className="h-44 md:h-56 w-full overflow-hidden rounded-t-2xl">
-                      <img src={card.image} alt={card.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      <img src={card.image} alt={card.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                     </div>
                     <div className="p-4">
-                      <h4 className="text-base font-semibold text-text-primary">{card.title}</h4>
-                      <p className="mt-1 line-clamp-2 text-sm text-text-secondary">{card.subtitle}</p>
+                      <h4 className="text-base font-semibold text-text-primary">{card.name}</h4>
+                      <p className="mt-1 line-clamp-2 text-sm text-text-secondary">{card.cardDescription}</p>
                     </div>
                   </Link>
                 ))}

@@ -4,10 +4,10 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
-import type { UmkmItem } from "@/data/umkmCatalog";
+import type { UmkmDetail } from "@/lib/sanity/queries";
 
 type Props = {
-  umkm: UmkmItem;
+  umkm: UmkmDetail;
 };
 
 const categoryBadgeClass: Record<string, string> = {

@@ -6,19 +6,27 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "migrate:sanity": "tsx scripts/migrate-to-sanity.ts"
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^2.1.1",
+    "@sanity/client": "^7.27.0",
+    "@sanity/image-url": "^2.1.1",
+    "@sanity/ui": "^2.16.29",
+    "@sanity/vision": "^3.99.0",
     "@types/google.maps": "^3.66.2",
     "framer-motion": "11.3.19",
     "leaflet": "^1.9.4",
     "lucide-react": "0.427.0",
     "maplibre-gl": "^6.9.0",
     "next": "14.2.35",
+    "next-sanity": "^9.12.3",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "react-leaflet": "^4.2.1"
+    "react-leaflet": "^4.2.1",
+    "sanity": "^3.99.0",
+    "styled-components": "^6.5.3"
   },
   "devDependencies": {
     "@types/leaflet": "^1.9.22",
@@ -26,10 +34,12 @@
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
     "autoprefixer": "10.4.19",
+    "dotenv": "^18.0.1",
     "eslint": "8.57.0",
     "eslint-config-next": "14.2.5",
     "postcss": "8.4.40",
     "tailwindcss": "3.4.7",
+    "tsx": "^4.23.14",
     "typescript": "5.5.4"
   }
 }

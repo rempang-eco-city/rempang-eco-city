@@ -3,8 +3,11 @@ import Footer from "@/components/Footer";
 // Breadcrumb removed per request
 import PageHeader from "@/components/PageHeader";
 import UMKMContent from "@/components/pages/UMKMContent";
+import { getUmkmItems } from "@/lib/sanity/queries";
 
-export default function UMKMPage() {
+export default async function UMKMPage() {
+  const umkms = await getUmkmItems();
+
   return (
     <main>
       <Navbar />
@@ -13,7 +16,7 @@ export default function UMKMPage() {
           title="UMKM Rempang"
           description="Temukan dan dukung produk usaha masyarakat"
         />
-        <UMKMContent />
+        <UMKMContent umkms={umkms} />
       </div>
       <Footer />
     </main>

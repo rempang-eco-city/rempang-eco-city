@@ -2,43 +2,13 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import type { NewsArticleListItem } from "@/lib/sanity/queries";
 
-const newsItems = [
-  {
-    id: 1,
-    title: "Dimulainya Pembangunan Infrastruktur Fase Pertama",
-    excerpt: "Proyek konstruksi jalan dan persiapan lahan telah dimulai di sepanjang garis pantai utara Rempang.",
-    date: "Agustus 2026",
-    image: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=800&auto=format&fit=crop",
-    featured: true,
-  },
-  {
-    id: 2,
-    title: "Program Transisi Komunitas Mencapai Milestone Baru",
-    excerpt: "Dukungan perumahan dan mata pencaharian berkelanjutan untuk keluarga yang pindah.",
-    date: "Juli 2026",
-    image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=400&auto=format&fit=crop",
-  },
-  {
-    id: 3,
-    title: "Mitra Energi Terbarukan Pertama Diumumkan",
-    excerpt: "Kemitraan baru bertujuan menghadirkan infrastruktur tenaga surya dan pembangkit rendah karbon.",
-    date: "Juni 2026",
-    image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=400&auto=format&fit=crop",
-  },
-  {
-    id: 4,
-    title: "Peluncuran Pasar Digital UMKM Rempang",
-    excerpt: "Platform online lokal diluncurkan untuk membantu UMKM Rempang menjangkau pembeli nasional dan internasional.",
-    date: "September 2026",
-    image: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=400&auto=format&fit=crop",
-  },
-];
+type Props = {
+  articles: NewsArticleListItem[];
+};
 
-export default function BeritaTerbaru() {
-  const featured = newsItems.find((n) => n.featured);
-  const others = newsItems.filter((n) => !n.featured);
-
+export default function BeritaTerbaru({ articles }: Props) {
   return (
     <section className="bg-white py-16 md:py-24">
       <div className="container-content">
@@ -67,16 +37,16 @@ export default function BeritaTerbaru() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {newsItems.map((article, i) => (
+          {articles.map((article, i) => (
             <motion.article
-              key={article.id}
+              key={article._id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: i * 0.06 }}
               className="group overflow-hidden rounded-2xl border border-border-color bg-white shadow-[0_8px_20px_rgba(15,23,42,0.03)] transition-all hover:shadow-[0_18px_36px_rgba(15,23,42,0.08)]"
             >
-              <Link href={`/berita/${article.id}`} className="block">
+              <Link href={`/berita/${article.slug}`} className="block">
                 <div className="h-44 w-full overflow-hidden bg-border-color">
                   <img
                     src={article.image}
