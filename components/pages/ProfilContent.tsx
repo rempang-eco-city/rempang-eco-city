@@ -57,23 +57,28 @@ export default function ProfilContent({ profil }: { profil: ProfilPage }) {
             <p className="text-text-secondary mb-4">{profil.lembagaDescription}</p>
           )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {/* Same card style as the Pengurus cards on /koperasi/[routeKey] */}
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             {profil.lembagaItems.map((inst, index) => (
               <article
                 key={`${inst.title}-${index}`}
-                className="group overflow-hidden rounded-2xl border border-border-color bg-white shadow-[0_8px_20px_rgba(15,23,42,0.03)] transition-all hover:shadow-[0_18px_36px_rgba(15,23,42,0.08)]"
+                className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_20px_rgba(15,23,42,0.03)] transition-all hover:shadow-[0_18px_36px_rgba(15,23,42,0.08)]"
               >
-                <div className="w-full h-40 relative overflow-hidden rounded-t-2xl">
+                <div className="overflow-hidden bg-[#39b7c9]">
                   <img
                     src={inst.image}
                     alt={inst.title}
-                    className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
+                    className="h-72 w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
-                <div className="p-4">
-                  <h4 className="font-semibold text-text-primary mb-1">{inst.title}</h4>
+                <div className="p-4 text-center">
+                  <h3 className="text-xl font-semibold text-primary-blue">
+                    {inst.title}
+                  </h3>
                   {inst.description && (
-                    <p className="text-sm text-text-secondary">{inst.description}</p>
+                    <p className="mt-1 text-sm text-text-secondary">
+                      {inst.description}
+                    </p>
                   )}
                 </div>
               </article>
