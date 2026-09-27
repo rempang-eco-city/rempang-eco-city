@@ -361,3 +361,45 @@ export async function getProfilPage() {
     aboutBody: blocksToParagraphs(page.aboutBody),
   } satisfies ProfilPage;
 }
+
+export type BerandaPage = {
+  heroTitle: string;
+  heroDescription?: string;
+  heroButtonLabel: string;
+  heroButtonLink: string;
+  heroImage: string;
+  petaTitle: string;
+  petaDescription?: string;
+  petaAddress: string;
+  koperasiTitle: string;
+  pariwisataTitle: string;
+  pariwisataDescription?: string;
+  pariwisataImages: string[];
+  umkmTitle: string;
+  umkmDescription?: string;
+  beritaTitle: string;
+};
+
+export async function getBerandaPage() {
+  return sanityFetch<BerandaPage | null>(
+    `*[_type == "berandaPage" && _id == "berandaPage"][0]{
+      heroTitle,
+      heroDescription,
+      heroButtonLabel,
+      heroButtonLink,
+      "heroImage": heroImage.asset->url,
+      petaTitle,
+      petaDescription,
+      petaAddress,
+      koperasiTitle,
+      pariwisataTitle,
+      pariwisataDescription,
+      "pariwisataImages": coalesce(pariwisataImages[].asset->url, []),
+      umkmTitle,
+      umkmDescription,
+      beritaTitle
+    }`,
+    {},
+    ["berandaPage"]
+  );
+}

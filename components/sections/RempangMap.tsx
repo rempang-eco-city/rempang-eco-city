@@ -1,11 +1,8 @@
 "use client";
 
-const REMPANG_ADDRESS =
-  "R67F+PW2 Rempang Eco City Tanjung Banun, Sembulang, Galang, Batam City, Riau Islands 29481";
+export default function RempangMap({ address }: { address: string }) {
+  const mapUrl = `https://www.google.com/maps?q=${encodeURIComponent(address)}&z=14&output=embed`;
 
-const mapUrl = `https://www.google.com/maps?q=${encodeURIComponent(REMPANG_ADDRESS)}&z=14&output=embed`;
-
-export default function RempangMap() {
   return (
     <iframe
       title="Rempang Eco City Map"

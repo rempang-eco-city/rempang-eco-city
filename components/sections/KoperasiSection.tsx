@@ -5,8 +5,10 @@ import { motion } from "framer-motion";
 import type { KoperasiListItem } from "@/lib/sanity/queries";
 
 export default function KoperasiSection({
+	title,
 	koperasiList,
 }: {
+	title: string;
 	koperasiList: KoperasiListItem[];
 }) {
 	if (koperasiList.length === 0) return null;
@@ -22,7 +24,7 @@ export default function KoperasiSection({
 					className="text-center mb-12"
 				>
 					<h2 className="font-heading font-bold text-3xl md:text-4xl text-primary-blue mb-3">
-						Koperasi
+						{title}
 					</h2>
 				</motion.div>
 

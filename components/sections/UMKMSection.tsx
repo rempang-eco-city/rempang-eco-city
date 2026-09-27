@@ -6,10 +6,12 @@ import { motion } from "framer-motion";
 import type { UmkmListItem } from "@/lib/sanity/queries";
 
 type Props = {
+  title: string;
+  description?: string;
   umkms: UmkmListItem[];
 };
 
-export default function UMKMSection({ umkms }: Props) {
+export default function UMKMSection({ title, description, umkms }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
 
@@ -34,14 +36,12 @@ export default function UMKMSection({ umkms }: Props) {
             className="pr-4"
           >
             <h2 className="font-heading font-bold text-3xl md:text-4xl text-primary-blue mb-3">
-              Usaha Mikro, Kecil, dan Menengah
+              {title}
             </h2>
 
-            <p className="text-lg text-text-secondary max-w-xl">
-              UMKM di Rempang Eco City menjadi penggerak ekonomi lokal melalui ragam usaha kuliner,
-              kerajinan, dan jasa. Program pemberdayaan difokuskan pada peningkatan kualitas produk,
-              akses pasar, serta penguatan kapasitas pelaku usaha agar semakin berdaya saing.
-            </p>
+            {description && (
+              <p className="text-lg text-text-secondary max-w-xl">{description}</p>
+            )}
           </motion.div>
 
           {/* Right: Cards carousel + header (CTA one-line) */}

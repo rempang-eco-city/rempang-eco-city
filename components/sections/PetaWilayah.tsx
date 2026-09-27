@@ -12,7 +12,13 @@ const RempangMap = dynamic(() => import("./RempangMap"), {
   ),
 });
 
-export default function PetaWilayah() {
+type Props = {
+  title: string;
+  description?: string;
+  address: string;
+};
+
+export default function PetaWilayah({ title, description, address }: Props) {
   return (
     <section className="bg-white py-16 md:py-24">
       <div className="container-content">
@@ -24,11 +30,13 @@ export default function PetaWilayah() {
           className="text-center mb-12"
         >
           <h2 className="font-heading font-bold text-3xl md:text-4xl text-primary-blue mb-3">
-            Jelajahi Wilayah Rempang
+            {title}
           </h2>
-          <p className="text-lg text-text-secondary max-w-2xl mx-auto">
-            Lihat lokasi dan wilayah Rempang Eco City
-          </p>
+          {description && (
+            <p className="text-lg text-text-secondary max-w-2xl mx-auto">
+              {description}
+            </p>
+          )}
         </motion.div>
 
         <motion.div
@@ -39,7 +47,7 @@ export default function PetaWilayah() {
           className="rounded-xl overflow-hidden border border-border-color shadow-sm"
         >
           <div className="bg-bg-light h-[450px] md:h-[520px] w-full">
-            <RempangMap />
+            <RempangMap address={address} />
           </div>
         </motion.div>
       </div>

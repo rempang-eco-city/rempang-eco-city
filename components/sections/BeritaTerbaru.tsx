@@ -5,10 +5,11 @@ import Link from "next/link";
 import type { NewsArticleListItem } from "@/lib/sanity/queries";
 
 type Props = {
+  title: string;
   articles: NewsArticleListItem[];
 };
 
-export default function BeritaTerbaru({ articles }: Props) {
+export default function BeritaTerbaru({ title, articles }: Props) {
   return (
     <section className="bg-white py-16 md:py-24">
       <div className="container-content">
@@ -20,7 +21,7 @@ export default function BeritaTerbaru({ articles }: Props) {
             transition={{ duration: 0.6 }}
           >
             <h2 className="font-heading font-bold text-3xl md:text-4xl text-primary-blue">
-              Berita Terbaru
+              {title}
             </h2>
           </motion.div>
 

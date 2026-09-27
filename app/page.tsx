@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeroBanner from "@/components/sections/HeroBanner";
@@ -7,28 +8,50 @@ import PariwisataSection from "@/components/sections/PariwisataSection";
 import UMKMSection from "@/components/sections/UMKMSection";
 import BeritaTerbaru from "@/components/sections/BeritaTerbaru";
 import {
+  getBerandaPage,
   getKoperasiList,
   getNewsArticles,
   getUmkmItems,
 } from "@/lib/sanity/queries";
 
 export default async function Home() {
-  const [articles, umkms, koperasiList] = await Promise.all([
+  const [beranda, articles, umkms, koperasiList] = await Promise.all([
+    getBerandaPage(),
     getNewsArticles(),
     getUmkmItems(),
     getKoperasiList(),
   ]);
 
+  if (!beranda) notFound();
+
   return (
     <main>
       <Navbar />
       <div className="pt-20 md:pt-24">
-        <HeroBanner />
-        <PetaWilayah />
-        <KoperasiSection koperasiList={koperasiList} />
-        <PariwisataSection />
-        <UMKMSection umkms={umkms} />
-        <BeritaTerbaru articles={articles} />
+        <HeroBanner
+          title={beranda.heroTitle}
+          description={beranda.heroDescription}
+          buttonLabel={beranda.heroButtonLabel}
+          buttonLink={beranda.heroButtonLink}
+          image={beranda.heroImage}
+        />
+        <PetaWilayah
+          title={beranda.petaTitle}
+          description={beranda.petaDescription}
+          address={beranda.petaAddress}
+        />
+        <KoperasiSection title={beranda.koperasiTitle} koperasiList={koperasiList} />
+        <PariwisataSection
+          title={beranda.pariwisataTitle}
+          description={beranda.pariwisataDescription}
+          images={beranda.pariwisataImages}
+        />
+        <UMKMSection
+          title={beranda.umkmTitle}
+          description={beranda.umkmDescription}
+          umkms={umkms}
+        />
+        <BeritaTerbaru title={beranda.beritaTitle} articles={articles} />
       </div>
       <Footer />
     </main>

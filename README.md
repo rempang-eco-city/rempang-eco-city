@@ -47,7 +47,7 @@ Dibangun dengan Next.js 14 (App Router), TypeScript, Tailwind CSS, Framer Motion
 | Koperasi | Sanity, dokumen `koperasi` (`routeKey`: `transmigrasi` / `merah-putih`) |
 | Pariwisata | Sanity, dokumen `pariwisataDestination` (`routeKey`: `mancing` / `mangrove`) |
 | Profil | Sanity, dokumen singleton `profilPage` (menu "Halaman Profil" di Studio) |
-| Beranda (hero, peta, carousel pariwisata) | Statis di komponen |
+| Beranda | Sanity, dokumen singleton `berandaPage` (menu "Halaman Beranda" di Studio) untuk teks, gambar, dan alamat peta tiap section. Card Koperasi, UMKM, dan Berita diambil dari dokumennya masing-masing |
 
 Data di-cache dengan ISR selama 60 detik (`REVALIDATE_SECONDS` di `lib/sanity/queries.ts`), jadi perubahan di Studio akan muncul di website paling lama dalam 1 menit.
 
@@ -61,4 +61,4 @@ Berita diurutkan berdasarkan field **Tanggal Terbit** (`publishedAt`). Dokumen l
 npm run migrate:sanity -- --only=koperasi,pariwisata
 ```
 
-Pilihan section: `news`, `umkm`, `koperasi`, `pariwisata`, `profil`, dan `--only` wajib diisi. Dokumen yang dibuat lewat Studio punya `_id` acak, jadi memigrasi section yang isinya sudah diisi manual (saat ini `news` dan `umkm`) akan menghasilkan **duplikat**.
+Pilihan section: `news`, `umkm`, `koperasi`, `pariwisata`, `profil`, `beranda`, dan `--only` wajib diisi. Dokumen yang dibuat lewat Studio punya `_id` acak, jadi memigrasi section yang isinya sudah diisi manual (saat ini `news` dan `umkm`) akan menghasilkan **duplikat**.

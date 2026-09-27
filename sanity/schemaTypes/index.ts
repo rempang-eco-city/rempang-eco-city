@@ -7,6 +7,7 @@ import { umkmItem } from "./umkmItem";
 import { koperasi } from "./koperasi";
 import { pariwisataDestination } from "./pariwisataDestination";
 import { profilPage } from "./profilPage";
+import { berandaPage } from "./berandaPage";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -18,5 +19,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     koperasi,
     pariwisataDestination,
     profilPage,
+    berandaPage,
   ],
 };

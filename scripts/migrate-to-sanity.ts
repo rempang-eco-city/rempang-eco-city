@@ -14,7 +14,7 @@
  *
  *   npm run migrate:sanity -- --only=koperasi,pariwisata
  *
- * Sections: news, umkm, koperasi, pariwisata, profil. --only is required.
+ * Sections: news, umkm, koperasi, pariwisata, profil, beranda. --only is required.
  *
  * Documents created in the Studio have random _ids, so migrating a section
  * that was already filled in by hand creates DUPLICATES rather than updates.
@@ -558,12 +558,64 @@ async function migrateProfil() {
   console.log("  ✓ Halaman Profil");
 }
 
+// Snapshot of the homepage copy that was hardcoded before Sanity.
+const berandaData = {
+  heroTitle: "Selamat Datang di\nRempang Eco City",
+  heroDescription:
+    "Portal informasi masyarakat Rempang Eco City yang menghadirkan informasi seputar profil wilayah, koperasi, pariwisata, UMKM, dan berita terkini.",
+  heroButtonLabel: "Kenali Rempang Eco City",
+  heroButtonLink: "/profil",
+  heroImage: "/images/hero-rumah-rempang.png",
+  petaTitle: "Jelajahi Wilayah Rempang",
+  petaDescription: "Lihat lokasi dan wilayah Rempang Eco City",
+  petaAddress:
+    "R67F+PW2 Rempang Eco City Tanjung Banun, Sembulang, Galang, Batam City, Riau Islands 29481",
+  koperasiTitle: "Koperasi",
+  pariwisataTitle: "Pariwisata",
+  pariwisataDescription:
+    "Jelajahi potensi alam dan budaya di Rempang — destinasi pantai, komunitas pesisir, serta kegiatan wisata yang mendukung ekonomi lokal. Temukan rute, spot foto, dan layanan wisata setempat.",
+  pariwisataImages: [
+    "/images/hero-pariwisata-rec.jpg",
+    "/images/hero-rumah-rempang.png",
+    "/images/hero-kop-trans.png",
+  ],
+  umkmTitle: "Usaha Mikro, Kecil, dan Menengah",
+  umkmDescription:
+    "UMKM di Rempang Eco City menjadi penggerak ekonomi lokal melalui ragam usaha kuliner, kerajinan, dan jasa. Program pemberdayaan difokuskan pada peningkatan kualitas produk, akses pasar, serta penguatan kapasitas pelaku usaha agar semakin berdaya saing.",
+  beritaTitle: "Berita Terbaru",
+};
+
+async function migrateBeranda() {
+  console.log("\nMigrating beranda page...");
+
+  const { heroImage, pariwisataImages, ...copy } = berandaData;
+
+  const doc = {
+    // Fixed _id: the Studio edits this singleton by id (sanity/structure.ts).
+    _id: "berandaPage",
+    _type: "berandaPage",
+    ...copy,
+    heroImage: await imageField(heroImage),
+    pariwisataImages: await Promise.all(
+      pariwisataImages.map(async (imagePath, index) => ({
+        _type: "image" as const,
+        _key: `pariwisata-${index}`,
+        asset: await uploadImage(imagePath),
+      }))
+    ),
+  };
+
+  await client.createOrReplace(doc);
+  console.log("  ✓ Halaman Beranda");
+}
+
 const SECTIONS = {
   news: migrateNewsArticles,
   umkm: migrateUmkmCatalog,
   koperasi: migrateKoperasi,
   pariwisata: migratePariwisata,
   profil: migrateProfil,
+  beranda: migrateBeranda,
 } as const;
 
 type Section = keyof typeof SECTIONS;

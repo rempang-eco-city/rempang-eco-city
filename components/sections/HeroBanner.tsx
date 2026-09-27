@@ -3,7 +3,21 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
-export default function HeroBanner() {
+type Props = {
+  title: string;
+  description?: string;
+  buttonLabel: string;
+  buttonLink: string;
+  image: string;
+};
+
+export default function HeroBanner({
+  title,
+  description,
+  buttonLabel,
+  buttonLink,
+  image,
+}: Props) {
   return (
     <section className="bg-white py-16 md:py-24">
       <div className="container-content">
@@ -14,24 +28,24 @@ export default function HeroBanner() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="font-heading font-bold text-4xl md:text-5xl text-primary-blue leading-tight">
-              Selamat Datang di
-              <br />
-              Rempang Eco City
+            <h1 className="font-heading font-bold text-4xl md:text-5xl text-primary-blue leading-tight whitespace-pre-line">
+              {title}
             </h1>
 
-            <p className="mt-6 text-lg text-text-secondary leading-relaxed max-w-lg">
-              Portal informasi masyarakat Rempang Eco City yang menghadirkan informasi seputar profil wilayah, koperasi, pariwisata, UMKM, dan berita terkini.
-            </p>
+            {description && (
+              <p className="mt-6 text-lg text-text-secondary leading-relaxed max-w-lg">
+                {description}
+              </p>
+            )}
 
             <motion.a
-              href="/profil"
+              href={buttonLink}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
               className="mt-8 inline-flex items-center gap-2 px-8 py-4 bg-primary-blue text-white font-medium rounded-lg hover:bg-primary-dark transition-colors group"
             >
-              Kenali Rempang Eco City
+              {buttonLabel}
               <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </motion.a>
           </motion.div>
@@ -45,8 +59,8 @@ export default function HeroBanner() {
           >
             <div className="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-bg-light to-border-color shadow-[0_20px_50px_rgba(15,23,42,0.08)]">
               <img
-                src="/images/hero-rumah-rempang.png"
-                alt="Rumah Rempang"
+                src={image}
+                alt={title}
                 className="w-full h-full object-cover"
               />
             </div>

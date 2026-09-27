@@ -5,19 +5,20 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
-const images = [
-  "/images/hero-pariwisata-rec.jpg",
-  "/images/hero-rumah-rempang.png",
-  "/images/hero-kop-trans.png",
-];
+type Props = {
+  title: string;
+  description?: string;
+  images: string[];
+};
 
-export default function PariwisataSection() {
+export default function PariwisataSection({ title, description, images }: Props) {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
+    if (images.length < 2) return;
     const id = setInterval(() => setIndex((i) => (i + 1) % images.length), 5000);
     return () => clearInterval(id);
-  }, []);
+  }, [images.length]);
 
   return (
     <section className="bg-bg-light py-16 md:py-24">
@@ -34,9 +35,9 @@ export default function PariwisataSection() {
             <div className="relative h-[420px] md:h-[520px]">
               {images.map((src, i) => (
                 <img
-                  key={src}
+                  key={`${src}-${i}`}
                   src={src}
-                  alt={`Pariwisata ${i + 1}`}
+                  alt={`${title} ${i + 1}`}
                   className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
                     i === index ? "opacity-100" : "opacity-0 pointer-events-none"
                   }`}
@@ -84,13 +85,12 @@ export default function PariwisataSection() {
               transition={{ duration: 0.5 }}
               className="font-heading font-bold text-3xl md:text-4xl text-primary-blue mb-3"
             >
-              Pariwisata
+              {title}
             </motion.h2>
 
-            <p className="text-lg text-text-secondary mb-6 max-w-xl">
-              Jelajahi potensi alam dan budaya di Rempang — destinasi pantai, komunitas pesisir,
-              serta kegiatan wisata yang mendukung ekonomi lokal. Temukan rute, spot foto, dan layanan wisata setempat.
-            </p>
+            {description && (
+              <p className="text-lg text-text-secondary mb-6 max-w-xl">{description}</p>
+            )}
 
             <Link
               href="/pariwisata"
