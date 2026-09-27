@@ -1,9 +1,16 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 // Breadcrumb removed per request
 import PageHeader from "@/components/PageHeader";
 import BeritaContent from "@/components/pages/BeritaContent";
 import { getNewsArticles } from "@/lib/sanity/queries";
+
+export const metadata: Metadata = {
+  title: "Berita",
+  description:
+    "Kabar terbaru seputar Rempang Eco City.",
+};
 
 export default async function BeritaPage() {
   const articles = await getNewsArticles();

@@ -1,3 +1,4 @@
+import type { PortableTextBlock as RichTextBlock } from "@portabletext/react";
 import { sanityClient } from "./client";
 
 const REVALIDATE_SECONDS = 60;
@@ -55,7 +56,9 @@ export type NewsArticleListItem = {
 };
 
 export type NewsArticleDetail = NewsArticleListItem & {
-  content: string[];
+  // Kept as Portable Text so bold, links, headings and lists survive; render
+  // with <PortableText> (see components/RichText.tsx).
+  content: RichTextBlock[];
 };
 
 type RawNewsArticle = Omit<NewsArticleListItem, "date"> & {
@@ -83,10 +86,22 @@ function toNewsListItem({
   return { ...article, date: formatNewsDate(publishedAt, date) };
 }
 
+const newsOrder = `order(coalesce(publishedAt, _createdAt) desc)`;
+
 export async function getNewsArticles() {
   const articles = await sanityFetch<RawNewsArticle[]>(
-    `*[_type == "newsArticle"] | order(coalesce(publishedAt, _createdAt) desc) {${newsListFields}}`,
+    `*[_type == "newsArticle"] | ${newsOrder} {${newsListFields}}`,
     {},
+    ["newsArticle"]
+  );
+
+  return articles.map(toNewsListItem);
+}
+
+export async function getLatestNewsArticles(limit: number) {
+  const articles = await sanityFetch<RawNewsArticle[]>(
+    `*[_type == "newsArticle"] | ${newsOrder} [0...$limit] {${newsListFields}}`,
+    { limit },
     ["newsArticle"]
   );
 
@@ -95,7 +110,7 @@ export async function getNewsArticles() {
 
 export async function getNewsArticleBySlug(slug: string) {
   const article = await sanityFetch<
-    (RawNewsArticle & { content: PortableTextBlock[] | null }) | null
+    (RawNewsArticle & { content: RichTextBlock[] | null }) | null
   >(
     `*[_type == "newsArticle" && slug.current == $slug][0]{${newsListFields}, content}`,
     { slug },
@@ -107,7 +122,7 @@ export async function getNewsArticleBySlug(slug: string) {
   const { content, ...rest } = article;
   return {
     ...toNewsListItem(rest),
-    content: blocksToParagraphs(content),
+    content: content ?? [],
   } satisfies NewsArticleDetail;
 }
 

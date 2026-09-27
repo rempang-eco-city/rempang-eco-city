@@ -17,7 +17,10 @@ const body = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Rempang Eco City — Portal Informasi",
+  title: {
+    default: "Rempang Eco City — Portal Informasi",
+    template: "%s | Rempang Eco City",
+  },
   description:
     "Portal informasi masyarakat Rempang Eco City. Profil REC, Koperasi, Pariwisata, UMKM, dan Berita terkini.",
 };

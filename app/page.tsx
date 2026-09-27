@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -10,14 +11,22 @@ import BeritaTerbaru from "@/components/sections/BeritaTerbaru";
 import {
   getBerandaPage,
   getKoperasiList,
-  getNewsArticles,
+  getLatestNewsArticles,
   getUmkmItems,
 } from "@/lib/sanity/queries";
+
+// Matches the 4-column Berita grid on large screens.
+const HOME_NEWS_LIMIT = 4;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const beranda = await getBerandaPage();
+  return { description: beranda?.heroDescription };
+}
 
 export default async function Home() {
   const [beranda, articles, umkms, koperasiList] = await Promise.all([
     getBerandaPage(),
-    getNewsArticles(),
+    getLatestNewsArticles(HOME_NEWS_LIMIT),
     getUmkmItems(),
     getKoperasiList(),
   ]);

@@ -1,9 +1,16 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 // Breadcrumb removed per request
 import PageHeader from "@/components/PageHeader";
 import PariwisataContent from "@/components/pages/PariwisataContent";
 import { getPariwisataDestinations } from "@/lib/sanity/queries";
+
+export const metadata: Metadata = {
+  title: "Pariwisata",
+  description:
+    "Jelajahi destinasi unggulan Rempang: wisata mancing dan eksplorasi mangrove.",
+};
 
 export default async function PariwisataPage() {
   const destinations = await getPariwisataDestinations();

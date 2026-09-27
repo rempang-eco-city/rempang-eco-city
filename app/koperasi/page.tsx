@@ -1,9 +1,16 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 // Breadcrumb removed per request
 import PageHeader from "@/components/PageHeader";
 import KoperasiContent from "@/components/pages/KoperasiContent";
 import { getKoperasiList } from "@/lib/sanity/queries";
+
+export const metadata: Metadata = {
+  title: "Koperasi",
+  description:
+    "Informasi koperasi dan pemberdayaan ekonomi masyarakat di Rempang Eco City.",
+};
 
 export default async function KoperasiPage() {
   const koperasiList = await getKoperasiList();

@@ -10,6 +10,7 @@
     "migrate:sanity": "tsx scripts/migrate-to-sanity.ts"
   },
   "dependencies": {
+    "@portabletext/react": "^3.2.4",
     "@sanity/client": "^7.27.0",
     "@sanity/ui": "^2.16.29",
     "@sanity/vision": "^3.99.0",
