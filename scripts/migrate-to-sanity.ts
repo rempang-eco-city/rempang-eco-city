@@ -7,23 +7,29 @@
  *
  *   npm run migrate:sanity
  *
- * It is safe to re-run: documents use deterministic _id values and are
- * written with createOrReplace, so re-running just updates the same docs
- * instead of duplicating them. Local data/*.ts files are NOT modified or
- * deleted by this script.
+ * Documents use deterministic _id values and are written with
+ * createOrReplace, so re-running updates the same docs instead of duplicating
+ * them. That also means re-running OVERWRITES any edits made in the Studio for
+ * those documents — use --only to limit which sections are migrated:
+ *
+ *   npm run migrate:sanity -- --only=koperasi,pariwisata
+ *
+ * Sections: news, umkm, koperasi, pariwisata. --only is required.
+ *
+ * Documents created in the Studio have random _ids, so migrating a section
+ * that was already filled in by hand creates DUPLICATES rather than updates.
  */
-import "dotenv/config";
 import fs from "node:fs";
 import path from "node:path";
+import dotenv from "dotenv";
 import { createClient, type SanityClient } from "@sanity/client";
 
 import { umkmCatalog } from "../data/umkmCatalog";
 
-// NOTE: data/news.ts is NOT used here. It turned out to be dead/unused data —
-// the site's live news content is actually hardcoded separately across
-// components/sections/BeritaTerbaru.tsx, components/pages/BeritaContent.tsx,
-// and app/berita/[id]/page.tsx. This list merges those into one canonical
-// source so the migrated Sanity content matches what's actually live today.
+// Next.js keeps secrets in .env.local, which dotenv does not read by default.
+dotenv.config({ path: ".env.local" });
+
+// Snapshot of the news content that was hardcoded in the site before Sanity.
 const newsArticles: Array<{
   slug: string;
   title: string;
@@ -33,7 +39,7 @@ const newsArticles: Array<{
     | "Investment"
     | "Sustainability"
     | "Events";
-  date: string;
+  publishedAt: string;
   excerpt: string;
   image: string;
   featured: boolean;
@@ -43,7 +49,7 @@ const newsArticles: Array<{
     slug: "dimulainya-pembangunan-infrastruktur-fase-pertama",
     title: "Dimulainya Pembangunan Infrastruktur Fase Pertama",
     category: "Development",
-    date: "Agustus 2026",
+    publishedAt: "2026-08-01",
     excerpt:
       "Proyek konstruksi jalan dan persiapan lahan telah dimulai di sepanjang garis pantai utara Rempang.",
     image:
@@ -59,7 +65,7 @@ const newsArticles: Array<{
     slug: "program-transisi-komunitas-mencapai-milestone-baru",
     title: "Program Transisi Komunitas Mencapai Milestone Baru",
     category: "Community",
-    date: "Juli 2026",
+    publishedAt: "2026-07-01",
     excerpt:
       "Dukungan perumahan dan mata pencaharian berkelanjutan untuk keluarga yang pindah.",
     image:
@@ -75,7 +81,7 @@ const newsArticles: Array<{
     slug: "mitra-energi-terbarukan-pertama-diumumkan",
     title: "Mitra Energi Terbarukan Pertama Diumumkan",
     category: "Sustainability",
-    date: "Juni 2026",
+    publishedAt: "2026-06-01",
     excerpt:
       "Kemitraan baru bertujuan menghadirkan infrastruktur tenaga surya dan pembangkit rendah karbon.",
     image:
@@ -91,7 +97,7 @@ const newsArticles: Array<{
     slug: "peluncuran-pasar-digital-umkm-rempang",
     title: "Peluncuran Pasar Digital UMKM Rempang",
     category: "Investment",
-    date: "September 2026",
+    publishedAt: "2026-09-01",
     excerpt:
       "Platform online lokal diluncurkan untuk membantu UMKM Rempang menjangkau pembeli nasional dan internasional.",
     image:
@@ -176,7 +182,7 @@ async function migrateNewsArticles() {
       title: article.title,
       slug: { _type: "slug", current: article.slug },
       category: article.category,
-      date: article.date,
+      publishedAt: article.publishedAt,
       excerpt: article.excerpt,
       content: article.content.map((paragraph, index) => ({
         _type: "block",
@@ -246,13 +252,15 @@ function paragraphsToBlocks(paragraphs: string[]) {
   }));
 }
 
-// Mirrors app/koperasi/transmigrasi/page.tsx and app/koperasi/merah-putih/page.tsx
+// Snapshot of the koperasi content that was hardcoded before Sanity.
 const koperasiData = [
   {
     routeKey: "transmigrasi",
     name: "Koperasi Transmigrasi",
     homeCardDescription:
       "Informasi koperasi dan pemberdayaan ekonomi masyarakat di kawasan Rempang Eco City.",
+    pageDescription:
+      "Koperasi yang mendukung kebutuhan ekonomi dan kesejahteraan masyarakat di Rempang Eco City.",
     heroImage: "/images/hero-kop-trans.png",
     about: [
       "Koperasi Transmigrasi menjadi salah satu pilar ekonomi masyarakat di Rempang Eco City. Koperasi ini berperan dalam menyediakan layanan kebutuhan pokok, membantu pengelolaan usaha masyarakat, serta menjadi wadah pelatihan dan pemberdayaan ekonomi warga.",
@@ -305,6 +313,8 @@ const koperasiData = [
     name: "Koperasi Merah Putih",
     homeCardDescription:
       "Temukan potensi wisata dan destinasi ekonomi yang menjadi pilar kesejahteraan masyarakat Rempang.",
+    pageDescription:
+      "Koperasi yang mendorong potensi usaha dan kesejahteraan masyarakat Rempang Eco City.",
     heroImage: "/images/hero-kops-mp.png",
     about: [
       "Koperasi Merah Putih menjadi wadah ekonomi masyarakat Rempang yang fokus pada penguatan usaha, pelayanan kebutuhan pokok, hingga pengembangan potensi lokal. Koperasi ini hadir untuk mendorong kemandirian ekonomi masyarakat secara berkelanjutan.",
@@ -344,7 +354,7 @@ const koperasiData = [
   },
 ];
 
-// Mirrors components/pages/PariwisataContent.tsx
+// Snapshot of the pariwisata content that was hardcoded before Sanity.
 const pariwisataData = [
   {
     routeKey: "mancing",
@@ -430,6 +440,7 @@ async function migrateKoperasi() {
       name: koperasi.name,
       routeKey: koperasi.routeKey,
       homeCardDescription: koperasi.homeCardDescription,
+      pageDescription: koperasi.pageDescription,
       heroImage: await imageField(koperasi.heroImage),
       about: paragraphsToBlocks(koperasi.about),
       yearFounded: koperasi.yearFounded,
@@ -477,15 +488,46 @@ async function migratePariwisata() {
   }
 }
 
+const SECTIONS = {
+  news: migrateNewsArticles,
+  umkm: migrateUmkmCatalog,
+  koperasi: migrateKoperasi,
+  pariwisata: migratePariwisata,
+} as const;
+
+type Section = keyof typeof SECTIONS;
+
+function parseSections(): Section[] {
+  const onlyArg = process.argv.find((arg) => arg.startsWith("--only="));
+  // Required on purpose: running every section by accident would overwrite
+  // (or, for docs created in the Studio with random _ids, duplicate) content.
+  if (!onlyArg) {
+    throw new Error(
+      `Pass --only=<sections>. Valid: ${Object.keys(SECTIONS).join(", ")}`
+    );
+  }
+
+  const requested = onlyArg.slice("--only=".length).split(",").filter(Boolean);
+  const unknown = requested.filter((name) => !(name in SECTIONS));
+  if (unknown.length > 0) {
+    throw new Error(
+      `Unknown section(s): ${unknown.join(", ")}. Valid: ${Object.keys(SECTIONS).join(", ")}`
+    );
+  }
+  return requested as Section[];
+}
+
 async function main() {
-  console.log(`Migrating to Sanity project "${projectId}" (dataset: ${dataset})`);
+  const sections = parseSections();
+  console.log(
+    `Migrating [${sections.join(", ")}] to Sanity project "${projectId}" (dataset: ${dataset})`
+  );
 
-  await migrateNewsArticles();
-  await migrateUmkmCatalog();
-  await migrateKoperasi();
-  await migratePariwisata();
+  for (const section of sections) {
+    await SECTIONS[section]();
+  }
 
-  console.log("\nMigration complete. Verify content in /studio before removing data/*.ts.");
+  console.log("\nMigration complete. Verify content in /studio.");
 }
 
 main().catch((error) => {

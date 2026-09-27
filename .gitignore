@@ -2,3 +2,13 @@ node_modules
 .next
 out
 .env*.local
+
+# OS / editor
+.DS_Store
+
+# TypeScript incremental build cache
+*.tsbuildinfo
+
+# Raw camera photos (browsers cannot display HEIC; export to JPG/WebP first)
+*.HEIC
+*.heic

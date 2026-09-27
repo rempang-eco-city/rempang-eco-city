@@ -3,107 +3,68 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Fish, MapPin, TreePine } from "lucide-react";
+import type { PariwisataDestination } from "@/lib/sanity/queries";
 
-type Destination = {
-  id: "mancing" | "mangrove";
-  name: string;
-  location: string;
-  category: string;
-  summary: string;
-  description: string;
-  bestTime: string;
-  facilities: string[];
-  tips: string[];
-  heroImage: string;
-  gallery: string[];
-  whatsapp: string;
-};
+const DESTINATION_TABS = {
+  mancing: { label: "Mancing", Icon: Fish },
+  mangrove: { label: "Mangrove", Icon: TreePine },
+} as const;
 
-const destinations: Destination[] = [
-  {
-    id: "mancing",
-    name: "Wisata Mancing Rempang",
-    location: "Pesisir Timur Rempang",
-    category: "Jasa",
-    summary:
-      "Nikmati pengalaman memancing bersama nelayan lokal dengan spot laut terbuka dan perairan dangkal.",
-    description:
-      "Wisata Mancing Rempang menghadirkan pengalaman trip memancing yang cocok untuk pemula hingga hobiis. Pengunjung dapat memilih trip pagi atau sore dengan opsi sewa perahu, perlengkapan dasar, dan pemandu lokal.",
-    bestTime: "Pukul 05.30 - 09.30 atau 15.30 - 18.30",
-    facilities: ["Sewa perahu", "Pemandu lokal", "Paket umpan", "Area istirahat"],
-    tips: [
-      "Gunakan sunblock dan topi saat trip pagi.",
-      "Pilih trip sore untuk cuaca lebih teduh.",
-      "Reservasi minimal H-1 untuk grup.",
-    ],
-    heroImage:
-      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=1200&auto=format&fit=crop",
-    gallery: [
-      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1516939884455-1445c8652f83?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1545816250-e12bedba42ba?q=80&w=1200&auto=format&fit=crop",
-    ],
-    whatsapp: "https://wa.me/6281234567871",
-  },
-  {
-    id: "mangrove",
-    name: "Eksplorasi Mangrove Rempang",
-    location: "Pesisir Rempang",
-    category: "Alam",
-    summary:
-      "Susuri jalur mangrove dengan perahu kecil sambil mengenal ekosistem pesisir Rempang.",
-    description:
-      "Eksplorasi Mangrove Rempang menawarkan wisata alam edukatif yang ramah keluarga. Pengunjung dapat menikmati jalur tracking, naik perahu, hingga sesi edukasi konservasi bersama komunitas setempat.",
-    bestTime: "Pukul 07.00 - 10.00 atau 16.00 - 18.00",
-    facilities: ["Dermaga kecil", "Perahu susur", "Pemandu edukasi", "Spot foto"],
-    tips: [
-      "Gunakan alas kaki yang nyaman untuk jalur kayu.",
-      "Bawa air minum sendiri untuk perjalanan.",
-      "Datang saat sore untuk cahaya foto terbaik.",
-    ],
-    heroImage:
-      "https://images.unsplash.com/photo-1473773508845-188df298d2d1?q=80&w=1200&auto=format&fit=crop",
-    gallery: [
-      "https://images.unsplash.com/photo-1473773508845-188df298d2d1?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1431794062232-2a99a5431c6c?q=80&w=1200&auto=format&fit=crop",
-    ],
-    whatsapp: "https://wa.me/6281234567872",
-  },
-];
-
-export default function PariwisataContent() {
-  const [activeDestinationId, setActiveDestinationId] = useState<Destination["id"]>("mancing");
+export default function PariwisataContent({
+  destinations,
+}: {
+  destinations: PariwisataDestination[];
+}) {
+  const [activeDestinationId, setActiveDestinationId] = useState(
+    destinations[0]?.routeKey
+  );
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
 
   const activeDestination =
-    destinations.find((destination) => destination.id === activeDestinationId) ?? destinations[0];
+    destinations.find((destination) => destination.routeKey === activeDestinationId) ??
+    destinations[0];
 
-  const switchDestination = (destinationId: Destination["id"]) => {
+  const switchDestination = (destinationId: PariwisataDestination["routeKey"]) => {
     setActiveDestinationId(destinationId);
     setActivePhotoIndex(0);
   };
+
+  if (!activeDestination) {
+    return (
+      <div className="bg-white pt-8 pb-16 md:pt-10 md:pb-24">
+        <div className="container-content">
+          <p className="text-center text-text-secondary">
+            Belum ada destinasi wisata yang tersedia.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white pt-8 pb-16 md:pt-10 md:pb-24">
       <div className="container-content">
         <section className="rounded-3xl border border-slate-200 bg-slate-50 p-6 md:p-8">
           <div className="mb-6 flex flex-wrap gap-3">
-            {destinations.map((dest) => (
-              <button
-                key={dest.id}
-                type="button"
-                onClick={() => switchDestination(dest.id)}
-                className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${
-                  activeDestinationId === dest.id
-                    ? "bg-primary-blue text-white"
-                    : "border border-slate-300 bg-white text-slate-700 hover:border-primary-blue hover:text-primary-blue"
-                }`}
-              >
-                {dest.id === "mancing" ? <Fish size={15} /> : <TreePine size={15} />}
-                {dest.id === "mancing" ? "Mancing" : "Mangrove"}
-              </button>
-            ))}
+            {destinations.map((dest) => {
+              const tab = DESTINATION_TABS[dest.routeKey];
+              const Icon = tab?.Icon ?? MapPin;
+              return (
+                <button
+                  key={dest._id}
+                  type="button"
+                  onClick={() => switchDestination(dest.routeKey)}
+                  className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${
+                    activeDestination._id === dest._id
+                      ? "bg-primary-blue text-white"
+                      : "border border-slate-300 bg-white text-slate-700 hover:border-primary-blue hover:text-primary-blue"
+                  }`}
+                >
+                  <Icon size={15} />
+                  {tab?.label ?? dest.name}
+                </button>
+              );
+            })}
           </div>
 
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.2fr_1fr]">
@@ -119,7 +80,7 @@ export default function PariwisataContent() {
               <div className="mt-4 grid grid-cols-3 gap-3">
                 {activeDestination.gallery.map((image, index) => (
                   <button
-                    key={`${activeDestination.id}-${index}`}
+                    key={`${activeDestination._id}-${index}`}
                     type="button"
                     onClick={() => setActivePhotoIndex(index)}
                     className={`overflow-hidden rounded-xl border transition ${

@@ -3,8 +3,11 @@ import Footer from "@/components/Footer";
 // Breadcrumb removed per request
 import PageHeader from "@/components/PageHeader";
 import PariwisataContent from "@/components/pages/PariwisataContent";
+import { getPariwisataDestinations } from "@/lib/sanity/queries";
 
-export default function PariwisataPage() {
+export default async function PariwisataPage() {
+  const destinations = await getPariwisataDestinations();
+
   return (
     <main>
       <Navbar />
@@ -13,7 +16,7 @@ export default function PariwisataPage() {
           title="Pariwisata Rempang"
           description="Jelajahi dua destinasi unggulan Rempang saat ini: wisata mancing dan eksplorasi mangrove, lengkap dengan detail aktivitas dan rekomendasi kunjungan."
         />
-        <PariwisataContent />
+        <PariwisataContent destinations={destinations} />
       </div>
       <Footer />
     </main>

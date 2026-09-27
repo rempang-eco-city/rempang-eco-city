@@ -2,25 +2,15 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import type { KoperasiListItem } from "@/lib/sanity/queries";
 
-const koperasiItems = [
-	{
-		title: "Koperasi Transmigrasi",
-		description:
-			"Informasi koperasi dan pemberdayaan ekonomi masyarakat di kawasan Rempang Eco City.",
-		image: "/images/hero-kop-trans.png",
-		href: "/koperasi/transmigrasi",
-	},
-	{
-		title: "Koperasi Merah Putih",
-		description:
-			"Temukan potensi wisata dan destinasi ekonomi yang menjadi pilar kesejahteraan masyarakat Rempang.",
-		image: "/images/hero-kops-mp.png",
-		href: "/koperasi/merah-putih",
-	},
-];
+export default function KoperasiSection({
+	koperasiList,
+}: {
+	koperasiList: KoperasiListItem[];
+}) {
+	if (koperasiList.length === 0) return null;
 
-export default function KoperasiSection() {
 	return (
 		<section className="bg-white py-16 md:py-24">
 			<div className="container-content">
@@ -37,9 +27,9 @@ export default function KoperasiSection() {
 				</motion.div>
 
 				<div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-					{koperasiItems.map((item, index) => (
+					{koperasiList.map((item, index) => (
 						<motion.article
-							key={item.title}
+							key={item._id}
 							initial={{ opacity: 0, y: 20 }}
 							whileInView={{ opacity: 1, y: 0 }}
 							viewport={{ once: true }}
@@ -48,23 +38,23 @@ export default function KoperasiSection() {
 						>
 							<div className="overflow-hidden">
 								<img
-									src={item.image}
-									alt={item.title}
+									src={item.heroImage}
+									alt={item.name}
 									className="h-72 w-full object-cover transition-transform duration-500 group-hover:scale-105"
 								/>
 							</div>
 
 							<div className="p-5 md:p-6">
 								<h3 className="font-heading text-2xl font-bold text-primary-blue mb-3">
-									{item.title}
+									{item.name}
 								</h3>
 
 								<p className="text-base leading-relaxed text-text-secondary mb-6 min-h-[72px]">
-									{item.description}
+									{item.homeCardDescription}
 								</p>
 
 								<Link
-									href={item.href}
+									href={`/koperasi/${item.routeKey}`}
 									className="inline-flex items-center gap-2 text-base font-semibold text-primary-blue transition-colors hover:text-primary-dark"
 								>
 									Lihat Lebih

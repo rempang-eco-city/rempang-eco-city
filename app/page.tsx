@@ -6,12 +6,17 @@ import KoperasiSection from "@/components/sections/KoperasiSection";
 import PariwisataSection from "@/components/sections/PariwisataSection";
 import UMKMSection from "@/components/sections/UMKMSection";
 import BeritaTerbaru from "@/components/sections/BeritaTerbaru";
-import { getNewsArticles, getUmkmItems } from "@/lib/sanity/queries";
+import {
+  getKoperasiList,
+  getNewsArticles,
+  getUmkmItems,
+} from "@/lib/sanity/queries";
 
 export default async function Home() {
-  const [articles, umkms] = await Promise.all([
+  const [articles, umkms, koperasiList] = await Promise.all([
     getNewsArticles(),
     getUmkmItems(),
+    getKoperasiList(),
   ]);
 
   return (
@@ -20,7 +25,7 @@ export default async function Home() {
       <div className="pt-20 md:pt-24">
         <HeroBanner />
         <PetaWilayah />
-        <KoperasiSection />
+        <KoperasiSection koperasiList={koperasiList} />
         <PariwisataSection />
         <UMKMSection umkms={umkms} />
         <BeritaTerbaru articles={articles} />

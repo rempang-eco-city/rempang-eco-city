@@ -3,8 +3,11 @@ import Footer from "@/components/Footer";
 // Breadcrumb removed per request
 import PageHeader from "@/components/PageHeader";
 import KoperasiContent from "@/components/pages/KoperasiContent";
+import { getKoperasiList } from "@/lib/sanity/queries";
 
-export default function KoperasiPage() {
+export default async function KoperasiPage() {
+  const koperasiList = await getKoperasiList();
+
   return (
     <main>
       <Navbar />
@@ -13,7 +16,7 @@ export default function KoperasiPage() {
           title="Koperasi"
           description="Informasi koperasi dan pemberdayaan ekonomi masyarakat"
         />
-        <KoperasiContent />
+        <KoperasiContent koperasiList={koperasiList} />
       </div>
       <Footer />
     </main>

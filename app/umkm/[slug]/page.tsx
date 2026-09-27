@@ -5,9 +5,7 @@ import UMKMDetailContent from "@/components/pages/UMKMDetailContent";
 import { getUmkmItemBySlug, getUmkmSlugs } from "@/lib/sanity/queries";
 
 type PageProps = {
-  params: Promise<{
-    slug: string;
-  }>;
+  params: { slug: string };
 };
 
 export async function generateStaticParams() {
@@ -16,8 +14,7 @@ export async function generateStaticParams() {
 }
 
 export default async function UMKMDetailPage({ params }: PageProps) {
-  const { slug } = await params;
-  const umkm = await getUmkmItemBySlug(slug);
+  const umkm = await getUmkmItemBySlug(params.slug);
 
   if (!umkm) notFound();
 

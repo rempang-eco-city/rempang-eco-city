@@ -35,11 +35,23 @@ export const newsArticle = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
-      name: "date",
-      title: "Tanggal Tampil",
-      type: "string",
-      description: 'Teks bebas, contoh: "Agustus 2026"',
+      name: "publishedAt",
+      title: "Tanggal Terbit",
+      type: "date",
+      description: "Dipakai untuk urutan berita dan ditampilkan di website.",
+      options: { dateFormat: "D MMMM YYYY" },
+      initialValue: () => new Date().toISOString().slice(0, 10),
       validation: (rule) => rule.required(),
+    }),
+    defineField({
+      // Legacy free-text date from before publishedAt existed. Only shown for
+      // older documents that still have it; the site falls back to it when
+      // publishedAt is empty.
+      name: "date",
+      title: "Tanggal Tampil (lama)",
+      type: "string",
+      description: "Tidak dipakai lagi. Isi Tanggal Terbit di atas, lalu kosongkan field ini.",
+      hidden: ({ value }) => !value,
     }),
     defineField({
       name: "excerpt",

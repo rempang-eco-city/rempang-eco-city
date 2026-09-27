@@ -12,6 +12,30 @@ async function sanityFetch<T>(
   });
 }
 
+type PortableTextBlock = { children?: Array<{ text?: string }> };
+
+function blocksToParagraphs(blocks: PortableTextBlock[] | null | undefined) {
+  return (
+    blocks?.map(
+      (block) => block.children?.map((span) => span.text ?? "").join("") ?? ""
+    ) ?? []
+  );
+}
+
+const newsDateFormatter = new Intl.DateTimeFormat("id-ID", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  timeZone: "UTC",
+});
+
+// `publishedAt` is a real date (used for sorting); older documents only have
+// the free-text `date`, so fall back to it when publishedAt is missing.
+function formatNewsDate(publishedAt: string | null, legacyDate: string | null) {
+  if (publishedAt) return newsDateFormatter.format(new Date(publishedAt));
+  return legacyDate ?? "";
+}
+
 export type NewsCategory =
   | "Development"
   | "Community"
@@ -34,47 +58,57 @@ export type NewsArticleDetail = NewsArticleListItem & {
   content: string[];
 };
 
-const newsListProjection = `{
+type RawNewsArticle = Omit<NewsArticleListItem, "date"> & {
+  publishedAt: string | null;
+  date: string | null;
+};
+
+const newsListFields = `
   _id,
   title,
   "slug": slug.current,
   category,
+  publishedAt,
   date,
   excerpt,
   "image": image.asset->url,
   featured
-}`;
+`;
+
+function toNewsListItem({
+  publishedAt,
+  date,
+  ...article
+}: RawNewsArticle): NewsArticleListItem {
+  return { ...article, date: formatNewsDate(publishedAt, date) };
+}
 
 export async function getNewsArticles() {
-  return sanityFetch<NewsArticleListItem[]>(
-    `*[_type == "newsArticle"] | order(_createdAt desc) ${newsListProjection}`,
+  const articles = await sanityFetch<RawNewsArticle[]>(
+    `*[_type == "newsArticle"] | order(coalesce(publishedAt, _createdAt) desc) {${newsListFields}}`,
     {},
     ["newsArticle"]
   );
+
+  return articles.map(toNewsListItem);
 }
 
 export async function getNewsArticleBySlug(slug: string) {
   const article = await sanityFetch<
-    | (NewsArticleListItem & {
-        content: Array<{ children?: Array<{ text?: string }> }> | null;
-      })
-    | null
+    (RawNewsArticle & { content: PortableTextBlock[] | null }) | null
   >(
-    `*[_type == "newsArticle" && slug.current == $slug][0]{
-      _id, title, "slug": slug.current, category, date, excerpt, content, "image": image.asset->url, featured
-    }`,
+    `*[_type == "newsArticle" && slug.current == $slug][0]{${newsListFields}, content}`,
     { slug },
     ["newsArticle"]
   );
 
   if (!article) return null;
 
-  const paragraphs =
-    article.content?.map(
-      (block) => block.children?.map((span) => span.text ?? "").join("") ?? ""
-    ) ?? [];
-
-  return { ...article, content: paragraphs } satisfies NewsArticleDetail;
+  const { content, ...rest } = article;
+  return {
+    ...toNewsListItem(rest),
+    content: blocksToParagraphs(content),
+  } satisfies NewsArticleDetail;
 }
 
 export type UmkmCategory = "Kuliner" | "Kerajinan" | "Jasa";
@@ -148,5 +182,126 @@ export async function getUmkmItemBySlug(slug: string) {
     }`,
     { slug },
     ["umkmItem"]
+  );
+}
+
+export type KoperasiRouteKey = "transmigrasi" | "merah-putih";
+
+export type KoperasiListItem = {
+  _id: string;
+  name: string;
+  routeKey: KoperasiRouteKey;
+  homeCardDescription: string;
+  heroImage: string;
+  yearFounded: string;
+  memberCount: string;
+};
+
+export type KoperasiPengurus = {
+  name: string;
+  role: string;
+  image: string;
+};
+
+export type KoperasiGalleryItem = {
+  title: string;
+  description: string;
+  images: string[];
+};
+
+export type KoperasiDetail = KoperasiListItem & {
+  pageDescription?: string;
+  about: string[];
+  structureImage: string;
+  pengurus: KoperasiPengurus[];
+  galleryItems: KoperasiGalleryItem[];
+};
+
+const koperasiListFields = `
+  _id,
+  name,
+  routeKey,
+  homeCardDescription,
+  "heroImage": heroImage.asset->url,
+  yearFounded,
+  memberCount
+`;
+
+export async function getKoperasiList() {
+  return sanityFetch<KoperasiListItem[]>(
+    `*[_type == "koperasi"] | order(_createdAt asc) {${koperasiListFields}}`,
+    {},
+    ["koperasi"]
+  );
+}
+
+export async function getKoperasiByRouteKey(routeKey: string) {
+  const koperasi = await sanityFetch<
+    | (Omit<KoperasiDetail, "about" | "pengurus" | "galleryItems"> & {
+        about: PortableTextBlock[] | null;
+        pengurus: KoperasiPengurus[] | null;
+        galleryItems: KoperasiGalleryItem[] | null;
+      })
+    | null
+  >(
+    `*[_type == "koperasi" && routeKey == $routeKey][0]{
+      ${koperasiListFields},
+      pageDescription,
+      about,
+      "structureImage": structureImage.asset->url,
+      pengurus[]{ name, role, "image": image.asset->url },
+      galleryItems[]{ title, description, "images": images[].asset->url }
+    }`,
+    { routeKey },
+    ["koperasi"]
+  );
+
+  if (!koperasi) return null;
+
+  return {
+    ...koperasi,
+    about: blocksToParagraphs(koperasi.about),
+    pengurus: koperasi.pengurus ?? [],
+    galleryItems: (koperasi.galleryItems ?? []).filter(
+      (item) => item.images?.length > 0
+    ),
+  } satisfies KoperasiDetail;
+}
+
+export type PariwisataRouteKey = "mancing" | "mangrove";
+
+export type PariwisataDestination = {
+  _id: string;
+  routeKey: PariwisataRouteKey;
+  name: string;
+  location: string;
+  category: string;
+  summary?: string;
+  description: string;
+  bestTime: string;
+  facilities: string[];
+  tips: string[];
+  gallery: string[];
+  whatsapp: string;
+};
+
+export async function getPariwisataDestinations() {
+  return sanityFetch<PariwisataDestination[]>(
+    `*[_type == "pariwisataDestination"] | order(_createdAt asc) {
+      _id,
+      routeKey,
+      name,
+      location,
+      category,
+      summary,
+      description,
+      bestTime,
+      "facilities": coalesce(facilities, []),
+      "tips": coalesce(tips, []),
+      "gallery": coalesce(gallery[].asset->url, []),
+      whatsapp
+    }`,
+    {},
+    ["pariwisataDestination"]
   );
 }

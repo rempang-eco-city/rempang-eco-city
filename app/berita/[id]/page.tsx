@@ -5,7 +5,11 @@ import PageHeader from "@/components/PageHeader";
 import Link from "next/link";
 import { getNewsArticleBySlug } from "@/lib/sanity/queries";
 
-export default async function BeritaDetailPage({ params }: { params: { id: string } }) {
+type PageProps = {
+  params: { id: string };
+};
+
+export default async function BeritaDetailPage({ params }: PageProps) {
   // The dynamic segment is named "id" for the route folder, but the value is
   // actually the Sanity document's slug.
   const article = await getNewsArticleBySlug(params.id);

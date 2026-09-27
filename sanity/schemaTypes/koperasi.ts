@@ -32,6 +32,14 @@ export const koperasi = defineType({
       validation: (rule) => rule.required().max(160),
     }),
     defineField({
+      name: "pageDescription",
+      title: "Deskripsi Header Halaman",
+      type: "text",
+      rows: 2,
+      description:
+        "Tampil di bawah judul halaman /koperasi/.... Jika kosong, memakai Deskripsi Singkat.",
+    }),
+    defineField({
       name: "heroImage",
       title: "Foto Utama",
       type: "image",
