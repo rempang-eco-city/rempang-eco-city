@@ -305,3 +305,59 @@ export async function getPariwisataDestinations() {
     ["pariwisataDestination"]
   );
 }
+
+export type ProfilLembagaItem = {
+  title: string;
+  description?: string;
+  image: string;
+};
+
+export type ProfilDemografiStat = {
+  label: string;
+  value: string;
+};
+
+export type ProfilPage = {
+  headerTitle: string;
+  headerDescription?: string;
+  aboutTitle: string;
+  aboutImage: string;
+  aboutBody: string[];
+  lembagaTitle: string;
+  lembagaDescription?: string;
+  lembagaItems: ProfilLembagaItem[];
+  demografiTitle: string;
+  demografiDescription?: string;
+  demografiStats: ProfilDemografiStat[];
+  demografiNote?: string;
+};
+
+export async function getProfilPage() {
+  const page = await sanityFetch<
+    (Omit<ProfilPage, "aboutBody"> & { aboutBody: PortableTextBlock[] | null }) | null
+  >(
+    `*[_type == "profilPage" && _id == "profilPage"][0]{
+      headerTitle,
+      headerDescription,
+      aboutTitle,
+      "aboutImage": aboutImage.asset->url,
+      aboutBody,
+      lembagaTitle,
+      lembagaDescription,
+      "lembagaItems": coalesce(lembagaItems[]{ title, description, "image": image.asset->url }, []),
+      demografiTitle,
+      demografiDescription,
+      "demografiStats": coalesce(demografiStats[]{ label, value }, []),
+      demografiNote
+    }`,
+    {},
+    ["profilPage"]
+  );
+
+  if (!page) return null;
+
+  return {
+    ...page,
+    aboutBody: blocksToParagraphs(page.aboutBody),
+  } satisfies ProfilPage;
+}

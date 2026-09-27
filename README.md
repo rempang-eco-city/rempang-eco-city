@@ -31,9 +31,10 @@ Dibangun dengan Next.js 14 (App Router), TypeScript, Tailwind CSS, Framer Motion
 | `app/` | Route App Router: `/`, `/profil`, `/koperasi`, `/koperasi/[routeKey]`, `/pariwisata`, `/umkm`, `/umkm/[slug]`, `/berita`, `/berita/[id]`, `/studio` |
 | `components/sections/` | Section-section di Beranda |
 | `components/pages/` | Isi utama tiap halaman (client component) |
-| `components/` | Komponen bersama: Navbar, Footer, PageHeader, ProfilGallery |
+| `components/` | Komponen bersama: Navbar, Footer, PageHeader |
 | `lib/sanity/` | Sanity client dan semua query GROQ beserta tipe datanya (`queries.ts`) |
 | `sanity/schemaTypes/` | Schema dokumen CMS |
+| `sanity/structure.ts` | Susunan menu Studio (termasuk dokumen singleton) |
 | `scripts/` | Script migrasi data awal ke Sanity |
 | `data/umkmCatalog.ts` | Snapshot data UMKM lama, dipakai oleh script migrasi |
 
@@ -45,7 +46,8 @@ Dibangun dengan Next.js 14 (App Router), TypeScript, Tailwind CSS, Framer Motion
 | UMKM | Sanity, dokumen `umkmItem` |
 | Koperasi | Sanity, dokumen `koperasi` (`routeKey`: `transmigrasi` / `merah-putih`) |
 | Pariwisata | Sanity, dokumen `pariwisataDestination` (`routeKey`: `mancing` / `mangrove`) |
-| Beranda (hero, peta, carousel pariwisata), Profil | Statis di komponen |
+| Profil | Sanity, dokumen singleton `profilPage` (menu "Halaman Profil" di Studio) |
+| Beranda (hero, peta, carousel pariwisata) | Statis di komponen |
 
 Data di-cache dengan ISR selama 60 detik (`REVALIDATE_SECONDS` di `lib/sanity/queries.ts`), jadi perubahan di Studio akan muncul di website paling lama dalam 1 menit.
 
@@ -59,4 +61,4 @@ Berita diurutkan berdasarkan field **Tanggal Terbit** (`publishedAt`). Dokumen l
 npm run migrate:sanity -- --only=koperasi,pariwisata
 ```
 
-Pilihan section: `news`, `umkm`, `koperasi`, `pariwisata`, dan `--only` wajib diisi. Dokumen yang dibuat lewat Studio punya `_id` acak, jadi memigrasi section yang isinya sudah diisi manual (saat ini `news` dan `umkm`) akan menghasilkan **duplikat**.
+Pilihan section: `news`, `umkm`, `koperasi`, `pariwisata`, `profil`, dan `--only` wajib diisi. Dokumen yang dibuat lewat Studio punya `_id` acak, jadi memigrasi section yang isinya sudah diisi manual (saat ini `news` dan `umkm`) akan menghasilkan **duplikat**.

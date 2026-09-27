@@ -14,7 +14,7 @@
  *
  *   npm run migrate:sanity -- --only=koperasi,pariwisata
  *
- * Sections: news, umkm, koperasi, pariwisata. --only is required.
+ * Sections: news, umkm, koperasi, pariwisata, profil. --only is required.
  *
  * Documents created in the Studio have random _ids, so migrating a section
  * that was already filled in by hand creates DUPLICATES rather than updates.
@@ -488,11 +488,82 @@ async function migratePariwisata() {
   }
 }
 
+// Snapshot of the profil page content that was hardcoded before Sanity.
+const profilData = {
+  headerTitle: "Profil Rempang Eco City",
+  headerDescription: "Informasi lengkap tentang Rempang Eco City",
+  aboutTitle: "Tentang Rempang Eco City",
+  aboutImage: "/images/about-profil-rec.png",
+  aboutBody: [
+    "Rempang Eco City merupakan kawasan pengembangan strategis yang berlokasi di Pulau Rempang, Batam, Kepulauan Riau, Indonesia. Kawasan ini dikembangkan dengan visi untuk menciptakan ekosistem terintegrasi yang menghubungkan lima pilar pembangunan utama.",
+    "Pengembangan Rempang Eco City dilakukan dengan mempertimbangkan tiga prinsip utama: keberlanjutan lingkungan, pemberdayaan masyarakat lokal, dan pertumbuhan ekonomi jangka panjang yang berkelanjutan.",
+    "Proyek ini melibatkan kolaborasi antara pemerintah, masyarakat lokal, dan sektor swasta untuk memastikan pembangunan yang inklusif dan berkelanjutan.",
+  ],
+  lembagaTitle: "Lembaga Kemasyarakatan",
+  lembagaDescription: "Struktur organisasi kemasyarakatan di Rempang Eco City.",
+  lembagaItems: [
+    { title: "RW 01", description: "Pengurus RW dan komunitas lokal", image: "/images/ex-pic-staff.png" },
+    { title: "RW 02", description: "Pengurus RW dan komunitas lokal", image: "/images/hero-kop-trans.png" },
+    { title: "RW 03", description: "Pengurus RW dan komunitas lokal", image: "/images/hero-pariwisata-rec.jpg" },
+    { title: "Lurah", description: "Kepala wilayah setempat", image: "/images/hero-rumah-rempang.png" },
+  ],
+  demografiTitle: "Demografi Penduduk",
+  demografiDescription: "Data demografi Rempang Eco City (Mock Data)",
+  demografiStats: [
+    { label: "Total Penduduk", value: "12,450" },
+    { label: "Jumlah KK", value: "3,200" },
+    { label: "Laki-laki", value: "6,100" },
+    { label: "Perempuan", value: "6,350" },
+  ],
+  demografiNote:
+    "Data di atas adalah data placeholder untuk tujuan demonstrasi. Data aktual akan diperbarui secara berkala.",
+};
+
+async function migrateProfil() {
+  console.log("\nMigrating profil page...");
+
+  const lembagaItems = await Promise.all(
+    profilData.lembagaItems.map(async (item, index) => ({
+      _type: "lembagaItem" as const,
+      _key: `lembaga-${index}`,
+      title: item.title,
+      description: item.description,
+      image: await imageField(item.image),
+    }))
+  );
+
+  const doc = {
+    // Fixed _id: the Studio edits this singleton by id (sanity/structure.ts).
+    _id: "profilPage",
+    _type: "profilPage",
+    headerTitle: profilData.headerTitle,
+    headerDescription: profilData.headerDescription,
+    aboutTitle: profilData.aboutTitle,
+    aboutImage: await imageField(profilData.aboutImage),
+    aboutBody: paragraphsToBlocks(profilData.aboutBody),
+    lembagaTitle: profilData.lembagaTitle,
+    lembagaDescription: profilData.lembagaDescription,
+    lembagaItems,
+    demografiTitle: profilData.demografiTitle,
+    demografiDescription: profilData.demografiDescription,
+    demografiStats: profilData.demografiStats.map((stat, index) => ({
+      _type: "demografiStat" as const,
+      _key: `stat-${index}`,
+      ...stat,
+    })),
+    demografiNote: profilData.demografiNote,
+  };
+
+  await client.createOrReplace(doc);
+  console.log("  ✓ Halaman Profil");
+}
+
 const SECTIONS = {
   news: migrateNewsArticles,
   umkm: migrateUmkmCatalog,
   koperasi: migrateKoperasi,
   pariwisata: migratePariwisata,
+  profil: migrateProfil,
 } as const;
 
 type Section = keyof typeof SECTIONS;
