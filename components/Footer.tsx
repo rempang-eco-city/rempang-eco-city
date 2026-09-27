@@ -14,7 +14,7 @@ const rightMenuLinks = [
 
 export default function Footer() {
   return (
-    <footer className="bg-primary-dark pt-16 pb-8 text-white md:pt-20 md:pb-10">
+    <footer className="bg-primary-dark pt-10 pb-8 text-white md:pt-12 md:pb-10">
       <div className="container-content">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 pb-12 border-b border-white/10">
           {/* Logo Kementrans */}
