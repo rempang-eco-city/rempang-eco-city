@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, Eye, Search } from "lucide-react";
+import { ArrowRight, ArrowUpDown, ChevronDown, Eye, Search } from "lucide-react";
 import type { UmkmListItem } from "@/lib/sanity/queries";
 
 type Props = {
@@ -18,9 +18,21 @@ const categoryBadgeClass: Record<string, string> = {
   "Produk Lokal": "bg-[#d1fae5] text-[#065f46]",
 };
 
+const SORT_OPTIONS = [
+  { value: "default", label: "Urutan Default" },
+  { value: "name-asc", label: "Nama A–Z" },
+  { value: "name-desc", label: "Nama Z–A" },
+] as const;
+
+type SortOrder = (typeof SORT_OPTIONS)[number]["value"];
+
+const compareNames = (a: UmkmListItem, b: UmkmListItem) =>
+  a.name.trim().localeCompare(b.name.trim(), "id", { sensitivity: "base" });
+
 export default function UMKMContent({ umkms }: Props) {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("Semua");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("default");
 
   const umkmCategories = useMemo(
     () => ["Semua", ...Array.from(new Set(umkms.map((item) => item.category)))],
@@ -36,6 +48,9 @@ export default function UMKMContent({ umkms }: Props) {
     return searchMatch && categoryMatch;
   });
 
+  if (sortOrder === "name-asc") filteredUMKM.sort(compareNames);
+  if (sortOrder === "name-desc") filteredUMKM.sort((a, b) => compareNames(b, a));
+
   return (
     <div className="bg-white pt-8 pb-16 md:pt-10 md:pb-20">
       <div className="container-content">
@@ -44,9 +59,9 @@ export default function UMKMContent({ umkms }: Props) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="mb-8"
+          className="mb-8 flex flex-col gap-3 sm:flex-row"
         >
-          <div className="relative w-full">
+          <div className="relative w-full sm:flex-1">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary" size={18} />
             <input
               type="text"
@@ -55,6 +70,23 @@ export default function UMKMContent({ umkms }: Props) {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-11 pr-4 text-sm text-slate-700 outline-none transition focus:border-primary-blue focus:ring-2 focus:ring-primary-blue/20"
             />
+          </div>
+
+          <div className="relative w-full sm:w-56">
+            <ArrowUpDown className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary" size={16} />
+            <select
+              aria-label="Urutkan UMKM"
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value as SortOrder)}
+              className="w-full cursor-pointer appearance-none rounded-xl border border-slate-300 bg-white py-3 pl-11 pr-10 text-sm text-slate-700 outline-none transition focus:border-primary-blue focus:ring-2 focus:ring-primary-blue/20"
+            >
+              {SORT_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-text-secondary" size={16} />
           </div>
         </motion.div>
 
