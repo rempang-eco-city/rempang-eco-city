@@ -22,7 +22,6 @@ export default function UMKMDetailContent({ umkm }: Props) {
   const [activeProduct, setActiveProduct] = useState(0);
 
   const activeImage = umkm.products[activeProduct]?.image ?? umkm.products[0]?.image ?? umkm.image;
-  const shopeeHref = umkm.shopee ?? "https://shopee.co.id/";
 
   return (
     <section className="bg-white py-12 md:py-16">
@@ -43,7 +42,7 @@ export default function UMKMDetailContent({ umkm }: Props) {
               <Image src={activeImage} alt={umkm.name} fill className="object-cover" />
             </div>
 
-            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className={`mt-4 grid grid-cols-1 gap-3 ${umkm.shopee ? "sm:grid-cols-2" : ""}`}>
               <Link
                 href={umkm.whatsapp}
                 target="_blank"
@@ -56,17 +55,19 @@ export default function UMKMDetailContent({ umkm }: Props) {
                 Hubungi via WhatsApp
               </Link>
 
-              <Link
-                href={shopeeHref}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#ee4d2d] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#d84427]"
-              >
-                <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 fill-current">
-                  <path d="M7.2 7.1h9.6l-.62 10.5a1.8 1.8 0 0 1-1.8 1.7H9.6a1.8 1.8 0 0 1-1.8-1.7L7.2 7.1Zm1.74-1.9a3.06 3.06 0 0 1 6.12 0h1.92a4.98 4.98 0 0 0-9.96 0h1.92Zm3.05 5.1c-2.11 0-3.18.87-3.18 2.3 0 1.27.91 2.05 2.45 2.3v1.05h1.37v-1.02c1.45-.21 2.4-1.03 2.4-2.29 0-1.42-1-2.08-2.48-2.34l-.75-.12c-.75-.13-1.08-.36-1.08-.7 0-.42.42-.7 1.22-.7.86 0 1.34.33 1.45.95h1.5c-.08-1.3-1-2.12-2.53-2.3V6.9h-1.37v.93Zm.3 2.76.89.15c.7.12.97.34.97.7 0 .46-.42.74-1.24.74-.84 0-1.37-.34-1.48-1.01H9.9c.08 1.4 1.07 2.2 2.69 2.34v.87h1.37v-.9c1.38-.22 2.28-1 2.28-2.25 0-1.29-.84-1.98-2.39-2.25l-.94-.16c-.66-.11-.92-.32-.92-.66 0-.38.37-.67 1.07-.67.79 0 1.26.33 1.34.9h1.46c-.08-1.3-.98-2.08-2.42-2.24V8.54h-1.37v.85c-1.35.2-2.22.94-2.22 2.12 0 1.27.81 1.98 2.43 2.25Z" />
-                </svg>
-                Shopee
-              </Link>
+              {umkm.shopee && (
+                <Link
+                  href={umkm.shopee}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#ee4d2d] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#d84427]"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 fill-current">
+                    <path d="M7.2 7.1h9.6l-.62 10.5a1.8 1.8 0 0 1-1.8 1.7H9.6a1.8 1.8 0 0 1-1.8-1.7L7.2 7.1Zm1.74-1.9a3.06 3.06 0 0 1 6.12 0h1.92a4.98 4.98 0 0 0-9.96 0h1.92Zm3.05 5.1c-2.11 0-3.18.87-3.18 2.3 0 1.27.91 2.05 2.45 2.3v1.05h1.37v-1.02c1.45-.21 2.4-1.03 2.4-2.29 0-1.42-1-2.08-2.48-2.34l-.75-.12c-.75-.13-1.08-.36-1.08-.7 0-.42.42-.7 1.22-.7.86 0 1.34.33 1.45.95h1.5c-.08-1.3-1-2.12-2.53-2.3V6.9h-1.37v.93Zm.3 2.76.89.15c.7.12.97.34.97.7 0 .46-.42.74-1.24.74-.84 0-1.37-.34-1.48-1.01H9.9c.08 1.4 1.07 2.2 2.69 2.34v.87h1.37v-.9c1.38-.22 2.28-1 2.28-2.25 0-1.29-.84-1.98-2.39-2.25l-.94-.16c-.66-.11-.92-.32-.92-.66 0-.38.37-.67 1.07-.67.79 0 1.26.33 1.34.9h1.46c-.08-1.3-.98-2.08-2.42-2.24V8.54h-1.37v.85c-1.35.2-2.22.94-2.22 2.12 0 1.27.81 1.98 2.43 2.25Z" />
+                  </svg>
+                  Shopee
+                </Link>
+              )}
             </div>
           </div>
 

@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, ArrowUpDown, ChevronDown, Eye, Search } from "lucide-react";
 import type { UmkmListItem } from "@/lib/sanity/queries";
+import { sanityImageUrl } from "@/lib/sanity/image";
 
 type Props = {
   umkms: UmkmListItem[];
@@ -120,8 +121,9 @@ export default function UMKMContent({ umkms }: Props) {
             >
               <div className="relative h-[250px] overflow-hidden bg-slate-200">
                 <img
-                  src={umkm.image}
+                  src={sanityImageUrl(umkm.image, 800)}
                   alt={umkm.name}
+                  loading="lazy"
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
