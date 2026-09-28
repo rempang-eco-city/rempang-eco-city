@@ -59,12 +59,14 @@ export default function ProfilContent({ profil }: { profil: ProfilPage }) {
 
           {/* Same card style as the Pengurus cards on /koperasi/[routeKey]. This
               container is narrower, so the photo uses a fixed 4:5 ratio instead
-              of h-72 to keep the same portrait shape. */}
-          <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              of h-72 to keep the same portrait shape.
+              Flex-wrap (not grid) so an incomplete last row is centered; card
+              widths mirror 1 / 2 / 4 columns with the 1.25rem (gap-5) gutter. */}
+          <div className="mt-10 flex flex-wrap justify-center gap-5">
             {profil.lembagaItems.map((inst, index) => (
               <article
                 key={`${inst.title}-${index}`}
-                className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_20px_rgba(15,23,42,0.03)] transition-all hover:shadow-[0_18px_36px_rgba(15,23,42,0.08)]"
+                className="group w-full max-w-xs overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_20px_rgba(15,23,42,0.03)] transition-all hover:shadow-[0_18px_36px_rgba(15,23,42,0.08)] sm:w-[calc((100%-1.25rem)/2)] sm:max-w-none lg:w-[calc((100%-3.75rem)/4)]"
               >
                 <div className="overflow-hidden bg-[#39b7c9]">
                   <img
