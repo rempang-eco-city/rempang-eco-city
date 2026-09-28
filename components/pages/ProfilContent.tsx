@@ -57,8 +57,10 @@ export default function ProfilContent({ profil }: { profil: ProfilPage }) {
             <p className="text-text-secondary mb-4">{profil.lembagaDescription}</p>
           )}
 
-          {/* Same card style as the Pengurus cards on /koperasi/[routeKey] */}
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          {/* Same card style as the Pengurus cards on /koperasi/[routeKey]. This
+              container is narrower, so the photo uses a fixed 4:5 ratio instead
+              of h-72 to keep the same portrait shape. */}
+          <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {profil.lembagaItems.map((inst, index) => (
               <article
                 key={`${inst.title}-${index}`}
@@ -68,7 +70,7 @@ export default function ProfilContent({ profil }: { profil: ProfilPage }) {
                   <img
                     src={inst.image}
                     alt={inst.title}
-                    className="h-72 w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                    className="aspect-[4/5] w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
                 <div className="p-4 text-center">
