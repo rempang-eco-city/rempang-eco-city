@@ -14,6 +14,7 @@ import {
   getLatestNewsArticles,
   getUmkmItems,
 } from "@/lib/sanity/queries";
+import { FEATURES } from "@/lib/features";
 
 // Matches the 4-column Berita grid on large screens.
 const HOME_NEWS_LIMIT = 4;
@@ -50,11 +51,13 @@ export default async function Home() {
           address={beranda.petaAddress}
         />
         <KoperasiSection title={beranda.koperasiTitle} koperasiList={koperasiList} />
-        <PariwisataSection
-          title={beranda.pariwisataTitle}
-          description={beranda.pariwisataDescription}
-          images={beranda.pariwisataImages}
-        />
+        {FEATURES.pariwisata && (
+          <PariwisataSection
+            title={beranda.pariwisataTitle}
+            description={beranda.pariwisataDescription}
+            images={beranda.pariwisataImages}
+          />
+        )}
         <UMKMSection
           title={beranda.umkmTitle}
           description={beranda.umkmDescription}

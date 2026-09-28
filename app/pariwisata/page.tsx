@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 // Breadcrumb removed per request
 import PageHeader from "@/components/PageHeader";
 import PariwisataContent from "@/components/pages/PariwisataContent";
 import { getPariwisataDestinations } from "@/lib/sanity/queries";
+import { FEATURES } from "@/lib/features";
 
 export const metadata: Metadata = {
   title: "Pariwisata",
@@ -13,6 +15,8 @@ export const metadata: Metadata = {
 };
 
 export default async function PariwisataPage() {
+  if (!FEATURES.pariwisata) notFound();
+
   const destinations = await getPariwisataDestinations();
 
   return (

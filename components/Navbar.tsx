@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { FEATURES } from "@/lib/features";
 
-const navLinks = [
+const allNavLinks = [
 	{ label: "Beranda", href: "/" },
 	{ label: "Profil REC", href: "/profil" },
 	{
@@ -20,6 +21,10 @@ const navLinks = [
 	{ label: "UMKM", href: "/umkm" },
 	{ label: "Berita", href: "/berita" },
 ];
+
+const navLinks = allNavLinks.filter(
+	(link) => FEATURES.pariwisata || link.href !== "/pariwisata"
+);
 
 export default function Navbar() {
 	const [isOpen, setIsOpen] = useState(false);

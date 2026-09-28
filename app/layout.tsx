@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Inter } from "next/font/google";
 import "./globals.css";
+import { FEATURES } from "@/lib/features";
 
 const heading = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -21,8 +22,9 @@ export const metadata: Metadata = {
     default: "Rempang Eco City — Portal Informasi",
     template: "%s | Rempang Eco City",
   },
-  description:
-    "Portal informasi masyarakat Rempang Eco City. Profil REC, Koperasi, Pariwisata, UMKM, dan Berita terkini.",
+  description: FEATURES.pariwisata
+    ? "Portal informasi masyarakat Rempang Eco City. Profil REC, Koperasi, Pariwisata, UMKM, dan Berita terkini."
+    : "Portal informasi masyarakat Rempang Eco City. Profil REC, Koperasi, UMKM, dan Berita terkini.",
 };
 
 export default function RootLayout({

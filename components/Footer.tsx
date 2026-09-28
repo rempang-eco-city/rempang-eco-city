@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FEATURES } from "@/lib/features";
 
 const leftMenuLinks = [
   { label: "Beranda", href: "/" },
@@ -7,7 +8,7 @@ const leftMenuLinks = [
 ];
 
 const rightMenuLinks = [
-  { label: "Pariwisata", href: "/pariwisata" },
+  ...(FEATURES.pariwisata ? [{ label: "Pariwisata", href: "/pariwisata" }] : []),
   { label: "UMKM", href: "/umkm" },
   { label: "Berita", href: "/berita" },
 ];
