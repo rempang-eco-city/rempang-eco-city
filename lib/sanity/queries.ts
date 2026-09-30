@@ -1,5 +1,6 @@
 import type { PortableTextBlock as RichTextBlock } from "@portabletext/react";
 import { sanityClient } from "./client";
+import type { LayananIconKey } from "@/lib/layananIcons";
 
 const REVALIDATE_SECONDS = 60;
 
@@ -224,6 +225,19 @@ export type KoperasiGalleryItem = {
   images: string[];
 };
 
+export type KoperasiFasilitas = {
+  name: string;
+  description: string;
+  image: string;
+};
+
+export type KoperasiLayanan = {
+  title: string;
+  icon: LayananIconKey;
+  description: string;
+  highlights: string[];
+};
+
 export type KoperasiLaporanKeuangan = {
   title: string;
   cover: string;
@@ -239,6 +253,8 @@ export type KoperasiDetail = KoperasiListItem & {
   pengurus: KoperasiPengurus[];
   membershipDescription?: string;
   membershipWhatsapp?: string;
+  fasilitas: KoperasiFasilitas[];
+  layanan: KoperasiLayanan[];
   galleryItems: KoperasiGalleryItem[];
   laporanKeuangan: KoperasiLaporanKeuangan[];
 };
@@ -263,9 +279,14 @@ export async function getKoperasiList() {
 
 export async function getKoperasiByRouteKey(routeKey: string) {
   const koperasi = await sanityFetch<
-    | (Omit<KoperasiDetail, "about" | "pengurus" | "galleryItems" | "laporanKeuangan"> & {
+    | (Omit<
+        KoperasiDetail,
+        "about" | "pengurus" | "fasilitas" | "layanan" | "galleryItems" | "laporanKeuangan"
+      > & {
         about: PortableTextBlock[] | null;
         pengurus: KoperasiPengurus[] | null;
+        fasilitas: Array<Partial<KoperasiFasilitas>> | null;
+        layanan: Array<Partial<KoperasiLayanan>> | null;
         galleryItems: KoperasiGalleryItem[] | null;
         laporanKeuangan: Array<Partial<KoperasiLaporanKeuangan>> | null;
       })
@@ -279,6 +300,8 @@ export async function getKoperasiByRouteKey(routeKey: string) {
       pengurus[]{ name, role, "image": image.asset->url },
       membershipDescription,
       membershipWhatsapp,
+      fasilitas[]{ name, description, "image": image.asset->url },
+      layanan[]{ title, icon, description, "highlights": coalesce(highlights, []) },
       galleryItems[]{ title, description, "images": images[].asset->url },
       laporanKeuangan[]{
         title,
@@ -297,6 +320,15 @@ export async function getKoperasiByRouteKey(routeKey: string) {
     ...koperasi,
     about: blocksToParagraphs(koperasi.about),
     pengurus: koperasi.pengurus ?? [],
+    // Drafts in the Studio can have missing required fields; skip those.
+    fasilitas: (koperasi.fasilitas ?? []).filter(
+      (item): item is KoperasiFasilitas =>
+        Boolean(item.name && item.description && item.image)
+    ),
+    layanan: (koperasi.layanan ?? []).filter(
+      (item): item is KoperasiLayanan =>
+        Boolean(item.title && item.icon && item.description)
+    ),
     galleryItems: (koperasi.galleryItems ?? []).filter(
       (item) => item.images?.length > 0
     ),

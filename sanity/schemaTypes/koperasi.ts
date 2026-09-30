@@ -105,6 +105,20 @@ export const koperasi = defineType({
       validation: (rule) => rule.uri({ scheme: ["https"] }),
     }),
     defineField({
+      name: "fasilitas",
+      title: "Fasilitas",
+      type: "array",
+      of: [{ type: "koperasiFasilitas" }],
+      description: "Tampil sebelum Galeri. Section disembunyikan jika kosong.",
+    }),
+    defineField({
+      name: "layanan",
+      title: "Layanan",
+      type: "array",
+      of: [{ type: "koperasiLayanan" }],
+      description: "Tampil sebelum Galeri. Section disembunyikan jika kosong.",
+    }),
+    defineField({
       name: "galleryItems",
       title: "Galeri Kegiatan",
       type: "array",

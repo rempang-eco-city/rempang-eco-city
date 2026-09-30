@@ -3,6 +3,8 @@ import { umkmProduct } from "./objects/umkmProduct";
 import { koperasiPengurus } from "./objects/koperasiPengurus";
 import { koperasiGalleryItem } from "./objects/koperasiGalleryItem";
 import { koperasiLaporanKeuangan } from "./objects/koperasiLaporanKeuangan";
+import { koperasiFasilitas } from "./objects/koperasiFasilitas";
+import { koperasiLayanan } from "./objects/koperasiLayanan";
 import { newsArticle } from "./newsArticle";
 import { umkmItem } from "./umkmItem";
 import { koperasi } from "./koperasi";
@@ -16,6 +18,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     koperasiPengurus,
     koperasiGalleryItem,
     koperasiLaporanKeuangan,
+    koperasiFasilitas,
+    koperasiLayanan,
     newsArticle,
     umkmItem,
     koperasi,

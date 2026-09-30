@@ -1,10 +1,45 @@
 "use client";
 
 import { useState } from "react";
-import { ExternalLink, File, FileSpreadsheet, FileText, type LucideIcon } from "lucide-react";
+import {
+  CircleCheck,
+  ExternalLink,
+  File,
+  FileSpreadsheet,
+  FileText,
+  GraduationCap,
+  Handshake,
+  Megaphone,
+  MessagesSquare,
+  PiggyBank,
+  Sparkles,
+  Sprout,
+  Store,
+  Truck,
+  Wallet,
+  Wrench,
+  Fish,
+  type LucideIcon,
+} from "lucide-react";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import type { KoperasiDetail } from "@/lib/sanity/queries";
 import { sanityImageUrl } from "@/lib/sanity/image";
+import type { LayananIconKey } from "@/lib/layananIcons";
+
+const LAYANAN_ICONS: Record<LayananIconKey, LucideIcon> = {
+  "simpan-pinjam": Wallet,
+  tabungan: PiggyBank,
+  toko: Store,
+  pertanian: Sprout,
+  perikanan: Fish,
+  distribusi: Truck,
+  pelatihan: GraduationCap,
+  pendampingan: Handshake,
+  pemasaran: Megaphone,
+  konsultasi: MessagesSquare,
+  jasa: Wrench,
+  lainnya: Sparkles,
+};
 
 type ReportFileType = {
   label: string;
@@ -43,7 +78,7 @@ export default function KoperasiDetailContent({
 }: {
   koperasi: KoperasiDetail;
 }) {
-  const { name, galleryItems, pengurus, laporanKeuangan } = koperasi;
+  const { name, galleryItems, pengurus, fasilitas, layanan, laporanKeuangan } = koperasi;
 
   return (
     <>
@@ -158,6 +193,103 @@ export default function KoperasiDetailContent({
                 <WhatsAppIcon />
                 Hubungi via WhatsApp
               </a>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {fasilitas.length > 0 && (
+        <section className="bg-slate-50 py-16 md:py-20">
+          <div className="container-content">
+            <div className="mb-8 text-center">
+              <h2 className="font-heading text-4xl font-bold text-primary-blue">
+                Fasilitas {name}
+              </h2>
+              <p className="mt-3 text-base text-text-secondary">
+                Sarana yang tersedia untuk mendukung kegiatan koperasi dan anggota.
+              </p>
+            </div>
+
+            {/* Flex-wrap so a short list stays centered; widths mirror 1 / 2 / 3 columns (gap-6 = 1.5rem). */}
+            <div className="flex flex-wrap justify-center gap-6">
+              {fasilitas.map((item, index) => (
+                <article
+                  key={`${item.name}-${index}`}
+                  className="group w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_20px_rgba(15,23,42,0.03)] transition-all hover:shadow-[0_18px_36px_rgba(15,23,42,0.08)] sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)]"
+                >
+                  <div className="aspect-[4/3] overflow-hidden bg-slate-100">
+                    <img
+                      src={sanityImageUrl(item.image, 800)}
+                      alt={item.name}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="p-5">
+                    <h3 className="font-heading text-lg font-bold text-text-primary">
+                      {item.name}
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-text-secondary">
+                      {item.description}
+                    </p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {layanan.length > 0 && (
+        <section className="bg-white py-16 md:py-20">
+          <div className="container-content">
+            <div className="mb-8 text-center">
+              <h2 className="font-heading text-4xl font-bold text-primary-blue">
+                Layanan {name}
+              </h2>
+              <p className="mt-3 text-base text-text-secondary">
+                Layanan yang dapat dimanfaatkan oleh anggota dan masyarakat.
+              </p>
+            </div>
+
+            {/* Flex-wrap so a short list stays centered; widths mirror 1 / 2 / 3 columns (gap-6 = 1.5rem). */}
+            <div className="flex flex-wrap justify-center gap-6">
+              {layanan.map((item, index) => {
+                const Icon = LAYANAN_ICONS[item.icon] ?? Sparkles;
+
+                return (
+                  <article
+                    key={`${item.title}-${index}`}
+                    className="w-full rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_8px_20px_rgba(15,23,42,0.03)] transition-all hover:-translate-y-1 hover:border-primary-blue/30 hover:shadow-[0_18px_36px_rgba(15,23,42,0.08)] sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)]"
+                  >
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-blue/10 text-primary-blue">
+                      <Icon size={24} />
+                    </div>
+                    <h3 className="mt-4 font-heading text-lg font-bold text-text-primary">
+                      {item.title}
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-text-secondary">
+                      {item.description}
+                    </p>
+                    {item.highlights.length > 0 && (
+                      <ul className="mt-4 space-y-2 border-t border-slate-100 pt-4">
+                        {item.highlights.map((point, pointIndex) => (
+                          <li
+                            key={`${point}-${pointIndex}`}
+                            className="flex items-start gap-2 text-sm text-text-primary"
+                          >
+                            <CircleCheck
+                              size={16}
+                              className="mt-0.5 flex-shrink-0 text-[#2bb673]"
+                            />
+                            {point}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </article>
+                );
+              })}
             </div>
           </div>
         </section>
