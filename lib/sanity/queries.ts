@@ -228,6 +228,8 @@ export type KoperasiLaporanKeuangan = {
   title: string;
   cover: string;
   fileUrl: string;
+  /** Lowercase file extension without the dot, e.g. "pdf", "xlsx", "docx". */
+  fileExtension: string;
 };
 
 export type KoperasiDetail = KoperasiListItem & {
@@ -278,7 +280,12 @@ export async function getKoperasiByRouteKey(routeKey: string) {
       membershipDescription,
       membershipWhatsapp,
       galleryItems[]{ title, description, "images": images[].asset->url },
-      laporanKeuangan[]{ title, "cover": cover.asset->url, "fileUrl": file.asset->url }
+      laporanKeuangan[]{
+        title,
+        "cover": cover.asset->url,
+        "fileUrl": file.asset->url,
+        "fileExtension": lower(file.asset->extension)
+      }
     }`,
     { routeKey },
     ["koperasi"]
@@ -296,7 +303,7 @@ export async function getKoperasiByRouteKey(routeKey: string) {
     // Drafts in the Studio can have a missing cover or file; skip those.
     laporanKeuangan: (koperasi.laporanKeuangan ?? []).filter(
       (item): item is KoperasiLaporanKeuangan =>
-        Boolean(item.title && item.cover && item.fileUrl)
+        Boolean(item.title && item.cover && item.fileUrl && item.fileExtension)
     ),
   } satisfies KoperasiDetail;
 }

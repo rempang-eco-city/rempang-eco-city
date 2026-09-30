@@ -22,11 +22,11 @@ export const koperasiLaporanKeuangan = defineType({
     }),
     defineField({
       name: "file",
-      title: "File Excel",
+      title: "File Laporan",
       type: "file",
-      options: { accept: ".xlsx,.xls" },
+      options: { accept: ".pdf,.xlsx,.xls,.docx,.doc" },
       description:
-        "Format .xlsx atau .xls, maksimal 5 MB. Ditampilkan view-only lewat Microsoft Office Online.",
+        "PDF, Excel (.xlsx/.xls, maks. 5 MB), atau Word (.docx/.doc, maks. 10 MB). PDF dibuka langsung di browser; Excel dan Word ditampilkan view-only lewat Microsoft Office Online.",
       validation: (rule) => rule.required(),
     }),
   ],

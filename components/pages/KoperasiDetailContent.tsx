@@ -1,15 +1,42 @@
 "use client";
 
 import { useState } from "react";
-import { ExternalLink, FileSpreadsheet } from "lucide-react";
+import { ExternalLink, File, FileSpreadsheet, FileText, type LucideIcon } from "lucide-react";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import type { KoperasiDetail } from "@/lib/sanity/queries";
 import { sanityImageUrl } from "@/lib/sanity/image";
 
-// Browsers download .xlsx files instead of showing them, so open them in
+type ReportFileType = {
+  label: string;
+  Icon: LucideIcon;
+  iconClassName: string;
+  /** Office files open in Microsoft's viewer; PDFs open directly. */
+  viaOfficeViewer: boolean;
+};
+
+const REPORT_FILE_TYPES: Record<string, ReportFileType> = {
+  pdf: { label: "PDF", Icon: FileText, iconClassName: "text-[#d93025]", viaOfficeViewer: false },
+  xlsx: { label: "Excel", Icon: FileSpreadsheet, iconClassName: "text-[#1d6f42]", viaOfficeViewer: true },
+  xls: { label: "Excel", Icon: FileSpreadsheet, iconClassName: "text-[#1d6f42]", viaOfficeViewer: true },
+  docx: { label: "Word", Icon: FileText, iconClassName: "text-[#2b579a]", viaOfficeViewer: true },
+  doc: { label: "Word", Icon: FileText, iconClassName: "text-[#2b579a]", viaOfficeViewer: true },
+};
+
+const FALLBACK_FILE_TYPE: ReportFileType = {
+  label: "Dokumen",
+  Icon: File,
+  iconClassName: "text-text-secondary",
+  viaOfficeViewer: false,
+};
+
+// Browsers download Excel/Word files instead of showing them, so those open in
 // Microsoft's free view-only Office viewer (needs a public URL; Sanity's CDN is).
-const officeViewerUrl = (fileUrl: string) =>
-  `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(fileUrl)}`;
+// PDFs are served inline by Sanity, so the browser's own PDF viewer handles them.
+function reportHref(fileUrl: string, type: ReportFileType) {
+  return type.viaOfficeViewer
+    ? `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(fileUrl)}`
+    : fileUrl;
+}
 
 export default function KoperasiDetailContent({
   koperasi,
@@ -154,37 +181,46 @@ export default function KoperasiDetailContent({
 
             {/* Flex-wrap so a short list stays centered; widths mirror 2 / 3 / 4 columns (gap-5 = 1.25rem). */}
             <div className="flex flex-wrap justify-center gap-5">
-              {laporanKeuangan.map((laporan, index) => (
-                <a
-                  key={`${laporan.title}-${index}`}
-                  href={officeViewerUrl(laporan.fileUrl)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group w-[calc((100%-1.25rem)/2)] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_20px_rgba(15,23,42,0.03)] transition-all hover:shadow-[0_18px_36px_rgba(15,23,42,0.08)] md:w-[calc((100%-2.5rem)/3)] lg:w-[calc((100%-3.75rem)/4)]"
-                >
-                  {/* A-series paper ratio (1 : √2) for poster-style covers */}
-                  <div className="relative aspect-[1/1.414] overflow-hidden bg-slate-100">
-                    <img
-                      src={sanityImageUrl(laporan.cover, 600)}
-                      alt={laporan.title}
-                      loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="flex items-start justify-between gap-3 p-4">
-                    <div className="flex min-w-0 items-start gap-2">
-                      <FileSpreadsheet size={18} className="mt-0.5 flex-shrink-0 text-[#1d6f42]" />
-                      <h3 className="text-sm font-semibold leading-snug text-text-primary md:text-base">
-                        {laporan.title}
-                      </h3>
+              {laporanKeuangan.map((laporan, index) => {
+                const fileType =
+                  REPORT_FILE_TYPES[laporan.fileExtension] ?? FALLBACK_FILE_TYPE;
+                const { Icon } = fileType;
+
+                return (
+                  <a
+                    key={`${laporan.title}-${index}`}
+                    href={reportHref(laporan.fileUrl, fileType)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group w-[calc((100%-1.25rem)/2)] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_20px_rgba(15,23,42,0.03)] transition-all hover:shadow-[0_18px_36px_rgba(15,23,42,0.08)] md:w-[calc((100%-2.5rem)/3)] lg:w-[calc((100%-3.75rem)/4)]"
+                  >
+                    {/* A-series paper ratio (1 : √2) for poster-style covers */}
+                    <div className="relative aspect-[1/1.414] overflow-hidden bg-slate-100">
+                      <img
+                        src={sanityImageUrl(laporan.cover, 600)}
+                        alt={laporan.title}
+                        loading="lazy"
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
                     </div>
-                    <ExternalLink
-                      size={16}
-                      className="mt-0.5 flex-shrink-0 text-text-secondary transition-colors group-hover:text-primary-blue"
-                    />
-                  </div>
-                </a>
-              ))}
+                    <div className="flex items-start justify-between gap-3 p-4">
+                      <div className="flex min-w-0 items-start gap-2">
+                        <Icon size={18} className={`mt-0.5 flex-shrink-0 ${fileType.iconClassName}`} />
+                        <div className="min-w-0">
+                          <h3 className="text-sm font-semibold leading-snug text-text-primary md:text-base">
+                            {laporan.title}
+                          </h3>
+                          <p className="mt-0.5 text-xs text-text-secondary">{fileType.label}</p>
+                        </div>
+                      </div>
+                      <ExternalLink
+                        size={16}
+                        className="mt-0.5 flex-shrink-0 text-text-secondary transition-colors group-hover:text-primary-blue"
+                      />
+                    </div>
+                  </a>
+                );
+              })}
             </div>
           </div>
         </section>
