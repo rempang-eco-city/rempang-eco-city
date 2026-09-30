@@ -224,12 +224,21 @@ export type KoperasiGalleryItem = {
   images: string[];
 };
 
+export type KoperasiLaporanKeuangan = {
+  title: string;
+  cover: string;
+  fileUrl: string;
+};
+
 export type KoperasiDetail = KoperasiListItem & {
   pageDescription?: string;
   about: string[];
   structureImage: string;
   pengurus: KoperasiPengurus[];
+  membershipDescription?: string;
+  membershipWhatsapp?: string;
   galleryItems: KoperasiGalleryItem[];
+  laporanKeuangan: KoperasiLaporanKeuangan[];
 };
 
 const koperasiListFields = `
@@ -252,10 +261,11 @@ export async function getKoperasiList() {
 
 export async function getKoperasiByRouteKey(routeKey: string) {
   const koperasi = await sanityFetch<
-    | (Omit<KoperasiDetail, "about" | "pengurus" | "galleryItems"> & {
+    | (Omit<KoperasiDetail, "about" | "pengurus" | "galleryItems" | "laporanKeuangan"> & {
         about: PortableTextBlock[] | null;
         pengurus: KoperasiPengurus[] | null;
         galleryItems: KoperasiGalleryItem[] | null;
+        laporanKeuangan: Array<Partial<KoperasiLaporanKeuangan>> | null;
       })
     | null
   >(
@@ -265,7 +275,10 @@ export async function getKoperasiByRouteKey(routeKey: string) {
       about,
       "structureImage": structureImage.asset->url,
       pengurus[]{ name, role, "image": image.asset->url },
-      galleryItems[]{ title, description, "images": images[].asset->url }
+      membershipDescription,
+      membershipWhatsapp,
+      galleryItems[]{ title, description, "images": images[].asset->url },
+      laporanKeuangan[]{ title, "cover": cover.asset->url, "fileUrl": file.asset->url }
     }`,
     { routeKey },
     ["koperasi"]
@@ -279,6 +292,11 @@ export async function getKoperasiByRouteKey(routeKey: string) {
     pengurus: koperasi.pengurus ?? [],
     galleryItems: (koperasi.galleryItems ?? []).filter(
       (item) => item.images?.length > 0
+    ),
+    // Drafts in the Studio can have a missing cover or file; skip those.
+    laporanKeuangan: (koperasi.laporanKeuangan ?? []).filter(
+      (item): item is KoperasiLaporanKeuangan =>
+        Boolean(item.title && item.cover && item.fileUrl)
     ),
   } satisfies KoperasiDetail;
 }

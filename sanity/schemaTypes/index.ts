@@ -2,6 +2,7 @@ import type { SchemaTypeDefinition } from "sanity";
 import { umkmProduct } from "./objects/umkmProduct";
 import { koperasiPengurus } from "./objects/koperasiPengurus";
 import { koperasiGalleryItem } from "./objects/koperasiGalleryItem";
+import { koperasiLaporanKeuangan } from "./objects/koperasiLaporanKeuangan";
 import { newsArticle } from "./newsArticle";
 import { umkmItem } from "./umkmItem";
 import { koperasi } from "./koperasi";
@@ -14,6 +15,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     umkmProduct,
     koperasiPengurus,
     koperasiGalleryItem,
+    koperasiLaporanKeuangan,
     newsArticle,
     umkmItem,
     koperasi,

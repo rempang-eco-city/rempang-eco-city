@@ -9,6 +9,14 @@ export const koperasi = defineType({
   name: "koperasi",
   title: "Koperasi",
   type: "document",
+  fieldsets: [
+    {
+      name: "keanggotaan",
+      title: "Keanggotaan",
+      description: "Section ajakan menjadi anggota, tampil setelah foto pengurus.",
+      options: { collapsible: true, collapsed: false },
+    },
+  ],
   fields: [
     defineField({
       name: "name",
@@ -80,10 +88,34 @@ export const koperasi = defineType({
       of: [{ type: "koperasiPengurus" }],
     }),
     defineField({
+      name: "membershipDescription",
+      title: "Deskripsi Keanggotaan",
+      type: "text",
+      rows: 3,
+      fieldset: "keanggotaan",
+      description: "Contoh: syarat, manfaat, atau cara menjadi anggota.",
+    }),
+    defineField({
+      name: "membershipWhatsapp",
+      title: "Link WhatsApp Pendaftaran",
+      type: "url",
+      fieldset: "keanggotaan",
+      description:
+        'Format: https://wa.me/628xxxxxxxxxx. Section Keanggotaan hanya tampil jika link ini diisi.',
+      validation: (rule) => rule.uri({ scheme: ["https"] }),
+    }),
+    defineField({
       name: "galleryItems",
       title: "Galeri Kegiatan",
       type: "array",
       of: [{ type: "koperasiGalleryItem" }],
+    }),
+    defineField({
+      name: "laporanKeuangan",
+      title: "Laporan Keuangan",
+      type: "array",
+      of: [{ type: "koperasiLaporanKeuangan" }],
+      description: "Tampil setelah Galeri. Section disembunyikan jika kosong.",
     }),
   ],
   preview: {

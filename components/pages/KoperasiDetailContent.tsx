@@ -1,14 +1,22 @@
 "use client";
 
 import { useState } from "react";
+import { ExternalLink, FileSpreadsheet } from "lucide-react";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
 import type { KoperasiDetail } from "@/lib/sanity/queries";
+import { sanityImageUrl } from "@/lib/sanity/image";
+
+// Browsers download .xlsx files instead of showing them, so open them in
+// Microsoft's free view-only Office viewer (needs a public URL; Sanity's CDN is).
+const officeViewerUrl = (fileUrl: string) =>
+  `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(fileUrl)}`;
 
 export default function KoperasiDetailContent({
   koperasi,
 }: {
   koperasi: KoperasiDetail;
 }) {
-  const { name, galleryItems, pengurus } = koperasi;
+  const { name, galleryItems, pengurus, laporanKeuangan } = koperasi;
 
   return (
     <>
@@ -98,8 +106,88 @@ export default function KoperasiDetailContent({
         </div>
       </section>
 
+      {koperasi.membershipWhatsapp && (
+        <section className="bg-white py-12 md:py-16">
+          <div className="container-content">
+            <div className="rounded-3xl border border-primary-blue/15 bg-primary-blue/5 px-6 py-10 text-center md:px-12">
+              <h2 className="font-heading text-3xl font-bold text-primary-blue md:text-4xl">
+                Keanggotaan {name}
+              </h2>
+              {koperasi.membershipDescription && (
+                <p className="mx-auto mt-4 max-w-3xl whitespace-pre-line text-base leading-relaxed text-text-secondary">
+                  {koperasi.membershipDescription}
+                </p>
+              )}
+
+              <p className="mt-8 text-lg font-semibold text-text-primary">
+                Tertarik menjadi anggota?
+              </p>
+              <a
+                href={koperasi.membershipWhatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-[#2bb673] px-6 py-3 text-sm font-medium text-white transition hover:bg-[#239d63]"
+              >
+                <WhatsAppIcon />
+                Hubungi via WhatsApp
+              </a>
+            </div>
+          </div>
+        </section>
+      )}
+
       {galleryItems.length > 0 && (
         <KoperasiGallery name={name} galleryItems={galleryItems} />
+      )}
+
+      {laporanKeuangan.length > 0 && (
+        <section className="bg-white py-16 md:py-20">
+          <div className="container-content">
+            <div className="mb-8 text-center">
+              <h2 className="font-heading text-4xl font-bold text-primary-blue">
+                Laporan Keuangan {name}
+              </h2>
+              <p className="mt-3 text-base text-text-secondary">
+                Klik laporan untuk melihat detailnya di tab baru.
+              </p>
+            </div>
+
+            {/* Flex-wrap so a short list stays centered; widths mirror 2 / 3 / 4 columns (gap-5 = 1.25rem). */}
+            <div className="flex flex-wrap justify-center gap-5">
+              {laporanKeuangan.map((laporan, index) => (
+                <a
+                  key={`${laporan.title}-${index}`}
+                  href={officeViewerUrl(laporan.fileUrl)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group w-[calc((100%-1.25rem)/2)] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_20px_rgba(15,23,42,0.03)] transition-all hover:shadow-[0_18px_36px_rgba(15,23,42,0.08)] md:w-[calc((100%-2.5rem)/3)] lg:w-[calc((100%-3.75rem)/4)]"
+                >
+                  {/* A-series paper ratio (1 : √2) for poster-style covers */}
+                  <div className="relative aspect-[1/1.414] overflow-hidden bg-slate-100">
+                    <img
+                      src={sanityImageUrl(laporan.cover, 600)}
+                      alt={laporan.title}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="flex items-start justify-between gap-3 p-4">
+                    <div className="flex min-w-0 items-start gap-2">
+                      <FileSpreadsheet size={18} className="mt-0.5 flex-shrink-0 text-[#1d6f42]" />
+                      <h3 className="text-sm font-semibold leading-snug text-text-primary md:text-base">
+                        {laporan.title}
+                      </h3>
+                    </div>
+                    <ExternalLink
+                      size={16}
+                      className="mt-0.5 flex-shrink-0 text-text-secondary transition-colors group-hover:text-primary-blue"
+                    />
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
       )}
     </>
   );
