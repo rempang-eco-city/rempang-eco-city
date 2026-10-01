@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import {
+  Armchair,
   CircleCheck,
+  Cog,
+  DoorOpen,
   ExternalLink,
   File,
   FileSpreadsheet,
@@ -12,7 +15,10 @@ import {
   Megaphone,
   MessagesSquare,
   PiggyBank,
+  Ship,
+  Snowflake,
   Sparkles,
+  Speaker,
   Sprout,
   Store,
   Truck,
@@ -38,6 +44,12 @@ const LAYANAN_ICONS: Record<LayananIconKey, LucideIcon> = {
   pemasaran: Megaphone,
   konsultasi: MessagesSquare,
   jasa: Wrench,
+  "sewa-peralatan": Armchair,
+  "sound-system": Speaker,
+  ruangan: DoorOpen,
+  kapal: Ship,
+  pendingin: Snowflake,
+  mesin: Cog,
   lainnya: Sparkles,
 };
 

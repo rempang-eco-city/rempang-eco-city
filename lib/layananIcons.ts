@@ -14,6 +14,12 @@ export const LAYANAN_ICON_OPTIONS = [
   { value: "pemasaran", title: "Pemasaran / Promosi" },
   { value: "konsultasi", title: "Konsultasi" },
   { value: "jasa", title: "Jasa / Perbaikan" },
+  { value: "sewa-peralatan", title: "Sewa Peralatan / Kursi" },
+  { value: "sound-system", title: "Sound System / Acara" },
+  { value: "ruangan", title: "Ruangan / Gedung" },
+  { value: "kapal", title: "Kapal / Transportasi Laut" },
+  { value: "pendingin", title: "Pendingin / Cold Storage / Es" },
+  { value: "mesin", title: "Mesin" },
   { value: "lainnya", title: "Lainnya" },
 ] as const;
 
