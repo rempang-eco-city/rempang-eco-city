@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import FasilitasMarquee from "@/components/FasilitasMarquee";
 import type { ProfilPage } from "@/lib/sanity/queries";
 
 export default function ProfilContent({ profil }: { profil: ProfilPage }) {
@@ -89,7 +90,38 @@ export default function ProfilContent({ profil }: { profil: ProfilPage }) {
             ))}
           </div>
         </motion.section>
+      </div>
 
+      {/* Fasilitas: the marquee runs full-width, so it sits outside the narrow
+          max-w-3xl container; only its heading lines up with the other sections. */}
+      {profil.fasilitasItems.length > 0 && (
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="mb-16"
+        >
+          <div className="container-content max-w-3xl">
+            <h2 className="font-heading font-bold text-2xl md:text-3xl text-primary-blue mb-6">
+              {profil.fasilitasTitle || "Fasilitas"}
+            </h2>
+            {profil.fasilitasDescription && (
+              <p className="text-text-secondary mb-4">{profil.fasilitasDescription}</p>
+            )}
+          </div>
+
+          <div className="mt-10">
+            <FasilitasMarquee items={profil.fasilitasItems} />
+          </div>
+
+          <div className="container-content max-w-3xl">
+            <div className="mt-16 border-b border-border-color" />
+          </div>
+        </motion.section>
+      )}
+
+      <div className="container-content max-w-3xl">
         {/* Demografi Penduduk */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}

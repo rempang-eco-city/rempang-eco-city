@@ -9,6 +9,7 @@ export const profilPage = defineType({
     { name: "header", title: "Header", default: true },
     { name: "about", title: "Tentang" },
     { name: "lembaga", title: "Lembaga Kemasyarakatan" },
+    { name: "fasilitas", title: "Fasilitas" },
     { name: "demografi", title: "Demografi" },
   ],
   fields: [
@@ -98,6 +99,53 @@ export const profilPage = defineType({
           preview: {
             select: { title: "title", subtitle: "description", media: "image" },
           },
+        }),
+      ],
+    }),
+
+    defineField({
+      name: "fasilitasTitle",
+      title: "Judul Bagian Fasilitas",
+      type: "string",
+      group: "fasilitas",
+      initialValue: "Fasilitas REC",
+    }),
+    defineField({
+      name: "fasilitasDescription",
+      title: "Deskripsi Bagian Fasilitas",
+      type: "text",
+      rows: 2,
+      group: "fasilitas",
+    }),
+    defineField({
+      name: "fasilitasItems",
+      title: "Daftar Fasilitas",
+      type: "array",
+      group: "fasilitas",
+      description:
+        "Ditampilkan sebagai deretan foto yang bergerak (marquee). Fasilitas tanpa foto tidak ditampilkan.",
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "fasilitasItem",
+          title: "Fasilitas",
+          fields: [
+            defineField({
+              name: "name",
+              title: "Nama",
+              type: "string",
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "image",
+              title: "Foto",
+              type: "image",
+              options: { hotspot: true },
+              description: "Foto landscape (rasio 4:3) paling cocok.",
+              validation: (rule) => rule.required(),
+            }),
+          ],
+          preview: { select: { title: "name", media: "image" } },
         }),
       ],
     }),

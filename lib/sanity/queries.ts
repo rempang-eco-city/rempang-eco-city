@@ -384,6 +384,11 @@ export type ProfilLembagaItem = {
   image: string;
 };
 
+export type ProfilFasilitasItem = {
+  name: string;
+  image: string;
+};
+
 export type ProfilDemografiStat = {
   label: string;
   value: string;
@@ -398,12 +403,16 @@ export type ProfilPage = {
   lembagaTitle: string;
   lembagaDescription?: string;
   lembagaItems: ProfilLembagaItem[];
+  fasilitasTitle?: string;
+  fasilitasDescription?: string;
+  fasilitasItems: ProfilFasilitasItem[];
   demografiTitle: string;
   demografiDescription?: string;
   demografiStats: ProfilDemografiStat[];
   demografiNote?: string;
 };
 
+// fasilitasItems without a photo are skipped: the marquee is image-only.
 export async function getProfilPage() {
   const page = await sanityFetch<
     (Omit<ProfilPage, "aboutBody"> & { aboutBody: PortableTextBlock[] | null }) | null
@@ -417,6 +426,12 @@ export async function getProfilPage() {
       lembagaTitle,
       lembagaDescription,
       "lembagaItems": coalesce(lembagaItems[]{ title, description, "image": image.asset->url }, []),
+      fasilitasTitle,
+      fasilitasDescription,
+      "fasilitasItems": coalesce(
+        fasilitasItems[defined(name) && defined(image.asset)]{ name, "image": image.asset->url },
+        []
+      ),
       demografiTitle,
       demografiDescription,
       "demografiStats": coalesce(demografiStats[]{ label, value }, []),

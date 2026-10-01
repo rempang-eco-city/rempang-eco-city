@@ -30,6 +30,18 @@ const config: Config = {
       transitionTimingFunction: {
         smooth: "cubic-bezier(0.4, 0, 0.2, 1)",
       },
+      keyframes: {
+        // The track holds two identical copies of the list, so shifting it by
+        // half its width lands exactly where it started: a seamless loop.
+        marquee: {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(-50%)" },
+        },
+      },
+      animation: {
+        // Duration is overridden inline per list length (see FasilitasMarquee).
+        marquee: "marquee 40s linear infinite",
+      },
     },
   },
   plugins: [],
