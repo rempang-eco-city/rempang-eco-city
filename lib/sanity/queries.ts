@@ -227,7 +227,7 @@ export type KoperasiGalleryItem = {
 
 export type KoperasiFasilitas = {
   name: string;
-  description: string;
+  description?: string;
   image: string;
 };
 
@@ -323,7 +323,7 @@ export async function getKoperasiByRouteKey(routeKey: string) {
     // Drafts in the Studio can have missing required fields; skip those.
     fasilitas: (koperasi.fasilitas ?? []).filter(
       (item): item is KoperasiFasilitas =>
-        Boolean(item.name && item.description && item.image)
+        Boolean(item.name && item.image)
     ),
     layanan: (koperasi.layanan ?? []).filter(
       (item): item is KoperasiLayanan =>

@@ -14,10 +14,10 @@ export const koperasiFasilitas = defineType({
     }),
     defineField({
       name: "description",
-      title: "Deskripsi Singkat",
+      title: "Deskripsi Singkat (opsional)",
       type: "text",
       rows: 2,
-      validation: (rule) => rule.required().max(160),
+      validation: (rule) => rule.max(160),
     }),
     defineField({
       name: "image",

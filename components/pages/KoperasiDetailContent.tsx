@@ -229,9 +229,11 @@ export default function KoperasiDetailContent({
                     <h3 className="font-heading text-lg font-bold text-text-primary">
                       {item.name}
                     </h3>
-                    <p className="mt-2 text-sm leading-relaxed text-text-secondary">
-                      {item.description}
-                    </p>
+                    {item.description && (
+                      <p className="mt-2 text-sm leading-relaxed text-text-secondary">
+                        {item.description}
+                      </p>
+                    )}
                   </div>
                 </article>
               ))}
