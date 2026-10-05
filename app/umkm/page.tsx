@@ -20,7 +20,7 @@ export default async function UMKMPage() {
       <Navbar />
       <div className="pt-20 md:pt-24">
         <PageHeader 
-          title="UMKM Rempang"
+          title="UMKM Rempang Eco City"
           description="Temukan dan dukung produk usaha masyarakat"
         />
         <UMKMContent umkms={umkms} />

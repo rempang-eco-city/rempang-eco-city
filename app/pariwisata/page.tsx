@@ -24,7 +24,7 @@ export default async function PariwisataPage() {
       <Navbar />
       <div className="pt-20 md:pt-24">
         <PageHeader 
-          title="Pariwisata Rempang"
+          title="Pariwisata Rempang Eco City"
           description="Jelajahi destinasi wisata unggulan Rempang, lengkap dengan detail aktivitas, paket harga, dan rekomendasi kunjungan."
         />
         <PariwisataContent destinations={destinations} />
