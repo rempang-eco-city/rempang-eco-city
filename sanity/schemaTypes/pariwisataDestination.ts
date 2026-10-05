@@ -67,10 +67,27 @@ export const pariwisataDestination = defineType({
       of: [{ type: "string" }],
     }),
     defineField({
-      name: "gallery",
-      title: "Galeri Foto",
+      name: "packages",
+      title: "Paket & Harga",
       type: "array",
-      of: [{ type: "image", options: { hotspot: true } }],
+      of: [{ type: "pariwisataPaket" }],
+      description: 'Contoh: satu paket "Harga Turis" dan satu paket "Harga Lokal".',
+    }),
+    defineField({
+      name: "gallery",
+      title: "Galeri Foto & Video",
+      type: "array",
+      description:
+        "Item pertama tampil sebagai media utama. Video: format MP4 (disarankan) atau WebM, usahakan di bawah 50 MB agar cepat dimuat.",
+      of: [
+        { type: "image", title: "Foto", options: { hotspot: true } },
+        {
+          type: "file",
+          name: "video",
+          title: "Video",
+          options: { accept: "video/mp4,video/webm" },
+        },
+      ],
       validation: (rule) => rule.required().min(1),
     }),
     defineField({

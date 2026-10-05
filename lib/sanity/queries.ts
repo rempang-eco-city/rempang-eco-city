@@ -342,6 +342,27 @@ export async function getKoperasiByRouteKey(routeKey: string) {
 
 export type PariwisataRouteKey = "mancing" | "mangrove";
 
+export type PariwisataMedia = {
+  type: "image" | "video";
+  url: string;
+};
+
+export type PariwisataPaketItem = {
+  name: string;
+  price: number;
+  unit: "orang" | "jam" | "paket";
+  note?: string;
+};
+
+export type PariwisataPaket = {
+  label: string;
+  title: string;
+  participants: number;
+  durationHours?: number;
+  items: PariwisataPaketItem[];
+  total: number;
+};
+
 export type PariwisataDestination = {
   _id: string;
   routeKey: PariwisataRouteKey;
@@ -353,7 +374,8 @@ export type PariwisataDestination = {
   bestTime: string;
   facilities: string[];
   tips: string[];
-  gallery: string[];
+  packages: PariwisataPaket[];
+  gallery: PariwisataMedia[];
   whatsapp: string;
 };
 
@@ -370,7 +392,18 @@ export async function getPariwisataDestinations() {
       bestTime,
       "facilities": coalesce(facilities, []),
       "tips": coalesce(tips, []),
-      "gallery": coalesce(gallery[].asset->url, []),
+      "packages": coalesce(packages[defined(label) && defined(total)]{
+        label,
+        title,
+        participants,
+        durationHours,
+        "items": coalesce(items[defined(name) && defined(price)]{ name, price, unit, note }, []),
+        total
+      }, []),
+      "gallery": coalesce(gallery[defined(asset)]{
+        "type": select(_type == "video" => "video", "image"),
+        "url": asset->url
+      }, []),
       whatsapp
     }`,
     {},

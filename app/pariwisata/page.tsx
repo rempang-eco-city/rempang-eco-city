@@ -11,7 +11,7 @@ import { FEATURES } from "@/lib/features";
 export const metadata: Metadata = {
   title: "Pariwisata",
   description:
-    "Jelajahi destinasi unggulan Rempang: wisata mancing dan eksplorasi mangrove.",
+    "Jelajahi destinasi wisata unggulan Rempang, lengkap dengan paket harga dan rekomendasi kunjungan.",
 };
 
 export default async function PariwisataPage() {
@@ -25,7 +25,7 @@ export default async function PariwisataPage() {
       <div className="pt-20 md:pt-24">
         <PageHeader 
           title="Pariwisata Rempang"
-          description="Jelajahi dua destinasi unggulan Rempang saat ini: wisata mancing dan eksplorasi mangrove, lengkap dengan detail aktivitas dan rekomendasi kunjungan."
+          description="Jelajahi destinasi wisata unggulan Rempang, lengkap dengan detail aktivitas, paket harga, dan rekomendasi kunjungan."
         />
         <PariwisataContent destinations={destinations} />
       </div>
