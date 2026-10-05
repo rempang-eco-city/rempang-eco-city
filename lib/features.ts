@@ -2,5 +2,5 @@
 // Sanity content. A hidden section disappears from the Beranda, Navbar and
 // Footer, and its page returns 404.
 export const FEATURES = {
-  pariwisata: false,
+  pariwisata: true,
 } as const;
