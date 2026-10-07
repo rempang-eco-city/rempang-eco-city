@@ -84,9 +84,12 @@ export default function UMKMDetailContent({ umkm }: Props) {
               {umkm.name}
             </h1>
 
-            <p className="mt-2 text-sm text-text-secondary">
-              {umkm.owner} • {umkm.location}
-            </p>
+            {(umkm.owner || umkm.location) && (
+              <p className="mt-2 text-sm text-text-secondary">
+                {/* Both fields are optional in the CMS; only join the ones that are set. */}
+                {[umkm.owner, umkm.location].filter(Boolean).join(" • ")}
+              </p>
+            )}
 
             <p className="mt-4 text-sm leading-relaxed text-text-secondary md:text-base">
               {umkm.description}
