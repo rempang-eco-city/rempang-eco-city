@@ -5,7 +5,8 @@ import Footer from "@/components/Footer";
 // Breadcrumb removed per request
 import PageHeader from "@/components/PageHeader";
 import PariwisataContent from "@/components/pages/PariwisataContent";
-import { getPariwisataDestinations } from "@/lib/sanity/queries";
+import PokdarwisContent from "@/components/pages/PokdarwisContent";
+import { getPariwisataDestinations, getPariwisataPage } from "@/lib/sanity/queries";
 import { FEATURES } from "@/lib/features";
 
 export const metadata: Metadata = {
@@ -17,7 +18,10 @@ export const metadata: Metadata = {
 export default async function PariwisataPage() {
   if (!FEATURES.pariwisata) notFound();
 
-  const destinations = await getPariwisataDestinations();
+  const [destinations, pariwisataPage] = await Promise.all([
+    getPariwisataDestinations(),
+    getPariwisataPage(),
+  ]);
 
   return (
     <main>
@@ -27,6 +31,7 @@ export default async function PariwisataPage() {
           title="Pariwisata Rempang Eco City"
           description="Jelajahi destinasi wisata unggulan Rempang, lengkap dengan detail aktivitas, paket harga, dan rekomendasi kunjungan."
         />
+        {pariwisataPage && <PokdarwisContent page={pariwisataPage} />}
         <PariwisataContent destinations={destinations} />
       </div>
       <Footer />

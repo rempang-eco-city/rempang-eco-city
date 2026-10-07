@@ -5,6 +5,7 @@ import type { StructureResolver } from "sanity/structure";
 const SINGLETONS = [
   { type: "berandaPage", title: "Halaman Beranda" },
   { type: "profilPage", title: "Halaman Profil" },
+  { type: "pariwisataPage", title: "Halaman Pariwisata" },
 ];
 
 export const SINGLETON_TYPES = new Set(SINGLETONS.map(({ type }) => type));

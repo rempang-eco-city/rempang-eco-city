@@ -340,7 +340,7 @@ export async function getKoperasiByRouteKey(routeKey: string) {
   } satisfies KoperasiDetail;
 }
 
-export type PariwisataRouteKey = "mancing" | "mangrove";
+export type PariwisataRouteKey = "mancing" | "mangrove" | "pulau";
 
 export type PariwisataMedia = {
   type: "image" | "video";
@@ -522,4 +522,58 @@ export async function getBerandaPage() {
     {},
     ["berandaPage"]
   );
+}
+
+export type PokdarwisBidang = {
+  name: string;
+  penanggungJawab: string;
+  anggota: string[];
+};
+
+export type PokdarwisPengurus = {
+  name: string;
+  role: string;
+  photo?: string;
+};
+
+export type PariwisataPage = {
+  groupName: string;
+  shortName: string;
+  stats: { label: string; value: string }[];
+  description: string[];
+  penasehat: string[];
+  ketua?: string;
+  sekretaris?: string;
+  bendahara?: string;
+  koordinatorBidang?: string;
+  bidang: PokdarwisBidang[];
+  pengurus: PokdarwisPengurus[];
+};
+
+// Returns null when the singleton hasn't been created yet; the page then
+// shows only the destinations.
+export async function getPariwisataPage() {
+  const page = await sanityFetch<
+    (Omit<PariwisataPage, "description"> & { description: PortableTextBlock[] | null }) | null
+  >(
+    `*[_type == "pariwisataPage" && _id == "pariwisataPage"][0]{
+      groupName,
+      shortName,
+      "stats": coalesce(stats[defined(label) && defined(value)]{ label, value }, []),
+      description,
+      "penasehat": coalesce(penasehat, []),
+      ketua,
+      sekretaris,
+      bendahara,
+      koordinatorBidang,
+      "bidang": coalesce(bidang[defined(name)]{ name, penanggungJawab, "anggota": coalesce(anggota, []) }, []),
+      "pengurus": coalesce(pengurus[defined(name)]{ name, role, "photo": photo.asset->url }, [])
+    }`,
+    {},
+    ["pariwisataPage"]
+  );
+
+  if (!page?.groupName) return null;
+
+  return { ...page, description: blocksToParagraphs(page.description) } satisfies PariwisataPage;
 }

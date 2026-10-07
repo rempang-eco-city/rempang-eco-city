@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Fish, MapPin, Play, TreePine } from "lucide-react";
+import { Fish, MapPin, Play, TreePalm, TreePine } from "lucide-react";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import type {
   PariwisataDestination,
@@ -14,6 +14,7 @@ import { sanityImageUrl } from "@/lib/sanity/image";
 const DESTINATION_TABS = {
   mancing: { label: "Mancing", Icon: Fish },
   mangrove: { label: "Mangrove", Icon: TreePine },
+  pulau: { label: "Pulau", Icon: TreePalm },
 } as const;
 
 const formatRupiah = (value: number) => `Rp${value.toLocaleString("id-ID")}`;

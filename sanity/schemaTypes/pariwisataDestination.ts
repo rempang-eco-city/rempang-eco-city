@@ -1,8 +1,8 @@
 import { defineField, defineType } from "sanity";
 
-// Only two destinations exist today; routeKey drives which tab/icon is
-// shown in the Pariwisata page's destination switcher.
-const ROUTE_KEYS = ["mancing", "mangrove"] as const;
+// routeKey drives which tab/icon is shown in the Pariwisata page's
+// destination switcher (see DESTINATION_TABS in PariwisataContent).
+const ROUTE_KEYS = ["mancing", "mangrove", "pulau"] as const;
 
 export const pariwisataDestination = defineType({
   name: "pariwisataDestination",
