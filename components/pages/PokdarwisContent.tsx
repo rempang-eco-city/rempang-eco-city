@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties } from "react";
 import Marquee from "@/components/Marquee";
 import type { PariwisataPage, PokdarwisBidang } from "@/lib/sanity/queries";
 import { sanityImageUrl } from "@/lib/sanity/image";
@@ -7,7 +7,6 @@ import { sanityImageUrl } from "@/lib/sanity/image";
 // /pariwisata: profile, organisation chart, and a marquee of pengurus.
 export default function PokdarwisContent({ page }: { page: PariwisataPage }) {
   const hasStruktur =
-    page.penasehat.length > 0 ||
     Boolean(page.ketua || page.sekretaris || page.bendahara || page.koordinatorBidang) ||
     page.bidang.length > 0;
 
@@ -110,33 +109,37 @@ export default function PokdarwisContent({ page }: { page: PariwisataPage }) {
   );
 }
 
-const CONNECTOR = "bg-slate-400";
+// Gold org-chart palette from the Pokdarwis design.
+const GOLD_BG = "bg-[#c0974a]";
+const GOLD_BORDER = "border-[#c0974a]";
 
-function VLine({ className = "h-8" }: { className?: string }) {
-  return <span aria-hidden="true" className={`mx-auto block w-px ${CONNECTOR} ${className}`} />;
+function VLine({ className = "h-10" }: { className?: string }) {
+  return <span aria-hidden="true" className={`mx-auto block w-0.5 ${GOLD_BG} ${className}`} />;
 }
 
 function OrgCard({
   title,
-  children,
+  name,
   className = "",
   headerClassName = "",
 }: {
   title: string;
-  children: ReactNode;
+  name: string;
   className?: string;
   headerClassName?: string;
 }) {
   return (
     <div
-      className={`relative overflow-hidden rounded-lg border border-slate-200 bg-white text-center shadow-[0_4px_12px_rgba(15,23,42,0.06)] ${className}`}
+      className={`relative z-10 w-full overflow-hidden rounded-xl border-2 ${GOLD_BORDER} bg-[#e3d7aa] text-center ${className}`}
     >
       <div
-        className={`bg-gradient-to-r from-[#0e8c8c] to-[#0b6577] px-3 py-2 text-[11px] font-bold uppercase leading-tight tracking-wide text-white ${headerClassName}`}
+        className={`rounded-b-lg ${GOLD_BG} px-3 py-1.5 text-xs font-semibold uppercase leading-tight tracking-wide text-white sm:text-sm ${headerClassName}`}
       >
         {title}
       </div>
-      <div className="px-3 py-2.5 text-sm text-text-primary">{children}</div>
+      <p className="px-3 py-2 font-heading text-base font-semibold text-slate-900 sm:text-lg">
+        {name}
+      </p>
     </div>
   );
 }
@@ -146,46 +149,41 @@ function OrgChart({ page }: { page: PariwisataPage }) {
 
   return (
     <div className="flex flex-col items-center">
-      {page.penasehat.length > 0 && (
-        <>
-          <OrgCard title="Penasehat" className="w-56">
-            {page.penasehat.map((name) => (
-              <p key={name}>{name}</p>
-            ))}
-          </OrgCard>
-          <VLine />
-        </>
-      )}
-
-      {page.ketua && <OrgCard title="Ketua" className="w-56">{page.ketua}</OrgCard>}
-
-      {hasMiddleRow && (
-        // Sekretaris and Bendahara hang off the trunk with a horizontal line.
-        // The row is symmetric, so the two line segments meet at the trunk.
-        <div className="relative flex w-full items-center justify-center py-6">
-          <span aria-hidden="true" className={`absolute inset-y-0 left-1/2 w-px -translate-x-1/2 ${CONNECTOR}`} />
-          <OrgCard title="Sekretaris" className="relative z-10 w-36 sm:w-52">
-            {page.sekretaris || "-"}
-          </OrgCard>
-          <span aria-hidden="true" className={`h-px w-6 sm:w-16 lg:w-28 ${CONNECTOR}`} />
-          <span aria-hidden="true" className={`h-px w-6 sm:w-16 lg:w-28 ${CONNECTOR}`} />
-          <OrgCard title="Bendahara" className="relative z-10 w-36 sm:w-52">
-            {page.bendahara || "-"}
-          </OrgCard>
+      {page.ketua && (
+        <div className="w-full max-w-xs">
+          <OrgCard title="Ketua" name={page.ketua} />
         </div>
       )}
 
-      {!hasMiddleRow && page.ketua && page.koordinatorBidang && <VLine />}
+      {hasMiddleRow ? (
+        // The trunk runs from Ketua straight down to Koordinator Bidang; a bar
+        // with rounded elbows branches off it to Sekretaris and Bendahara. The two
+        // columns have no gap, so their centres sit exactly at 25% and 75%.
+        <div className="relative w-full max-w-3xl pt-10 pb-12">
+          <span aria-hidden="true" className={`absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 ${GOLD_BG}`} />
+          <div aria-hidden="true" className={`mx-[25%] h-6 rounded-t-xl border-x-2 border-t-2 ${GOLD_BORDER}`} />
+          <div className="grid grid-cols-2">
+            <div className="flex justify-center px-2 sm:px-6">
+              <OrgCard title="Sekretaris" name={page.sekretaris || "-"} />
+            </div>
+            <div className="flex justify-center px-2 sm:px-6">
+              <OrgCard title="Bendahara" name={page.bendahara || "-"} />
+            </div>
+          </div>
+        </div>
+      ) : (
+        page.ketua && page.koordinatorBidang && <VLine />
+      )}
 
       {page.koordinatorBidang && (
-        <OrgCard title="Koordinator Bidang" className="w-56">
-          {page.koordinatorBidang}
-        </OrgCard>
+        <div className="w-full max-w-xs">
+          <OrgCard title="Koordinator Bidang" name={page.koordinatorBidang} />
+        </div>
       )}
 
       {page.bidang.length > 0 && (
         <>
-          <VLine className="h-6" />
+          <VLine className="h-8" />
           <BidangRow bidang={page.bidang} />
         </>
       )}
@@ -194,48 +192,39 @@ function OrgChart({ page }: { page: PariwisataPage }) {
 }
 
 function BidangRow({ bidang }: { bidang: PokdarwisBidang[] }) {
-  const last = bidang.length - 1;
+  const count = bidang.length;
 
   return (
-    // On lg the columns have no gap (padding instead), so each column's slice of
-    // the horizontal bar touches its neighbour's and they read as one line.
-    <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-0">
-      {bidang.map((item, index) => {
-        const barSpan =
-          index === 0 && index === last
-            ? "hidden"
-            : index === 0
-              ? "left-1/2 right-0"
-              : index === last
-                ? "left-0 right-1/2"
-                : "inset-x-0";
-
-        return (
+    <div className="relative w-full">
+      {/* lg only: a bar from the first to the last column centre, with rounded
+          elbows at both ends and straight drops for the columns in between. The
+          columns have no gap (padding instead), so centres are at (i + 0.5) / n. */}
+      {count > 1 && (
+        <div
+          aria-hidden="true"
+          className={`absolute top-0 hidden h-6 rounded-t-xl border-x-2 border-t-2 lg:block ${GOLD_BORDER}`}
+          style={{ left: `${50 / count}%`, right: `${50 / count}%` }}
+        />
+      )}
+      <div
+        className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-[repeat(var(--bidang-cols),minmax(0,1fr))] lg:gap-0"
+        style={{ "--bidang-cols": count } as CSSProperties}
+      >
+        {bidang.map((item, index) => (
           <div key={`${item.name}-${index}`} className="relative lg:px-2 lg:pt-6">
-            <span aria-hidden="true" className={`absolute top-0 hidden h-px lg:block ${barSpan} ${CONNECTOR}`} />
-            <span aria-hidden="true" className={`absolute left-1/2 top-0 hidden h-6 w-px -translate-x-1/2 lg:block ${CONNECTOR}`} />
-
+            {(count === 1 || (index > 0 && index < count - 1)) && (
+              <span aria-hidden="true" className={`absolute left-1/2 top-0 hidden h-6 w-0.5 -translate-x-1/2 lg:block ${GOLD_BG}`} />
+            )}
             <OrgCard
-              title={`Bidang ${item.name}`}
+              title={item.name}
+              name={item.penanggungJawab}
               className="h-full"
               // Same header height whether the bidang name wraps to 1 or 2 lines.
-              headerClassName="flex min-h-[2.75rem] items-center justify-center"
-            >
-              <p className="text-[11px] text-text-secondary">Penanggung Jawab</p>
-              <p className="font-semibold">{item.penanggungJawab}</p>
-              {item.anggota.length > 0 && (
-                <>
-                  <div className="my-2 border-t border-slate-200" />
-                  <p className="text-[11px] text-text-secondary">Anggota</p>
-                  {item.anggota.map((name, i) => (
-                    <p key={`${name}-${i}`}>{name}</p>
-                  ))}
-                </>
-              )}
-            </OrgCard>
+              headerClassName="flex min-h-[3.25rem] items-center justify-center"
+            />
           </div>
-        );
-      })}
+        ))}
+      </div>
     </div>
   );
 }

@@ -529,7 +529,6 @@ export async function getBerandaPage() {
 export type PokdarwisBidang = {
   name: string;
   penanggungJawab: string;
-  anggota: string[];
 };
 
 export type PokdarwisPengurus = {
@@ -543,7 +542,6 @@ export type PariwisataPage = {
   shortName: string;
   stats: { label: string; value: string }[];
   description: string[];
-  penasehat: string[];
   ketua?: string;
   sekretaris?: string;
   bendahara?: string;
@@ -563,12 +561,11 @@ export async function getPariwisataPage() {
       shortName,
       "stats": coalesce(stats[defined(label) && defined(value)]{ label, value }, []),
       description,
-      "penasehat": coalesce(penasehat, []),
       ketua,
       sekretaris,
       bendahara,
       koordinatorBidang,
-      "bidang": coalesce(bidang[defined(name)]{ name, penanggungJawab, "anggota": coalesce(anggota, []) }, []),
+      "bidang": coalesce(bidang[defined(name)]{ name, penanggungJawab }, []),
       "pengurus": coalesce(pengurus[defined(name)]{ name, role, "photo": photo.asset->url }, [])
     }`,
     {},

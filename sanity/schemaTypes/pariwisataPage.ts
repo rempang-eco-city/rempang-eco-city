@@ -70,13 +70,6 @@ export const pariwisataPage = defineType({
     }),
 
     defineField({
-      name: "penasehat",
-      title: "Penasehat",
-      type: "array",
-      group: "struktur",
-      of: [{ type: "string" }],
-    }),
-    defineField({
       name: "ketua",
       title: "Ketua",
       type: "string",
@@ -123,12 +116,6 @@ export const pariwisataPage = defineType({
               title: "Penanggung Jawab",
               type: "string",
               validation: (rule) => rule.required(),
-            }),
-            defineField({
-              name: "anggota",
-              title: "Anggota",
-              type: "array",
-              of: [{ type: "string" }],
             }),
           ],
           preview: { select: { title: "name", subtitle: "penanggungJawab" } },
