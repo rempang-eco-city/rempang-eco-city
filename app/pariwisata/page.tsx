@@ -32,7 +32,10 @@ export default async function PariwisataPage() {
           description="Jelajahi destinasi wisata unggulan Rempang, lengkap dengan detail aktivitas, paket harga, dan rekomendasi kunjungan."
         />
         {pariwisataPage && <PokdarwisContent page={pariwisataPage} />}
-        <PariwisataContent destinations={destinations} />
+        <PariwisataContent
+          destinations={destinations}
+          eyebrow={pariwisataPage ? `Destinasi ${pariwisataPage.shortName}` : "Destinasi Wisata"}
+        />
       </div>
       <Footer />
     </main>

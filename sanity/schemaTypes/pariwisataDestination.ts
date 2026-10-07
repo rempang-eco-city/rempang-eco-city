@@ -23,6 +23,13 @@ export const pariwisataDestination = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "tabLabel",
+      title: "Label Tab (opsional)",
+      type: "string",
+      description:
+        'Teks pada tombol pilihan destinasi. Contoh: "Pulau Mubut Darat". Jika kosong, memakai label bawaan sesuai Kunci Destinasi.',
+    }),
+    defineField({
       name: "location",
       title: "Lokasi",
       type: "string",
@@ -50,9 +57,8 @@ export const pariwisataDestination = defineType({
     }),
     defineField({
       name: "bestTime",
-      title: "Waktu Terbaik Kunjungan",
+      title: "Waktu Terbaik Kunjungan (opsional)",
       type: "string",
-      validation: (rule) => rule.required(),
     }),
     defineField({
       name: "facilities",

@@ -366,12 +366,13 @@ export type PariwisataPaket = {
 export type PariwisataDestination = {
   _id: string;
   routeKey: PariwisataRouteKey;
+  tabLabel?: string;
   name: string;
   location: string;
   category: string;
   summary?: string;
   description: string;
-  bestTime: string;
+  bestTime?: string;
   facilities: string[];
   tips: string[];
   packages: PariwisataPaket[];
@@ -384,6 +385,7 @@ export async function getPariwisataDestinations() {
     `*[_type == "pariwisataDestination"] | order(_createdAt asc) {
       _id,
       routeKey,
+      tabLabel,
       name,
       location,
       category,
