@@ -562,3 +562,18 @@ export async function getPariwisataPage() {
 
   return { ...page, description: blocksToParagraphs(page.description) } satisfies PariwisataPage;
 }
+
+export type ListingPageHeader = {
+  headerTitle?: string;
+  headerDescription?: string;
+};
+
+// Header singletons for the list pages (/umkm, /berita). Returns null until
+// the document exists; pages then fall back to their built-in text.
+export async function getListingPageHeader(type: "umkmPage" | "beritaPage") {
+  return sanityFetch<ListingPageHeader | null>(
+    `*[_type == $type && _id == $type][0]{ headerTitle, headerDescription }`,
+    { type },
+    [type]
+  );
+}

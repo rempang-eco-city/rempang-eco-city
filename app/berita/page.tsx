@@ -1,27 +1,35 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-// Breadcrumb removed per request
 import PageHeader from "@/components/PageHeader";
 import BeritaContent from "@/components/pages/BeritaContent";
-import { getNewsArticles } from "@/lib/sanity/queries";
+import { getNewsArticles, getListingPageHeader } from "@/lib/sanity/queries";
 
-export const metadata: Metadata = {
-  title: "Berita",
-  description:
-    "Kabar terbaru seputar Rempang Eco City.",
-};
+// Used until the header fields are filled in the Studio.
+const DEFAULT_TITLE = "Berita & Informasi";
+const DEFAULT_DESCRIPTION = "Kabar terbaru seputar Rempang Eco City";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const header = await getListingPageHeader("beritaPage");
+  return {
+    title: "Berita",
+    description: header?.headerDescription || DEFAULT_DESCRIPTION,
+  };
+}
 
 export default async function BeritaPage() {
-  const articles = await getNewsArticles();
+  const [articles, header] = await Promise.all([
+    getNewsArticles(),
+    getListingPageHeader("beritaPage"),
+  ]);
 
   return (
     <main>
       <Navbar />
       <div className="pt-20 md:pt-24">
-        <PageHeader 
-          title="Berita & Informasi"
-          description="Kabar terbaru seputar Rempang Eco City"
+        <PageHeader
+          title={header?.headerTitle || DEFAULT_TITLE}
+          description={header?.headerDescription || DEFAULT_DESCRIPTION}
         />
         <BeritaContent articles={articles} />
       </div>
