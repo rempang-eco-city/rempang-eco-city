@@ -1,14 +1,22 @@
 import { defineField, defineType } from "sanity";
 
-// routeKey drives which tab/icon is shown in the Pariwisata page's
-// destination switcher (see DESTINATION_TABS in PariwisataContent).
-const ROUTE_KEYS = ["mancing", "mangrove", "pulau"] as const;
+// routeKey identifies a destination and picks its default tab label (see
+// DEFAULT_TAB_LABELS in PariwisataContent). Destinations live as an array on
+// the pariwisataPage singleton, so they are edited together with the page.
+export const ROUTE_KEYS = ["mancing", "mangrove", "pulau"] as const;
 
 export const pariwisataDestination = defineType({
   name: "pariwisataDestination",
-  title: "Destinasi Pariwisata",
-  type: "document",
+  title: "Destinasi Wisata",
+  type: "object",
   fields: [
+    defineField({
+      name: "hidden",
+      title: "Sembunyikan dari website",
+      type: "boolean",
+      description: "Aktifkan untuk destinasi yang belum siap ditampilkan.",
+      initialValue: false,
+    }),
     defineField({
       name: "routeKey",
       title: "Kunci Destinasi",
@@ -104,6 +112,11 @@ export const pariwisataDestination = defineType({
     }),
   ],
   preview: {
-    select: { title: "name", subtitle: "location", media: "gallery.0" },
+    select: { title: "name", hidden: "hidden", location: "location", media: "gallery.0" },
+    prepare: ({ title, hidden, location, media }) => ({
+      title,
+      subtitle: hidden ? "Disembunyikan dari website" : location,
+      media,
+    }),
   },
 });

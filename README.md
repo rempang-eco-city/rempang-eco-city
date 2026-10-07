@@ -45,7 +45,7 @@ Dibangun dengan Next.js 14 (App Router), TypeScript, Tailwind CSS, Framer Motion
 | Berita | Sanity, dokumen `newsArticle` |
 | UMKM | Sanity, dokumen `umkmItem` |
 | Koperasi | Sanity, dokumen `koperasi` (`routeKey`: `transmigrasi` / `merah-putih`) |
-| Pariwisata | Sanity, dokumen `pariwisataDestination` (`routeKey`: `mancing` / `mangrove`) |
+| Pariwisata | Sanity, dokumen singleton `pariwisataPage` (menu "Halaman Pariwisata"): header, profil Pokdarwis, gambar struktur, pengurus, dan daftar destinasi (`routeKey`: `mancing` / `mangrove` / `pulau`) |
 | Profil | Sanity, dokumen singleton `profilPage` (menu "Halaman Profil" di Studio) |
 | Beranda | Sanity, dokumen singleton `berandaPage` (menu "Halaman Beranda" di Studio) untuk teks, gambar, dan alamat peta tiap section. Card Koperasi, UMKM, dan Berita diambil dari dokumennya masing-masing |
 
@@ -58,7 +58,7 @@ Berita diurutkan berdasarkan field **Tanggal Terbit** (`publishedAt`). Dokumen l
 `npm run migrate:sanity` mengunggah konten awal (beserta gambarnya) ke Sanity. Script ini memakai `createOrReplace` dengan `_id` tetap, sehingga **menjalankannya ulang akan menimpa hasil edit di Studio** untuk dokumen yang sama. Batasi dengan `--only`:
 
 ```bash
-npm run migrate:sanity -- --only=koperasi,pariwisata
+npm run migrate:sanity -- --only=koperasi,profil
 ```
 
-Pilihan section: `news`, `umkm`, `koperasi`, `pariwisata`, `profil`, `beranda`, dan `--only` wajib diisi. Dokumen yang dibuat lewat Studio punya `_id` acak, jadi memigrasi section yang isinya sudah diisi manual (saat ini `news` dan `umkm`) akan menghasilkan **duplikat**.
+Pilihan section: `news`, `umkm`, `koperasi`, `profil`, `beranda`, dan `--only` wajib diisi. Dokumen yang dibuat lewat Studio punya `_id` acak, jadi memigrasi section yang isinya sudah diisi manual (saat ini `news` dan `umkm`) akan menghasilkan **duplikat**.

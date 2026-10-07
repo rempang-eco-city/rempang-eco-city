@@ -380,39 +380,6 @@ export type PariwisataDestination = {
   whatsapp: string;
 };
 
-export async function getPariwisataDestinations() {
-  return sanityFetch<PariwisataDestination[]>(
-    `*[_type == "pariwisataDestination"] | order(_createdAt asc) {
-      _id,
-      routeKey,
-      tabLabel,
-      name,
-      location,
-      category,
-      summary,
-      description,
-      bestTime,
-      "facilities": coalesce(facilities, []),
-      "tips": coalesce(tips, []),
-      "packages": coalesce(packages[defined(label) && defined(total)]{
-        label,
-        title,
-        participants,
-        durationHours,
-        "items": coalesce(items[defined(name) && defined(price)]{ name, price, unit, note }, []),
-        total
-      }, []),
-      "gallery": coalesce(gallery[defined(asset)]{
-        "type": select(_type == "video" => "video", "image"),
-        "url": asset->url
-      }, []),
-      whatsapp
-    }`,
-    {},
-    ["pariwisataDestination"]
-  );
-}
-
 export type ProfilLembagaItem = {
   title: string;
   description?: string;
@@ -526,11 +493,6 @@ export async function getBerandaPage() {
   );
 }
 
-export type PokdarwisBidang = {
-  name: string;
-  penanggungJawab: string;
-};
-
 export type PokdarwisPengurus = {
   name: string;
   role: string;
@@ -538,41 +500,65 @@ export type PokdarwisPengurus = {
 };
 
 export type PariwisataPage = {
-  groupName: string;
-  shortName: string;
+  headerTitle?: string;
+  headerDescription?: string;
+  /** Pokdarwis profile; the profile, struktur and pengurus sections need it. */
+  groupName?: string;
+  shortName?: string;
   stats: { label: string; value: string }[];
   description: string[];
-  ketua?: string;
-  sekretaris?: string;
-  bendahara?: string;
-  koordinatorBidang?: string;
-  bidang: PokdarwisBidang[];
+  structureImage?: string;
   pengurus: PokdarwisPengurus[];
+  /** Visible destinations only, in the order set in the Studio. */
+  destinations: PariwisataDestination[];
 };
 
-// Returns null when the singleton hasn't been created yet; the page then
-// shows only the destinations.
+// Returns null when the singleton hasn't been created yet.
 export async function getPariwisataPage() {
   const page = await sanityFetch<
     (Omit<PariwisataPage, "description"> & { description: PortableTextBlock[] | null }) | null
   >(
     `*[_type == "pariwisataPage" && _id == "pariwisataPage"][0]{
+      headerTitle,
+      headerDescription,
       groupName,
       shortName,
       "stats": coalesce(stats[defined(label) && defined(value)]{ label, value }, []),
       description,
-      ketua,
-      sekretaris,
-      bendahara,
-      koordinatorBidang,
-      "bidang": coalesce(bidang[defined(name)]{ name, penanggungJawab }, []),
-      "pengurus": coalesce(pengurus[defined(name)]{ name, role, "photo": photo.asset->url }, [])
+      "structureImage": structureImage.asset->url,
+      "pengurus": coalesce(pengurus[defined(name)]{ name, role, "photo": photo.asset->url }, []),
+      "destinations": coalesce(destinations[hidden != true && defined(routeKey) && defined(name)]{
+        "_id": _key,
+        routeKey,
+        tabLabel,
+        name,
+        location,
+        category,
+        summary,
+        description,
+        bestTime,
+        "facilities": coalesce(facilities, []),
+        "tips": coalesce(tips, []),
+        "packages": coalesce(packages[defined(label) && defined(total)]{
+          label,
+          title,
+          participants,
+          durationHours,
+          "items": coalesce(items[defined(name) && defined(price)]{ name, price, unit, note }, []),
+          total
+        }, []),
+        "gallery": coalesce(gallery[defined(asset)]{
+          "type": select(_type == "video" => "video", "image"),
+          "url": asset->url
+        }, []),
+        whatsapp
+      }, [])
     }`,
     {},
     ["pariwisataPage"]
   );
 
-  if (!page?.groupName) return null;
+  if (!page) return null;
 
   return { ...page, description: blocksToParagraphs(page.description) } satisfies PariwisataPage;
 }

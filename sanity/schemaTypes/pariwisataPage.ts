@@ -1,17 +1,34 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 
 // Singleton: exactly one document with _id "pariwisataPage" (see sanity/structure.ts).
-// Holds the Pokdarwis sections shown above the destinations on /pariwisata.
+// Holds everything on /pariwisata: header, Pokdarwis sections and destinations.
 export const pariwisataPage = defineType({
   name: "pariwisataPage",
   title: "Halaman Pariwisata",
   type: "document",
   groups: [
-    { name: "profil", title: "Profil Pokdarwis", default: true },
+    { name: "header", title: "Header", default: true },
+    { name: "profil", title: "Profil Pokdarwis" },
     { name: "struktur", title: "Struktur Organisasi" },
     { name: "pengurus", title: "Pengurus" },
+    { name: "destinasi", title: "Destinasi Wisata" },
   ],
   fields: [
+    defineField({
+      name: "headerTitle",
+      title: "Judul Halaman",
+      type: "string",
+      group: "header",
+      initialValue: "Pariwisata Rempang Eco City",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "headerDescription",
+      title: "Subjudul Halaman",
+      type: "text",
+      rows: 2,
+      group: "header",
+    }),
     defineField({
       name: "groupName",
       title: "Nama Lengkap Kelompok",
@@ -70,57 +87,12 @@ export const pariwisataPage = defineType({
     }),
 
     defineField({
-      name: "ketua",
-      title: "Ketua",
-      type: "string",
+      name: "structureImage",
+      title: "Gambar Struktur Organisasi",
+      type: "image",
       group: "struktur",
-    }),
-    defineField({
-      name: "sekretaris",
-      title: "Sekretaris",
-      type: "string",
-      group: "struktur",
-    }),
-    defineField({
-      name: "bendahara",
-      title: "Bendahara",
-      type: "string",
-      group: "struktur",
-    }),
-    defineField({
-      name: "koordinatorBidang",
-      title: "Koordinator Bidang",
-      type: "string",
-      group: "struktur",
-    }),
-    defineField({
-      name: "bidang",
-      title: "Bidang",
-      type: "array",
-      group: "struktur",
-      of: [
-        defineArrayMember({
-          type: "object",
-          name: "pokdarwisBidang",
-          title: "Bidang",
-          fields: [
-            defineField({
-              name: "name",
-              title: "Nama Bidang",
-              type: "string",
-              description: 'Tanpa kata "Bidang". Contoh: "Humas & Pemasaran"',
-              validation: (rule) => rule.required(),
-            }),
-            defineField({
-              name: "penanggungJawab",
-              title: "Penanggung Jawab",
-              type: "string",
-              validation: (rule) => rule.required(),
-            }),
-          ],
-          preview: { select: { title: "name", subtitle: "penanggungJawab" } },
-        }),
-      ],
+      options: { hotspot: true },
+      description: "Bagan struktur organisasi dalam bentuk gambar (landscape).",
     }),
 
     defineField({
@@ -128,8 +100,7 @@ export const pariwisataPage = defineType({
       title: "Pengurus",
       type: "array",
       group: "pengurus",
-      description:
-        'Ditampilkan sebagai deretan kartu yang bergerak. Pengurus tanpa foto tampil dengan kotak "Foto".',
+      description: 'Ditampilkan sebagai kartu foto. Pengurus tanpa foto tampil dengan kotak "Foto".',
       of: [
         defineArrayMember({
           type: "object",
@@ -159,6 +130,20 @@ export const pariwisataPage = defineType({
           preview: { select: { title: "name", subtitle: "role", media: "photo" } },
         }),
       ],
+    }),
+    defineField({
+      name: "destinations",
+      title: "Destinasi Wisata",
+      type: "array",
+      group: "destinasi",
+      description: "Urutan di sini menentukan urutan tab di website. Seret untuk mengubah urutan.",
+      of: [{ type: "pariwisataDestination" }],
+      validation: (rule) =>
+        rule.custom((destinations) => {
+          const keys = (destinations ?? []).map((d) => (d as { routeKey?: string }).routeKey).filter(Boolean);
+          const duplicate = keys.find((key, i) => keys.indexOf(key) !== i);
+          return duplicate ? `Kunci Destinasi "${duplicate}" dipakai lebih dari sekali.` : true;
+        }),
     }),
   ],
   preview: {

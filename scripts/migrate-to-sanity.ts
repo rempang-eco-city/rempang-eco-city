@@ -12,9 +12,10 @@
  * them. That also means re-running OVERWRITES any edits made in the Studio for
  * those documents — use --only to limit which sections are migrated:
  *
- *   npm run migrate:sanity -- --only=koperasi,pariwisata
+ *   npm run migrate:sanity -- --only=koperasi,profil
  *
- * Sections: news, umkm, koperasi, pariwisata, profil, beranda. --only is required.
+ * Sections: news, umkm, koperasi, profil, beranda. --only is required.
+ * (Pariwisata content is edited directly in the Studio, on the pariwisataPage singleton.)
  *
  * Documents created in the Studio have random _ids, so migrating a section
  * that was already filled in by hand creates DUPLICATES rather than updates.
@@ -354,56 +355,6 @@ const koperasiData = [
   },
 ];
 
-// Snapshot of the pariwisata content that was hardcoded before Sanity.
-const pariwisataData = [
-  {
-    routeKey: "mancing",
-    name: "Wisata Mancing Rempang",
-    location: "Pesisir Timur Rempang",
-    category: "Jasa",
-    summary:
-      "Nikmati pengalaman memancing bersama nelayan lokal dengan spot laut terbuka dan perairan dangkal.",
-    description:
-      "Wisata Mancing Rempang menghadirkan pengalaman trip memancing yang cocok untuk pemula hingga hobiis. Pengunjung dapat memilih trip pagi atau sore dengan opsi sewa perahu, perlengkapan dasar, dan pemandu lokal.",
-    bestTime: "Pukul 05.30 - 09.30 atau 15.30 - 18.30",
-    facilities: ["Sewa perahu", "Pemandu lokal", "Paket umpan", "Area istirahat"],
-    tips: [
-      "Gunakan sunblock dan topi saat trip pagi.",
-      "Pilih trip sore untuk cuaca lebih teduh.",
-      "Reservasi minimal H-1 untuk grup.",
-    ],
-    gallery: [
-      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1516939884455-1445c8652f83?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1545816250-e12bedba42ba?q=80&w=1200&auto=format&fit=crop",
-    ],
-    whatsapp: "https://wa.me/6281234567871",
-  },
-  {
-    routeKey: "mangrove",
-    name: "Eksplorasi Mangrove Rempang",
-    location: "Pesisir Rempang",
-    category: "Alam",
-    summary:
-      "Susuri jalur mangrove dengan perahu kecil sambil mengenal ekosistem pesisir Rempang.",
-    description:
-      "Eksplorasi Mangrove Rempang menawarkan wisata alam edukatif yang ramah keluarga. Pengunjung dapat menikmati jalur tracking, naik perahu, hingga sesi edukasi konservasi bersama komunitas setempat.",
-    bestTime: "Pukul 07.00 - 10.00 atau 16.00 - 18.00",
-    facilities: ["Dermaga kecil", "Perahu susur", "Pemandu edukasi", "Spot foto"],
-    tips: [
-      "Gunakan alas kaki yang nyaman untuk jalur kayu.",
-      "Bawa air minum sendiri untuk perjalanan.",
-      "Datang saat sore untuk cahaya foto terbaik.",
-    ],
-    gallery: [
-      "https://images.unsplash.com/photo-1473773508845-188df298d2d1?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1431794062232-2a99a5431c6c?q=80&w=1200&auto=format&fit=crop",
-    ],
-    whatsapp: "https://wa.me/6281234567872",
-  },
-];
-
 async function migrateKoperasi() {
   console.log(`\nMigrating ${koperasiData.length} koperasi...`);
 
@@ -452,39 +403,6 @@ async function migrateKoperasi() {
 
     await client.createOrReplace(doc);
     console.log(`  ✓ ${koperasi.name}`);
-  }
-}
-
-async function migratePariwisata() {
-  console.log(`\nMigrating ${pariwisataData.length} pariwisata destinations...`);
-
-  for (const destination of pariwisataData) {
-    const gallery = await Promise.all(
-      destination.gallery.map(async (imagePath, index) => ({
-        _type: "image" as const,
-        _key: `gallery-${index}`,
-        asset: await uploadImage(imagePath),
-      }))
-    );
-
-    const doc = {
-      _id: `pariwisataDestination-${destination.routeKey}`,
-      _type: "pariwisataDestination",
-      routeKey: destination.routeKey,
-      name: destination.name,
-      location: destination.location,
-      category: destination.category,
-      summary: destination.summary,
-      description: destination.description,
-      bestTime: destination.bestTime,
-      facilities: destination.facilities,
-      tips: destination.tips,
-      gallery,
-      whatsapp: destination.whatsapp,
-    };
-
-    await client.createOrReplace(doc);
-    console.log(`  ✓ ${destination.name}`);
   }
 }
 
@@ -613,7 +531,6 @@ const SECTIONS = {
   news: migrateNewsArticles,
   umkm: migrateUmkmCatalog,
   koperasi: migrateKoperasi,
-  pariwisata: migratePariwisata,
   profil: migrateProfil,
   beranda: migrateBeranda,
 } as const;

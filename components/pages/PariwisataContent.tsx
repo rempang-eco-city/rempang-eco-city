@@ -8,6 +8,7 @@ import type {
   PariwisataPaket,
 } from "@/lib/sanity/queries";
 import { sanityImageUrl } from "@/lib/sanity/image";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
 
 // Fallback tab text per routeKey when a destination has no tabLabel in the CMS.
 const DEFAULT_TAB_LABELS: Record<PariwisataDestination["routeKey"], string> = {
@@ -164,8 +165,10 @@ export default function PariwisataContent({
               href={activeDestination.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-5 inline-flex items-center justify-center rounded-lg bg-[#16a34a] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#15803d]"
+              // Same WhatsApp style as the button on the UMKM detail page.
+              className="mt-5 inline-flex items-center justify-center gap-2 rounded-xl bg-[#2bb673] px-6 py-3 text-sm font-medium text-white transition hover:bg-[#239d63]"
             >
+              <WhatsAppIcon />
               Hubungi Pengelola Wisata
             </a>
           </div>

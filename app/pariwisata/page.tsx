@@ -2,39 +2,45 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-// Breadcrumb removed per request
 import PageHeader from "@/components/PageHeader";
 import PariwisataContent from "@/components/pages/PariwisataContent";
 import PokdarwisContent from "@/components/pages/PokdarwisContent";
-import { getPariwisataDestinations, getPariwisataPage } from "@/lib/sanity/queries";
+import { getPariwisataPage } from "@/lib/sanity/queries";
 import { FEATURES } from "@/lib/features";
 
-export const metadata: Metadata = {
-  title: "Pariwisata",
-  description:
-    "Jelajahi destinasi wisata unggulan Rempang, lengkap dengan paket harga dan rekomendasi kunjungan.",
-};
+// Used until the header fields are filled in the Studio.
+const DEFAULT_TITLE = "Pariwisata Rempang Eco City";
+const DEFAULT_DESCRIPTION =
+  "Jelajahi destinasi wisata unggulan Rempang Eco City, lengkap dengan detail aktivitas, paket harga, dan rekomendasi kunjungan.";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPariwisataPage();
+  return {
+    title: "Pariwisata",
+    description: page?.headerDescription || DEFAULT_DESCRIPTION,
+  };
+}
 
 export default async function PariwisataPage() {
   if (!FEATURES.pariwisata) notFound();
 
-  const [destinations, pariwisataPage] = await Promise.all([
-    getPariwisataDestinations(),
-    getPariwisataPage(),
-  ]);
+  const page = await getPariwisataPage();
+  const { groupName, shortName } = page ?? {};
 
   return (
     <main>
       <Navbar />
       <div className="pt-20 md:pt-24">
-        <PageHeader 
-          title="Pariwisata Rempang Eco City"
-          description="Jelajahi destinasi wisata unggulan Rempang, lengkap dengan detail aktivitas, paket harga, dan rekomendasi kunjungan."
+        <PageHeader
+          title={page?.headerTitle || DEFAULT_TITLE}
+          description={page?.headerDescription || DEFAULT_DESCRIPTION}
         />
-        {pariwisataPage && <PokdarwisContent page={pariwisataPage} />}
+        {page && groupName && shortName && (
+          <PokdarwisContent page={{ ...page, groupName, shortName }} />
+        )}
         <PariwisataContent
-          destinations={destinations}
-          eyebrow={pariwisataPage ? `Destinasi ${pariwisataPage.shortName}` : "Destinasi Wisata"}
+          destinations={page?.destinations ?? []}
+          eyebrow={shortName ? `Destinasi ${shortName}` : "Destinasi Wisata"}
         />
       </div>
       <Footer />
