@@ -27,29 +27,23 @@ const DEFAULT_CENTER: L.LatLngTuple = [0.8095, 104.2185];
 const DEFAULT_ZOOM = 15;
 const SELECTED_ZOOM = 17;
 
-// "Peta" is the default: OpenStreetMap already has the relocation housing
-// streets, while the Esri satellite photos here predate the construction.
-const BASE_LAYERS = {
-  jalan: {
-    label: "Peta",
-    url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-    options: {
-      maxNativeZoom: 19,
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>',
-    },
-  },
-  satelit: {
-    label: "Satelit",
-    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-    options: {
-      maxNativeZoom: 18,
-      attribution: 'Citra: <a href="https://www.esri.com" target="_blank" rel="noopener">Esri</a>',
-    },
-  },
-} as const;
+// Street map for the interactive layers. OpenStreetMap already has the
+// relocation housing streets.
+const OSM_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+const OSM_ATTRIBUTION =
+  '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>';
 
-type BaseLayerKey = keyof typeof BASE_LAYERS;
+// "Satelit" shows Google Maps in an iframe: the free tile sources (Esri,
+// Sentinel-2) only have photos from before the construction, while Google's
+// imagery shows the new housing. Our markers and the slope layer cannot be
+// drawn inside the iframe, so they are hidden in this mode.
+type SatelliteView = { lat: number; lng: number; zoom: number };
+
+function googleSatelliteUrl(view: SatelliteView, place: PetaLokasi | null) {
+  // `q` drops a pin on the chosen place; `ll` only centres the map.
+  const target = place ? `q=${place.lat},${place.lng}&z=18` : `ll=${view.lat},${view.lng}&z=${view.zoom}`;
+  return `https://www.google.com/maps?${target}&t=k&output=embed`;
+}
 
 const KATEGORI_STYLE: Record<PetaKategori, { color: string; Icon: ComponentType<LucideProps> }> = {
   "warung-makan": { color: "#ea580c", Icon: UtensilsCrossed },
@@ -97,7 +91,8 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
   const mapRef = useRef<L.Map | null>(null);
   const isFirstFilterRef = useRef(true);
 
-  const [baseLayer, setBaseLayer] = useState<BaseLayerKey>("jalan");
+  // null = interactive street map; set = Google satellite iframe at that view.
+  const [satelliteView, setSatelliteView] = useState<SatelliteView | null>(null);
   const [showSlope, setShowSlope] = useState(false);
   const [filter, setFilter] = useState<Filter>("semua");
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -134,6 +129,7 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
     map.on("focus", () => map.scrollWheelZoom.enable());
     map.on("blur", () => map.scrollWheelZoom.disable());
     map.attributionControl.setPrefix(false);
+    L.tileLayer(OSM_URL, { maxZoom: 19, attribution: OSM_ATTRIBUTION }).addTo(map);
 
     if (lokasi.length > 0) {
       map.fitBounds(L.latLngBounds(lokasi.map(({ lat, lng }) => [lat, lng])), {
@@ -151,17 +147,6 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
     // from the effects below.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    const map = mapRef.current;
-    if (!map) return;
-    const { url, options } = BASE_LAYERS[baseLayer];
-    const layer = L.tileLayer(url, { ...options, maxZoom: 19 }).addTo(map);
-    layer.bringToBack();
-    return () => {
-      layer.remove();
-    };
-  }, [baseLayer]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -228,6 +213,25 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
     });
   }, [selected]);
 
+  const showSatellite = () => {
+    const map = mapRef.current;
+    if (!map) return;
+    const center = map.getCenter();
+    setSatelliteView({ lat: center.lat, lng: center.lng, zoom: Math.round(map.getZoom()) });
+  };
+
+  const toggleSlope = () => {
+    // The slope layer only exists on the street map, so switch back to it.
+    if (satelliteView) {
+      setSatelliteView(null);
+      setShowSlope(true);
+    } else {
+      setShowSlope((value) => !value);
+    }
+  };
+
+  const slopeVisible = showSlope && !satelliteView;
+
   const changeFilter = (next: Filter) => {
     setFilter(next);
     setSelectedId(null);
@@ -239,28 +243,43 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
       <div className="relative isolate h-[420px] md:h-[480px] lg:h-full">
         <div ref={containerRef} className="h-full w-full bg-slate-200" aria-label="Peta interaktif Rempang Eco City" />
 
-        <div className="absolute right-3 top-3 z-[1000] flex flex-col items-end gap-2">
+        {satelliteView && (
+          // Above Leaflet's controls (z-index 1000), below our buttons.
+          <iframe
+            title="Citra satelit Rempang Eco City (Google Maps)"
+            src={googleSatelliteUrl(satelliteView, selected)}
+            className="absolute inset-0 z-[1001] h-full w-full border-0"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            allowFullScreen
+          />
+        )}
+
+        <div className="absolute right-3 top-3 z-[1002] flex flex-col items-end gap-2">
           <div className="flex rounded-lg bg-white p-1 shadow-md" role="group" aria-label="Jenis peta">
-            {(Object.keys(BASE_LAYERS) as BaseLayerKey[]).map((key) => (
+            {[
+              { label: "Peta", active: !satelliteView, onClick: () => setSatelliteView(null) },
+              { label: "Satelit", active: Boolean(satelliteView), onClick: showSatellite },
+            ].map(({ label, active, onClick }) => (
               <button
-                key={key}
+                key={label}
                 type="button"
-                aria-pressed={baseLayer === key}
-                onClick={() => setBaseLayer(key)}
+                aria-pressed={active}
+                onClick={onClick}
                 className={`rounded-md px-3 py-1.5 text-xs font-semibold transition ${
-                  baseLayer === key ? "bg-primary-blue text-white" : "text-slate-600 hover:text-primary-blue"
+                  active ? "bg-primary-blue text-white" : "text-slate-600 hover:text-primary-blue"
                 }`}
               >
-                {BASE_LAYERS[key].label}
+                {label}
               </button>
             ))}
           </div>
           <button
             type="button"
-            aria-pressed={showSlope}
-            onClick={() => setShowSlope((value) => !value)}
+            aria-pressed={slopeVisible}
+            onClick={toggleSlope}
             className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold shadow-md transition ${
-              showSlope ? "bg-primary-blue text-white" : "bg-white text-slate-700 hover:text-primary-blue"
+              slopeVisible ? "bg-primary-blue text-white" : "bg-white text-slate-700 hover:text-primary-blue"
             }`}
           >
             <Mountain size={14} />
@@ -268,7 +287,7 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
           </button>
         </div>
 
-        {showSlope && (
+        {slopeVisible && (
           <div className="absolute bottom-6 left-3 z-[1000] hidden w-48 rounded-lg bg-white/95 p-3 text-xs shadow-md lg:block">
             <SlopeLegend />
           </div>
@@ -276,7 +295,7 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
       </div>
 
       {/* Below lg the legend would cover most of the map, so it sits under it. */}
-      {showSlope && (
+      {slopeVisible && (
         <div className="border-t border-border-color bg-white p-4 text-xs lg:hidden">
           <SlopeLegend />
         </div>
