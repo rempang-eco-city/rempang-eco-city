@@ -14,6 +14,7 @@ import { profilPage } from "./profilPage";
 import { berandaPage } from "./berandaPage";
 import { pariwisataPage } from "./pariwisataPage";
 import { beritaPage, umkmPage } from "./listingPageHeaders";
+import { petaLokasi } from "./petaLokasi";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -33,5 +34,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     pariwisataPage,
     umkmPage,
     beritaPage,
+    petaLokasi,
   ],
 };

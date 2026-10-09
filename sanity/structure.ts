@@ -3,14 +3,29 @@ import type { StructureResolver } from "sanity/structure";
 // Studio sidebar, in the same order as the site's Navbar.
 // - "singleton": opens its one document directly (edited at _id === type name)
 // - "list": shows all documents of `type`
-// - "listWithHeader": a folder with the page's header singleton and the list
+// - "listWithHeader": a folder with the page's header singleton (shown as
+//   `headerTitle`, default "Header Halaman") and the list
 type MenuItem =
   | { kind: "singleton"; type: string; title: string }
   | { kind: "list"; type: string; title: string }
-  | { kind: "listWithHeader"; type: string; headerType: string; title: string; listTitle: string };
+  | {
+      kind: "listWithHeader";
+      type: string;
+      headerType: string;
+      title: string;
+      headerTitle?: string;
+      listTitle: string;
+    };
 
 const MENU: MenuItem[] = [
-  { kind: "singleton", type: "berandaPage", title: "Halaman Beranda" },
+  {
+    kind: "listWithHeader",
+    type: "petaLokasi",
+    headerType: "berandaPage",
+    title: "Halaman Beranda",
+    headerTitle: "Konten Halaman",
+    listTitle: "Lokasi di Peta",
+  },
   { kind: "singleton", type: "profilPage", title: "Halaman Profil" },
   { kind: "list", type: "koperasi", title: "Halaman Koperasi" },
   { kind: "singleton", type: "pariwisataPage", title: "Halaman Pariwisata" },
@@ -46,7 +61,7 @@ export const structure: StructureResolver = (S) =>
             S.list()
               .title(item.title)
               .items([
-                singleton(item.headerType, "Header Halaman"),
+                singleton(item.headerType, item.headerTitle ?? "Header Halaman"),
                 S.documentTypeListItem(item.type).title(item.listTitle),
               ])
           );

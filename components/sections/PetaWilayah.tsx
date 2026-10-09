@@ -2,11 +2,14 @@
 
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
+import { ExternalLink } from "lucide-react";
+import type { PetaLokasi } from "@/lib/sanity/queries";
 
+// Leaflet needs `window`, so the map only renders in the browser.
 const RempangMap = dynamic(() => import("./RempangMap"), {
   ssr: false,
   loading: () => (
-    <div className="flex h-full min-h-[450px] w-full items-center justify-center bg-slate-100 text-sm font-medium text-slate-500">
+    <div className="flex h-[420px] w-full items-center justify-center bg-slate-100 text-sm font-medium text-slate-500 md:h-[480px] lg:h-[560px]">
       Memuat peta Rempang...
     </div>
   ),
@@ -16,9 +19,12 @@ type Props = {
   title: string;
   description?: string;
   address: string;
+  lokasi: PetaLokasi[];
 };
 
-export default function PetaWilayah({ title, description, address }: Props) {
+export default function PetaWilayah({ title, description, address, lokasi }: Props) {
+  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+
   return (
     <section className="bg-white py-16 md:py-24">
       <div className="container-content">
@@ -46,10 +52,20 @@ export default function PetaWilayah({ title, description, address }: Props) {
           transition={{ duration: 0.7 }}
           className="rounded-xl overflow-hidden border border-border-color shadow-sm"
         >
-          <div className="bg-bg-light h-[450px] md:h-[520px] w-full">
-            <RempangMap address={address} />
-          </div>
+          <RempangMap lokasi={lokasi} />
         </motion.div>
+
+        <div className="mt-4 text-right">
+          <a
+            href={googleMapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-primary-blue hover:underline"
+          >
+            Buka di Google Maps
+            <ExternalLink size={14} />
+          </a>
+        </div>
       </div>
     </section>
   );

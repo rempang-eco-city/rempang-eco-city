@@ -1,6 +1,7 @@
 import type { PortableTextBlock as RichTextBlock } from "@portabletext/react";
 import { sanityClient } from "./client";
 import type { LayananIconKey } from "@/lib/layananIcons";
+import { parseKoordinat, type PetaKategori } from "@/lib/peta";
 
 const REVALIDATE_SECONDS = 60;
 
@@ -576,4 +577,40 @@ export async function getListingPageHeader(type: "umkmPage" | "beritaPage") {
     { type },
     [type]
   );
+}
+
+export type PetaLokasi = {
+  _id: string;
+  name: string;
+  category: PetaKategori;
+  lat: number;
+  lng: number;
+  photo?: string;
+  description?: string;
+  link?: string;
+};
+
+export async function getPetaLokasi(): Promise<PetaLokasi[]> {
+  const rows = await sanityFetch<
+    Array<Omit<PetaLokasi, "lat" | "lng"> & { coordinates?: string }>
+  >(
+    `*[_type == "petaLokasi" && defined(name) && defined(category)] | order(name asc){
+      _id,
+      name,
+      category,
+      coordinates,
+      "photo": photo.asset->url,
+      description,
+      link
+    }`,
+    {},
+    ["petaLokasi"]
+  );
+
+  // Coordinates are typed as text in the Studio; skip any that do not parse
+  // rather than placing a marker in the wrong spot.
+  return rows.flatMap(({ coordinates, ...lokasi }) => {
+    const point = parseKoordinat(coordinates);
+    return point ? [{ ...lokasi, ...point }] : [];
+  });
 }

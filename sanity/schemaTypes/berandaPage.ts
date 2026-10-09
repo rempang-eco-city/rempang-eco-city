@@ -70,13 +70,15 @@ export const berandaPage = defineType({
       type: "text",
       rows: 2,
       group: "peta",
+      description: 'Titik-titik di peta (warung, masjid, dll.) diisi di menu "Lokasi di Peta".',
     }),
     defineField({
       name: "petaAddress",
       title: "Alamat / Lokasi di Google Maps",
       type: "string",
       group: "peta",
-      description: "Teks yang dicari di Google Maps, bisa alamat atau Plus Code.",
+      description:
+        'Dipakai untuk tombol "Buka di Google Maps" di bawah peta. Bisa alamat atau Plus Code.',
       validation: (rule) => rule.required(),
     }),
 

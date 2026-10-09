@@ -12,6 +12,7 @@ import {
   getBerandaPage,
   getKoperasiList,
   getLatestNewsArticles,
+  getPetaLokasi,
   getUmkmItems,
 } from "@/lib/sanity/queries";
 import { FEATURES } from "@/lib/features";
@@ -25,11 +26,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const [beranda, articles, umkms, koperasiList] = await Promise.all([
+  const [beranda, articles, umkms, koperasiList, petaLokasi] = await Promise.all([
     getBerandaPage(),
     getLatestNewsArticles(HOME_NEWS_LIMIT),
     getUmkmItems(),
     getKoperasiList(),
+    getPetaLokasi(),
   ]);
 
   if (!beranda) notFound();
@@ -49,6 +51,7 @@ export default async function Home() {
           title={beranda.petaTitle}
           description={beranda.petaDescription}
           address={beranda.petaAddress}
+          lokasi={petaLokasi}
         />
         <KoperasiSection title={beranda.koperasiTitle} koperasiList={koperasiList} />
         {FEATURES.pariwisata && (
