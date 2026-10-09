@@ -22,21 +22,39 @@ import { sanityImageUrl } from "@/lib/sanity/image";
 import { SLOPE_CLASSES, createSlopeLayer } from "./slopeLayer";
 
 // Perumahan Relokasi Pulau Rempang, Tanjung Banon. Used as the starting
-// view while no locations have been added in the Studio.
+// view until the Studio has at least two locations.
 const DEFAULT_CENTER: L.LatLngTuple = [0.8095, 104.2185];
 const DEFAULT_ZOOM = 15;
 const SELECTED_ZOOM = 17;
 
-// Street map for the interactive layers. OpenStreetMap already has the
-// relocation housing streets.
-const OSM_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
-const OSM_ATTRIBUTION =
-  '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>';
+// Tile maps drawn by Leaflet, so our markers and the slope layer show on top.
+// The Esri photos here predate the construction; OpenStreetMap already has
+// the relocation housing streets.
+const TILE_LAYERS = {
+  esri: {
+    label: "Satelit",
+    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    options: {
+      maxNativeZoom: 18,
+      attribution: 'Citra: <a href="https://www.esri.com" target="_blank" rel="noopener">Esri</a>',
+    },
+  },
+  osm: {
+    label: "Peta",
+    url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    options: {
+      maxNativeZoom: 19,
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>',
+    },
+  },
+} as const;
 
-// "Satelit" shows Google Maps in an iframe: the free tile sources (Esri,
-// Sentinel-2) only have photos from before the construction, while Google's
-// imagery shows the new housing. Our markers and the slope layer cannot be
-// drawn inside the iframe, so they are hidden in this mode.
+type TileLayerKey = keyof typeof TILE_LAYERS;
+
+// "Google" shows Google Maps satellite in an iframe: its imagery already shows
+// the new housing. Our markers and the slope layer cannot be drawn inside the
+// iframe, so they are hidden in this mode.
 type SatelliteView = { lat: number; lng: number; zoom: number };
 
 function googleSatelliteUrl(view: SatelliteView, place: PetaLokasi | null) {
@@ -91,7 +109,8 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
   const mapRef = useRef<L.Map | null>(null);
   const isFirstFilterRef = useRef(true);
 
-  // null = interactive street map; set = Google satellite iframe at that view.
+  const [tileLayer, setTileLayer] = useState<TileLayerKey>("esri");
+  // null = Leaflet map; set = Google satellite iframe at that view.
   const [satelliteView, setSatelliteView] = useState<SatelliteView | null>(null);
   const [showSlope, setShowSlope] = useState(false);
   const [filter, setFilter] = useState<Filter>("semua");
@@ -129,9 +148,10 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
     map.on("focus", () => map.scrollWheelZoom.enable());
     map.on("blur", () => map.scrollWheelZoom.disable());
     map.attributionControl.setPrefix(false);
-    L.tileLayer(OSM_URL, { maxZoom: 19, attribution: OSM_ATTRIBUTION }).addTo(map);
 
-    if (lokasi.length > 0) {
+    // With a single place, fitting would zoom onto it and hide the rest of
+    // the area, so keep the default view until there are at least two.
+    if (lokasi.length > 1) {
       map.fitBounds(L.latLngBounds(lokasi.map(({ lat, lng }) => [lat, lng])), {
         padding: [48, 48],
         maxZoom: 16,
@@ -147,6 +167,17 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
     // from the effects below.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const { url, options } = TILE_LAYERS[tileLayer];
+    const layer = L.tileLayer(url, { ...options, maxZoom: 19 }).addTo(map);
+    layer.bringToBack();
+    return () => {
+      layer.remove();
+    };
+  }, [tileLayer]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -221,7 +252,7 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
   };
 
   const toggleSlope = () => {
-    // The slope layer only exists on the street map, so switch back to it.
+    // The slope layer only exists on the Leaflet map, so leave Google for it.
     if (satelliteView) {
       setSatelliteView(null);
       setShowSlope(true);
@@ -258,8 +289,15 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
         <div className="absolute right-3 top-3 z-[1002] flex flex-col items-end gap-2">
           <div className="flex rounded-lg bg-white p-1 shadow-md" role="group" aria-label="Jenis peta">
             {[
-              { label: "Peta", active: !satelliteView, onClick: () => setSatelliteView(null) },
-              { label: "Satelit", active: Boolean(satelliteView), onClick: showSatellite },
+              ...(Object.keys(TILE_LAYERS) as TileLayerKey[]).map((key) => ({
+                label: TILE_LAYERS[key].label,
+                active: !satelliteView && tileLayer === key,
+                onClick: () => {
+                  setTileLayer(key);
+                  setSatelliteView(null);
+                },
+              })),
+              { label: "Google", active: Boolean(satelliteView), onClick: showSatellite },
             ].map(({ label, active, onClick }) => (
               <button
                 key={label}
