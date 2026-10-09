@@ -5,13 +5,24 @@
 export const PETA_KATEGORI_OPTIONS = [
   { value: "warung-makan", title: "Warung Makan" },
   { value: "warung-jajan", title: "Warung Jajan" },
-  { value: "masjid", title: "Masjid" },
+  { value: "pasar", title: "Pasar" },
+  { value: "masjid", title: "Masjid / Mushola" },
+  { value: "sekolah", title: "Sekolah" },
+  { value: "kesehatan", title: "Fasilitas Kesehatan" },
   { value: "koperasi", title: "Koperasi" },
+  { value: "kampung-nelayan", title: "Kampung Nelayan" },
   { value: "dermaga", title: "Dermaga" },
   { value: "lainnya", title: "Lainnya" },
 ] as const;
 
 export type PetaKategori = (typeof PETA_KATEGORI_OPTIONS)[number]["value"];
+
+const KATEGORI_VALUES = new Set<string>(PETA_KATEGORI_OPTIONS.map(({ value }) => value));
+
+/** Unknown values (e.g. a category removed from the list) fall back to "lainnya". */
+export function toPetaKategori(value: string | null | undefined): PetaKategori {
+  return value && KATEGORI_VALUES.has(value) ? (value as PetaKategori) : "lainnya";
+}
 
 // Roughly Pulau Rempang and its neighbours; used to warn about coordinates
 // that were mistyped or copied from the wrong place.

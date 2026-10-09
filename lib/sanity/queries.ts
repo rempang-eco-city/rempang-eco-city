@@ -1,7 +1,7 @@
 import type { PortableTextBlock as RichTextBlock } from "@portabletext/react";
 import { sanityClient } from "./client";
 import type { LayananIconKey } from "@/lib/layananIcons";
-import { parseKoordinat, type PetaKategori } from "@/lib/peta";
+import { parseKoordinat, toPetaKategori, type PetaKategori } from "@/lib/peta";
 
 const REVALIDATE_SECONDS = 60;
 
@@ -611,6 +611,6 @@ export async function getPetaLokasi(): Promise<PetaLokasi[]> {
   // rather than placing a marker in the wrong spot.
   return rows.flatMap(({ coordinates, ...lokasi }) => {
     const point = parseKoordinat(coordinates);
-    return point ? [{ ...lokasi, ...point }] : [];
+    return point ? [{ ...lokasi, ...point, category: toPetaKategori(lokasi.category) }] : [];
   });
 }

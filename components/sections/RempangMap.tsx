@@ -9,9 +9,13 @@ import {
   ArrowLeft,
   Cookie,
   ExternalLink,
+  Fish,
+  Hospital,
   MapPin,
   Mountain,
   Navigation,
+  School,
+  ShoppingBasket,
   Store,
   UtensilsCrossed,
   type LucideProps,
@@ -66,9 +70,13 @@ function googleSatelliteUrl(view: SatelliteView, place: PetaLokasi | null) {
 const KATEGORI_STYLE: Record<PetaKategori, { color: string; Icon: ComponentType<LucideProps> }> = {
   "warung-makan": { color: "#ea580c", Icon: UtensilsCrossed },
   "warung-jajan": { color: "#db2777", Icon: Cookie },
+  pasar: { color: "#ca8a04", Icon: ShoppingBasket },
   masjid: { color: "#059669", Icon: MosqueIcon },
+  sekolah: { color: "#7c3aed", Icon: School },
+  kesehatan: { color: "#dc2626", Icon: Hospital },
   koperasi: { color: "#0057A8", Icon: Store },
-  dermaga: { color: "#0891b2", Icon: Anchor },
+  "kampung-nelayan": { color: "#0d9488", Icon: Fish },
+  dermaga: { color: "#0369a1", Icon: Anchor },
   lainnya: { color: "#64748b", Icon: MapPin },
 };
 
