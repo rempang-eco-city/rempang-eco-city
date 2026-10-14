@@ -1,6 +1,6 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 
-export const PAKET_UNITS = [
+const PAKET_UNITS = [
   { value: "orang", title: "Per orang (× jumlah peserta)" },
   { value: "jam", title: "Per jam (× durasi)" },
   { value: "paket", title: "Per paket / sekali bayar" },
@@ -11,7 +11,7 @@ type Paket = { participants?: number; durationHours?: number; items?: PaketItem[
 
 // Sum of the line items, using participants for "orang" and duration for "jam".
 // Returns null when the package lacks the numbers needed to compute it.
-export function computePaketTotal(paket: Paket): number | null {
+function computePaketTotal(paket: Paket): number | null {
   let total = 0;
   for (const item of paket.items ?? []) {
     if (typeof item.price !== "number") return null;

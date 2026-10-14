@@ -11,8 +11,6 @@ Dibangun dengan Next.js 14 (App Router), TypeScript, Tailwind CSS, Framer Motion
    ```bash
    NEXT_PUBLIC_SANITY_PROJECT_ID=...
    NEXT_PUBLIC_SANITY_DATASET=production
-   # Hanya dibutuhkan untuk script migrasi (token dengan akses Editor)
-   SANITY_API_TOKEN=...
    ```
 
 2. Install dan jalankan:
@@ -35,8 +33,6 @@ Dibangun dengan Next.js 14 (App Router), TypeScript, Tailwind CSS, Framer Motion
 | `lib/sanity/` | Sanity client dan semua query GROQ beserta tipe datanya (`queries.ts`) |
 | `sanity/schemaTypes/` | Schema dokumen CMS |
 | `sanity/structure.ts` | Susunan menu Studio (termasuk dokumen singleton) |
-| `scripts/` | Script migrasi data awal ke Sanity |
-| `data/umkmCatalog.ts` | Snapshot data UMKM lama, dipakai oleh script migrasi |
 
 ## Sumber konten
 
@@ -47,18 +43,9 @@ Dibangun dengan Next.js 14 (App Router), TypeScript, Tailwind CSS, Framer Motion
 | Koperasi | Sanity, dokumen `koperasi` (`routeKey`: `transmigrasi` / `merah-putih`) |
 | Pariwisata | Sanity, dokumen singleton `pariwisataPage` (menu "Halaman Pariwisata"): header, profil Pokdarwis, gambar struktur, pengurus, dan daftar destinasi (`routeKey`: `mancing` / `mangrove` / `pulau`) |
 | Profil | Sanity, dokumen singleton `profilPage` (menu "Halaman Profil" di Studio) |
-| Beranda | Sanity, dokumen singleton `berandaPage` (menu "Halaman Beranda" di Studio) untuk teks, gambar, dan alamat peta tiap section. Card Koperasi, UMKM, dan Berita diambil dari dokumennya masing-masing |
+| Beranda | Sanity, dokumen singleton `berandaPage` (menu "Halaman Beranda" → "Konten Halaman" di Studio) untuk teks, gambar, dan alamat peta tiap section. Card Koperasi, UMKM, dan Berita diambil dari dokumennya masing-masing |
+| Peta Beranda | Sanity, dokumen `petaLokasi` (menu "Halaman Beranda" → "Lokasi di Peta"). Kategori, ikon, dan warnanya diatur di `lib/peta.ts` dan `components/sections/RempangMap.tsx` |
 
 Data di-cache dengan ISR selama 60 detik (`REVALIDATE_SECONDS` di `lib/sanity/queries.ts`), jadi perubahan di Studio akan muncul di website paling lama dalam 1 menit.
 
 Berita diurutkan berdasarkan field **Tanggal Terbit** (`publishedAt`). Dokumen lama yang belum punya field ini tetap tampil memakai teks tanggal lamanya dan diurutkan berdasarkan waktu dokumen dibuat.
-
-## Migrasi data ke Sanity
-
-`npm run migrate:sanity` mengunggah konten awal (beserta gambarnya) ke Sanity. Script ini memakai `createOrReplace` dengan `_id` tetap, sehingga **menjalankannya ulang akan menimpa hasil edit di Studio** untuk dokumen yang sama. Batasi dengan `--only`:
-
-```bash
-npm run migrate:sanity -- --only=koperasi,profil
-```
-
-Pilihan section: `news`, `umkm`, `koperasi`, `profil`, `beranda`, dan `--only` wajib diisi. Dokumen yang dibuat lewat Studio punya `_id` acak, jadi memigrasi section yang isinya sudah diisi manual (saat ini `news` dan `umkm`) akan menghasilkan **duplikat**.
