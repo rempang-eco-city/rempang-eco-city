@@ -8,6 +8,7 @@ export const PETA_KATEGORI_OPTIONS = [
   { value: "kafe", title: "Kafe" },
   { value: "pasar", title: "Pasar" },
   { value: "kebutuhan-pokok", title: "Kebutuhan Pokok" },
+  { value: "depot-air", title: "Depot Air Minum" },
   { value: "masjid", title: "Masjid / Mushola" },
   { value: "sekolah", title: "Sekolah" },
   { value: "kesehatan", title: "Fasilitas Kesehatan" },
