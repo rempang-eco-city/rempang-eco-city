@@ -100,14 +100,12 @@ function blokIcon(name: string, color: string) {
   });
 }
 
-function rumahIcon(nomor: string, kosong: boolean) {
+function rumahIcon(nomor: string) {
   return L.divIcon({
     className: "",
     iconSize: [22, 16],
     iconAnchor: [11, 8],
-    html: `<span class="flex h-full w-full items-center justify-center rounded-full text-[10px] font-semibold leading-none shadow ${
-      kosong ? "bg-red-600 text-white" : "bg-white text-slate-900"
-    }">${nomor}</span>`,
+    html: `<span class="flex h-full w-full items-center justify-center rounded-full bg-white text-[10px] font-semibold leading-none text-slate-900 shadow">${nomor}</span>`,
   });
 }
 
@@ -256,7 +254,6 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
 
     BLOK_RUMAH.forEach((blok) => {
       const color = BLOK_COLOR[blok.name[0]] ?? "#334155";
-      const kosong = blok.houses.filter(([, , , isKosong]) => isKosong).length;
       L.polygon(blok.polygon, {
         color,
         weight: 2,
@@ -266,17 +263,13 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
       })
         .bindPopup(
           `<p class="text-sm font-semibold">Blok ${blok.name}</p>` +
-            `<p class="text-xs">${blok.houses.length} rumah` +
-            (kosong ? `, ${kosong} belum dihuni` : "") +
-            "</p>"
+            `<p class="text-xs">${blok.houses.length} rumah</p>`
         )
         .addTo(outlines);
       L.marker(blok.label, { icon: blokIcon(blok.name, color), interactive: false, keyboard: false }).addTo(names);
-      blok.houses.forEach(([lat, lng, nomor, isKosong = false]) => {
-        L.marker([lat, lng], { icon: rumahIcon(nomor, isKosong), keyboard: false })
-          .bindTooltip(`Blok ${blok.name} No. ${nomor}${isKosong ? " · belum dihuni" : ""}`, {
-            direction: "top",
-          })
+      blok.houses.forEach(([lat, lng, nomor]) => {
+        L.marker([lat, lng], { icon: rumahIcon(nomor), keyboard: false })
+          .bindTooltip(`Blok ${blok.name} No. ${nomor}`, { direction: "top" })
           .addTo(rumah);
       });
     });
@@ -554,20 +547,12 @@ function BlokLegend() {
       <p className="mt-1 leading-snug text-text-secondary">
         Perbesar peta untuk melihat nama blok dan nomor rumah.
       </p>
-      <ul className="mt-2 space-y-1">
-        <li className="flex items-center gap-2">
-          <span className="flex h-4 w-6 items-center justify-center rounded-full bg-white text-[10px] font-semibold text-slate-900 shadow ring-1 ring-slate-200">
-            12
-          </span>
-          <span className="text-text-primary">Nomor rumah</span>
-        </li>
-        <li className="flex items-center gap-2">
-          <span className="flex h-4 w-6 items-center justify-center rounded-full bg-red-600 text-[10px] font-semibold text-white">
-            12
-          </span>
-          <span className="text-text-primary">Rumah belum dihuni</span>
-        </li>
-      </ul>
+      <p className="mt-2 flex items-center gap-2">
+        <span className="flex h-4 w-6 items-center justify-center rounded-full bg-white text-[10px] font-semibold text-slate-900 shadow ring-1 ring-slate-200">
+          12
+        </span>
+        <span className="text-text-primary">Nomor rumah</span>
+      </p>
     </>
   );
 }
