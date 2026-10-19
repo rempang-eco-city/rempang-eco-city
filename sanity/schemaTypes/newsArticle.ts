@@ -23,9 +23,14 @@ export const newsArticle = defineType({
       name: "slug",
       title: "Slug",
       type: "slug",
-      description: "Dipakai untuk URL /berita/[slug]",
+      description: 'Dipakai untuk URL /berita/[slug]. Klik "Generate" agar dibuat otomatis dari judul.',
       options: { source: "title", maxLength: 96 },
-      validation: (rule) => rule.required(),
+      validation: (rule) =>
+        rule.required().custom((value) =>
+          !value?.current || /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value.current)
+            ? true
+            : 'Gunakan huruf kecil, angka, dan tanda "-" saja (tanpa spasi). Klik "Generate".'
+        ),
     }),
     defineField({
       name: "category",
@@ -75,8 +80,10 @@ export const newsArticle = defineType({
     }),
     defineField({
       name: "featured",
-      title: "Tampilkan sebagai Featured",
+      title: "Featured di Beranda",
       type: "boolean",
+      description:
+        "Berita featured tampil lebih dulu di section Berita di Beranda (4 slot, yang terbaru didahulukan). Slot yang tersisa diisi berita terbaru lainnya.",
       initialValue: false,
     }),
   ],

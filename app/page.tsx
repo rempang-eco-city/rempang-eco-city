@@ -11,7 +11,7 @@ import BeritaTerbaru from "@/components/sections/BeritaTerbaru";
 import {
   getBerandaPage,
   getKoperasiList,
-  getLatestNewsArticles,
+  getHomeNewsArticles,
   getPetaLokasi,
   getUmkmItems,
 } from "@/lib/sanity/queries";
@@ -28,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Home() {
   const [beranda, articles, umkms, koperasiList, petaLokasi] = await Promise.all([
     getBerandaPage(),
-    getLatestNewsArticles(HOME_NEWS_LIMIT),
+    getHomeNewsArticles(HOME_NEWS_LIMIT),
     getUmkmItems(),
     getKoperasiList(),
     getPetaLokasi(),

@@ -100,9 +100,11 @@ export async function getNewsArticles() {
   return articles.map(toNewsListItem);
 }
 
-export async function getLatestNewsArticles(limit: number) {
+// Beranda: articles marked "Featured di Beranda" come first (newest first),
+// and the remaining slots are filled with the latest other articles.
+export async function getHomeNewsArticles(limit: number) {
   const articles = await sanityFetch<RawNewsArticle[]>(
-    `*[_type == "newsArticle"] | ${newsOrder} [0...$limit] {${newsListFields}}`,
+    `*[_type == "newsArticle"] | order(select(featured == true => 1, 0) desc, coalesce(publishedAt, _createdAt) desc) [0...$limit] {${newsListFields}}`,
     { limit },
     ["newsArticle"]
   );
@@ -110,12 +112,22 @@ export async function getLatestNewsArticles(limit: number) {
   return articles.map(toNewsListItem);
 }
 
+// Next.js 14 passes dynamic route params still URL-encoded, so a slug that
+// contains spaces arrives as "Tim%20Patriot..." and would not match.
+function decodeSlug(slug: string) {
+  try {
+    return decodeURIComponent(slug);
+  } catch {
+    return slug;
+  }
+}
+
 export async function getNewsArticleBySlug(slug: string) {
   const article = await sanityFetch<
     (RawNewsArticle & { content: RichTextBlock[] | null }) | null
   >(
     `*[_type == "newsArticle" && slug.current == $slug][0]{${newsListFields}, content}`,
-    { slug },
+    { slug: decodeSlug(slug) },
     ["newsArticle"]
   );
 
@@ -197,7 +209,7 @@ export async function getUmkmItemBySlug(slug: string) {
       "gallery": gallery[].asset->url,
       products[]{ name, price, "image": image.asset->url }
     }`,
-    { slug },
+    { slug: decodeSlug(slug) },
     ["umkmItem"]
   );
 }
