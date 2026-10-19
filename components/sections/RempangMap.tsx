@@ -254,7 +254,8 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
 
     BLOK_RUMAH.forEach((blok) => {
       const color = BLOK_COLOR[blok.name[0]] ?? "#334155";
-      L.polygon(blok.polygon, {
+      // One polygon per part of the block (a ring each, no holes).
+      L.polygon(blok.polygon.map((part) => [part]), {
         color,
         weight: 2,
         dashArray: "6 5",
