@@ -28,6 +28,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
+import StrukturOrganisasi from "@/components/StrukturOrganisasi";
 import type { KoperasiDetail } from "@/lib/sanity/queries";
 import { sanityImageUrl } from "@/lib/sanity/image";
 import type { LayananIconKey } from "@/lib/layananIcons";
@@ -143,13 +144,24 @@ export default function KoperasiDetailContent({
             Struktur Kepengurusan {name}
           </h2>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 md:p-6 shadow-[0_8px_20px_rgba(15,23,42,0.03)]">
-            <img
-              src={koperasi.structureImage}
-              alt={`Struktur kepengurusan ${name}`}
-              className="mx-auto w-full max-w-6xl object-contain"
-            />
-          </div>
+          {koperasi.struktur ? (
+            <div className="rounded-2xl border border-slate-200 bg-white p-5 md:p-10 shadow-[0_8px_20px_rgba(15,23,42,0.03)]">
+              <StrukturOrganisasi
+                struktur={koperasi.struktur}
+                theme={koperasi.routeKey === "merah-putih" ? "merah" : "biru"}
+              />
+            </div>
+          ) : (
+            koperasi.structureImage && (
+              <div className="rounded-2xl border border-slate-200 bg-white p-4 md:p-6 shadow-[0_8px_20px_rgba(15,23,42,0.03)]">
+                <img
+                  src={koperasi.structureImage}
+                  alt={`Struktur kepengurusan ${name}`}
+                  className="mx-auto w-full max-w-6xl object-contain"
+                />
+              </div>
+            )
+          )}
 
           {pengurus.length > 0 && (
             <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">

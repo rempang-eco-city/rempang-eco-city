@@ -6,6 +6,7 @@ import { koperasiLaporanKeuangan } from "./objects/koperasiLaporanKeuangan";
 import { koperasiFasilitas } from "./objects/koperasiFasilitas";
 import { koperasiLayanan } from "./objects/koperasiLayanan";
 import { pariwisataPaket } from "./objects/pariwisataPaket";
+import { strukturJabatan, strukturOrganisasi } from "./objects/strukturOrganisasi";
 import { newsArticle } from "./newsArticle";
 import { umkmItem } from "./umkmItem";
 import { koperasi } from "./koperasi";
@@ -25,6 +26,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     koperasiFasilitas,
     koperasiLayanan,
     pariwisataPaket,
+    strukturJabatan,
+    strukturOrganisasi,
     newsArticle,
     umkmItem,
     koperasi,

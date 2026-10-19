@@ -75,11 +75,17 @@ export const koperasi = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "struktur",
+      title: "Struktur Kepengurusan",
+      type: "strukturOrganisasi",
+      description: "Bagan dibuat otomatis dari isian ini. Jika ada pergantian pengurus, cukup ganti namanya.",
+    }),
+    defineField({
       name: "structureImage",
-      title: "Gambar Struktur Kepengurusan",
+      title: "Gambar Struktur Kepengurusan (cadangan)",
       type: "image",
       options: { hotspot: true },
-      validation: (rule) => rule.required(),
+      description: "Hanya dipakai jika Struktur Kepengurusan di atas kosong.",
     }),
     defineField({
       name: "pengurus",

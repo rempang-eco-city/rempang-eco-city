@@ -1,5 +1,6 @@
 import type { PariwisataPage } from "@/lib/sanity/queries";
 import { sanityImageUrl } from "@/lib/sanity/image";
+import StrukturOrganisasi from "@/components/StrukturOrganisasi";
 
 // Pokdarwis (Kelompok Sadar Wisata) sections shown above the destinations on
 // /pariwisata: profile, organisation chart image, and pengurus cards.
@@ -44,19 +45,27 @@ export default function PokdarwisContent({
           )}
         </section>
 
-        {page.structureImage && (
+        {(page.struktur || page.structureImage) && (
           <section className="mt-14 border-t border-border-color pt-14">
             <h2 className="font-heading text-2xl font-bold text-primary-blue md:text-3xl">
               Struktur Organisasi {page.shortName}
             </h2>
-            {/* Same framed image as the Struktur Kepengurusan on /koperasi/[routeKey]. */}
-            <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_8px_20px_rgba(15,23,42,0.03)] md:p-6">
-              <img
-                src={sanityImageUrl(page.structureImage, 2000)}
-                alt={`Struktur organisasi ${page.shortName}`}
-                className="mx-auto w-full max-w-6xl object-contain"
-              />
-            </div>
+            {/* Same frame as the Struktur Kepengurusan on /koperasi/[routeKey]. */}
+            {page.struktur ? (
+              <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_8px_20px_rgba(15,23,42,0.03)] md:p-10">
+                <StrukturOrganisasi struktur={page.struktur} theme="emas" />
+              </div>
+            ) : (
+              page.structureImage && (
+                <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_8px_20px_rgba(15,23,42,0.03)] md:p-6">
+                  <img
+                    src={sanityImageUrl(page.structureImage, 2000)}
+                    alt={`Struktur organisasi ${page.shortName}`}
+                    className="mx-auto w-full max-w-6xl object-contain"
+                  />
+                </div>
+              )
+            )}
           </section>
         )}
 

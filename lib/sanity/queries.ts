@@ -5,6 +5,54 @@ import { parseKoordinat, toPetaKategori, type PetaKategori } from "@/lib/peta";
 
 const REVALIDATE_SECONDS = 60;
 
+export type StrukturJabatan = {
+  title: string;
+  members: { name: string; role?: string }[];
+};
+
+export type StrukturOrganisasi = {
+  ketua: StrukturJabatan;
+  pengawas?: StrukturJabatan;
+  pengurusInti: StrukturJabatan[];
+  koordinator?: StrukturJabatan;
+  bidang: StrukturJabatan[];
+};
+
+const jabatanFields = `{ title, "members": coalesce(members[defined(name)]{ name, role }, []) }`;
+
+const strukturProjection = `"struktur": struktur{
+  "ketua": ketua${jabatanFields},
+  "pengawas": pengawas${jabatanFields},
+  "pengurusInti": pengurusInti[]${jabatanFields},
+  "koordinator": koordinator${jabatanFields},
+  "bidang": bidang[]${jabatanFields}
+}`;
+
+type RawStruktur = {
+  [K in keyof StrukturOrganisasi]?: StrukturJabatan | StrukturJabatan[] | null;
+} | null;
+
+// Drops boxes without a title or names; the chart needs at least the top box.
+function toStruktur(raw: RawStruktur | undefined): StrukturOrganisasi | undefined {
+  const isFilled = (jabatan: StrukturJabatan | null | undefined): jabatan is StrukturJabatan =>
+    Boolean(jabatan?.title && jabatan.members.length > 0);
+  const one = (value: unknown) => {
+    const jabatan = value as StrukturJabatan | null | undefined;
+    return isFilled(jabatan) ? jabatan : undefined;
+  };
+  const many = (value: unknown) => ((value as StrukturJabatan[] | null) ?? []).filter(isFilled);
+
+  const ketua = one(raw?.ketua);
+  if (!ketua) return undefined;
+  return {
+    ketua,
+    pengawas: one(raw?.pengawas),
+    pengurusInti: many(raw?.pengurusInti),
+    koordinator: one(raw?.koordinator),
+    bidang: many(raw?.bidang),
+  };
+}
+
 async function sanityFetch<T>(
   query: string,
   params: Record<string, unknown> = {},
@@ -262,7 +310,9 @@ export type KoperasiLaporanKeuangan = {
 export type KoperasiDetail = KoperasiListItem & {
   pageDescription?: string;
   about: string[];
-  structureImage: string;
+  /** Generated chart; when empty the page falls back to structureImage. */
+  struktur?: StrukturOrganisasi;
+  structureImage?: string;
   pengurus: KoperasiPengurus[];
   membershipDescription?: string;
   membershipWhatsapp?: string;
@@ -294,9 +344,10 @@ export async function getKoperasiByRouteKey(routeKey: string) {
   const koperasi = await sanityFetch<
     | (Omit<
         KoperasiDetail,
-        "about" | "pengurus" | "fasilitas" | "layanan" | "galleryItems" | "laporanKeuangan"
+        "about" | "struktur" | "pengurus" | "fasilitas" | "layanan" | "galleryItems" | "laporanKeuangan"
       > & {
         about: PortableTextBlock[] | null;
+        struktur: RawStruktur;
         pengurus: KoperasiPengurus[] | null;
         fasilitas: Array<Partial<KoperasiFasilitas>> | null;
         layanan: Array<Partial<KoperasiLayanan>> | null;
@@ -309,6 +360,7 @@ export async function getKoperasiByRouteKey(routeKey: string) {
       ${koperasiListFields},
       pageDescription,
       about,
+      ${strukturProjection},
       "structureImage": structureImage.asset->url,
       pengurus[]{ name, role, "image": image.asset->url },
       membershipDescription,
@@ -332,6 +384,7 @@ export async function getKoperasiByRouteKey(routeKey: string) {
   return {
     ...koperasi,
     about: blocksToParagraphs(koperasi.about),
+    struktur: toStruktur(koperasi.struktur),
     pengurus: koperasi.pengurus ?? [],
     // Drafts in the Studio can have missing required fields; skip those.
     fasilitas: (koperasi.fasilitas ?? []).filter(
@@ -520,6 +573,8 @@ export type PariwisataPage = {
   shortName?: string;
   stats: { label: string; value: string }[];
   description: string[];
+  /** Generated chart; when empty the page falls back to structureImage. */
+  struktur?: StrukturOrganisasi;
   structureImage?: string;
   pengurus: PokdarwisPengurus[];
   /** Visible destinations only, in the order set in the Studio. */
@@ -529,7 +584,11 @@ export type PariwisataPage = {
 // Returns null when the singleton hasn't been created yet.
 export async function getPariwisataPage() {
   const page = await sanityFetch<
-    (Omit<PariwisataPage, "description"> & { description: PortableTextBlock[] | null }) | null
+    | (Omit<PariwisataPage, "description" | "struktur"> & {
+        description: PortableTextBlock[] | null;
+        struktur: RawStruktur;
+      })
+    | null
   >(
     `*[_type == "pariwisataPage" && _id == "pariwisataPage"][0]{
       headerTitle,
@@ -538,6 +597,7 @@ export async function getPariwisataPage() {
       shortName,
       "stats": coalesce(stats[defined(label) && defined(value)]{ label, value }, []),
       description,
+      ${strukturProjection},
       "structureImage": structureImage.asset->url,
       "pengurus": coalesce(pengurus[defined(name)]{ name, role, "photo": photo.asset->url }, []),
       "destinations": coalesce(destinations[hidden != true && defined(routeKey) && defined(name)]{
@@ -573,7 +633,11 @@ export async function getPariwisataPage() {
 
   if (!page) return null;
 
-  return { ...page, description: blocksToParagraphs(page.description) } satisfies PariwisataPage;
+  return {
+    ...page,
+    description: blocksToParagraphs(page.description),
+    struktur: toStruktur(page.struktur),
+  } satisfies PariwisataPage;
 }
 
 export type ListingPageHeader = {

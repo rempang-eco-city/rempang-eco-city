@@ -87,12 +87,19 @@ export const pariwisataPage = defineType({
     }),
 
     defineField({
+      name: "struktur",
+      title: "Struktur Organisasi",
+      type: "strukturOrganisasi",
+      group: "struktur",
+      description: "Bagan dibuat otomatis dari isian ini. Jika ada pergantian pengurus, cukup ganti namanya.",
+    }),
+    defineField({
       name: "structureImage",
-      title: "Gambar Struktur Organisasi",
+      title: "Gambar Struktur Organisasi (cadangan)",
       type: "image",
       group: "struktur",
       options: { hotspot: true },
-      description: "Bagan struktur organisasi dalam bentuk gambar (landscape).",
+      description: "Hanya dipakai jika Struktur Organisasi di atas kosong.",
     }),
 
     defineField({
