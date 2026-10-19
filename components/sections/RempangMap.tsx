@@ -12,6 +12,7 @@ import {
   Droplets,
   ExternalLink,
   Fish,
+  Home,
   Hospital,
   MapPin,
   Mountain,
@@ -28,6 +29,7 @@ import {
 import type { PetaLokasi } from "@/lib/sanity/queries";
 import { PETA_KATEGORI_OPTIONS, type PetaKategori } from "@/lib/peta";
 import { sanityImageUrl } from "@/lib/sanity/image";
+import { BLOK_RUMAH } from "@/lib/blokRumah";
 import { SLOPE_CLASSES, createSlopeLayer } from "./slopeLayer";
 
 // Perumahan Relokasi Pulau Rempang, Tanjung Banon. Used as the starting
@@ -70,6 +72,43 @@ function googleSatelliteUrl(view: SatelliteView, place: PetaLokasi | null) {
   // `q` drops a pin on the chosen place; `ll` only centres the map.
   const target = place ? `q=${place.lat},${place.lng}&z=18` : `ll=${view.lat},${view.lng}&z=${view.zoom}`;
   return `https://www.google.com/maps?${target}&t=k&output=embed`;
+}
+
+// Block outlines use the colours of the Figma annotation, one per letter.
+const BLOK_COLOR: Record<string, string> = {
+  A: "#e11d48",
+  B: "#c026d3",
+  C: "#6d28d9",
+  D: "#ca8a04",
+  E: "#0284c7",
+  F: "#ea580c",
+  G: "#0891b2",
+  H: "#d946ef",
+  I: "#15803d",
+};
+// Block names appear from this zoom, house numbers from the next threshold
+// (below it they would overlap).
+const BLOK_LABEL_ZOOM = 17;
+const RUMAH_ZOOM = 18;
+
+function blokIcon(name: string, color: string) {
+  return L.divIcon({
+    className: "",
+    iconSize: [44, 22],
+    iconAnchor: [22, 11],
+    html: `<span class="flex h-full w-full items-center justify-center rounded-md border-2 bg-white/90 text-xs font-bold shadow" style="border-color:${color};color:${color}">${name}</span>`,
+  });
+}
+
+function rumahIcon(nomor: string, kosong: boolean) {
+  return L.divIcon({
+    className: "",
+    iconSize: [22, 16],
+    iconAnchor: [11, 8],
+    html: `<span class="flex h-full w-full items-center justify-center rounded-full text-[10px] font-semibold leading-none shadow ${
+      kosong ? "bg-red-600 text-white" : "bg-white text-slate-900"
+    }">${nomor}</span>`,
+  });
 }
 
 const KATEGORI_STYLE: Record<PetaKategori, { color: string; Icon: ComponentType<LucideProps> }> = {
@@ -131,6 +170,7 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
   // null = Leaflet map; set = Google satellite iframe at that view.
   const [satelliteView, setSatelliteView] = useState<SatelliteView | null>(null);
   const [showSlope, setShowSlope] = useState(false);
+  const [showBlok, setShowBlok] = useState(true);
   const [filter, setFilter] = useState<Filter>("semua");
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
@@ -208,6 +248,59 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
 
   useEffect(() => {
     const map = mapRef.current;
+    if (!map || !showBlok) return;
+
+    const outlines = L.layerGroup().addTo(map);
+    const names = L.layerGroup();
+    const rumah = L.layerGroup();
+
+    BLOK_RUMAH.forEach((blok) => {
+      const color = BLOK_COLOR[blok.name[0]] ?? "#334155";
+      const kosong = blok.houses.filter(([, , , isKosong]) => isKosong).length;
+      L.polygon(blok.polygon, {
+        color,
+        weight: 2,
+        dashArray: "6 5",
+        fillColor: color,
+        fillOpacity: 0.12,
+      })
+        .bindPopup(
+          `<p class="text-sm font-semibold">Blok ${blok.name}</p>` +
+            `<p class="text-xs">${blok.houses.length} rumah` +
+            (kosong ? `, ${kosong} belum dihuni` : "") +
+            "</p>"
+        )
+        .addTo(outlines);
+      L.marker(blok.label, { icon: blokIcon(blok.name, color), interactive: false, keyboard: false }).addTo(names);
+      blok.houses.forEach(([lat, lng, nomor, isKosong = false]) => {
+        L.marker([lat, lng], { icon: rumahIcon(nomor, isKosong), keyboard: false })
+          .bindTooltip(`Blok ${blok.name} No. ${nomor}${isKosong ? " · belum dihuni" : ""}`, {
+            direction: "top",
+          })
+          .addTo(rumah);
+      });
+    });
+
+    const updateZoom = () => {
+      const zoom = map.getZoom();
+      if (zoom >= BLOK_LABEL_ZOOM && zoom < RUMAH_ZOOM) names.addTo(map);
+      else names.remove();
+      if (zoom >= RUMAH_ZOOM) rumah.addTo(map);
+      else rumah.remove();
+    };
+    updateZoom();
+    map.on("zoomend", updateZoom);
+
+    return () => {
+      map.off("zoomend", updateZoom);
+      outlines.remove();
+      names.remove();
+      rumah.remove();
+    };
+  }, [showBlok]);
+
+  useEffect(() => {
+    const map = mapRef.current;
     if (!map) return;
 
     const group = L.layerGroup().addTo(map);
@@ -279,7 +372,18 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
     }
   };
 
+  const toggleBlok = () => {
+    // Like the slope layer, the blocks are only drawn on the Leaflet map.
+    if (satelliteView) {
+      setSatelliteView(null);
+      setShowBlok(true);
+    } else {
+      setShowBlok((value) => !value);
+    }
+  };
+
   const slopeVisible = showSlope && !satelliteView;
+  const blokVisible = showBlok && !satelliteView;
 
   const changeFilter = (next: Filter) => {
     setFilter(next);
@@ -341,19 +445,40 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
             <Mountain size={14} />
             Tanjakan
           </button>
+          <button
+            type="button"
+            aria-pressed={blokVisible}
+            onClick={toggleBlok}
+            className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold shadow-md transition ${
+              blokVisible ? "bg-primary-blue text-white" : "bg-white text-slate-700 hover:text-primary-blue"
+            }`}
+          >
+            <Home size={14} />
+            Blok Rumah
+          </button>
         </div>
 
-        {slopeVisible && (
-          <div className="absolute bottom-6 left-3 z-[1000] hidden w-48 rounded-lg bg-white/95 p-3 text-xs shadow-md lg:block">
-            <SlopeLegend />
+        {(slopeVisible || blokVisible) && (
+          <div className="absolute bottom-6 left-3 z-[1000] hidden w-52 flex-col gap-2 lg:flex">
+            {blokVisible && (
+              <div className="rounded-lg bg-white/95 p-3 text-xs shadow-md">
+                <BlokLegend />
+              </div>
+            )}
+            {slopeVisible && (
+              <div className="rounded-lg bg-white/95 p-3 text-xs shadow-md">
+                <SlopeLegend />
+              </div>
+            )}
           </div>
         )}
       </div>
 
-      {/* Below lg the legend would cover most of the map, so it sits under it. */}
-      {slopeVisible && (
-        <div className="border-t border-border-color bg-white p-4 text-xs lg:hidden">
-          <SlopeLegend />
+      {/* Below lg the legends would cover most of the map, so they sit under it. */}
+      {(slopeVisible || blokVisible) && (
+        <div className="space-y-4 border-t border-border-color bg-white p-4 text-xs lg:hidden">
+          {blokVisible && <BlokLegend />}
+          {slopeVisible && <SlopeLegend />}
         </div>
       )}
 
@@ -419,6 +544,31 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
         )}
       </aside>
     </div>
+  );
+}
+
+function BlokLegend() {
+  return (
+    <>
+      <p className="font-semibold text-text-primary">Blok rumah</p>
+      <p className="mt-1 leading-snug text-text-secondary">
+        Perbesar peta untuk melihat nama blok dan nomor rumah.
+      </p>
+      <ul className="mt-2 space-y-1">
+        <li className="flex items-center gap-2">
+          <span className="flex h-4 w-6 items-center justify-center rounded-full bg-white text-[10px] font-semibold text-slate-900 shadow ring-1 ring-slate-200">
+            12
+          </span>
+          <span className="text-text-primary">Nomor rumah</span>
+        </li>
+        <li className="flex items-center gap-2">
+          <span className="flex h-4 w-6 items-center justify-center rounded-full bg-red-600 text-[10px] font-semibold text-white">
+            12
+          </span>
+          <span className="text-text-primary">Rumah belum dihuni</span>
+        </li>
+      </ul>
+    </>
   );
 }
 
