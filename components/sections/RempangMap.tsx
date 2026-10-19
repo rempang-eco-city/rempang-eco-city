@@ -547,12 +547,6 @@ function BlokLegend() {
       <p className="mt-1 leading-snug text-text-secondary">
         Perbesar peta untuk melihat nama blok dan nomor rumah.
       </p>
-      <p className="mt-2 flex items-center gap-2">
-        <span className="flex h-4 w-6 items-center justify-center rounded-full bg-white text-[10px] font-semibold text-slate-900 shadow ring-1 ring-slate-200">
-          12
-        </span>
-        <span className="text-text-primary">Nomor rumah</span>
-      </p>
     </>
   );
 }
