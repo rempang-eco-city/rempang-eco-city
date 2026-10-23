@@ -178,6 +178,14 @@ export const berandaPage = defineType({
                   .error('Hanya huruf, angka, titik, dan "_" (tanpa "@" atau link).'),
             }),
             defineField({
+              name: "photo",
+              title: "Foto Profil (opsional)",
+              type: "image",
+              options: { hotspot: true },
+              description:
+                "Unggah foto profil akun ini (gambar persegi). Kosongkan untuk memakai logo Instagram.",
+            }),
+            defineField({
               name: "name",
               title: "Nama (opsional)",
               type: "string",
@@ -192,8 +200,12 @@ export const berandaPage = defineType({
             }),
           ],
           preview: {
-            select: { username: "username", name: "name" },
-            prepare: ({ username, name }) => ({ title: `@${username ?? ""}`, subtitle: name }),
+            select: { username: "username", name: "name", media: "photo" },
+            prepare: ({ username, name, media }) => ({
+              title: `@${username ?? ""}`,
+              subtitle: name,
+              media,
+            }),
           },
         }),
       ],

@@ -538,7 +538,12 @@ export type BerandaPage = {
   instagramAccounts: InstagramAccount[];
 };
 
-export type InstagramAccount = { username: string; name?: string; description?: string };
+export type InstagramAccount = {
+  username: string;
+  name?: string;
+  description?: string;
+  photo?: string;
+};
 
 export async function getBerandaPage() {
   return sanityFetch<BerandaPage | null>(
@@ -560,7 +565,7 @@ export async function getBerandaPage() {
       beritaTitle,
       instagramTitle,
       instagramDescription,
-      "instagramAccounts": coalesce(instagramAccounts[defined(username)]{ username, name, description }, [])
+      "instagramAccounts": coalesce(instagramAccounts[defined(username)]{ username, name, description, "photo": photo.asset->url }, [])
     }`,
     {},
     ["berandaPage"]
