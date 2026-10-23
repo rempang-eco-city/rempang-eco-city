@@ -1,4 +1,4 @@
-import { defineField, defineType } from "sanity";
+import { defineArrayMember, defineField, defineType } from "sanity";
 
 // Singleton: exactly one document with _id "berandaPage" (see sanity/structure.ts).
 // Only the section copy lives here; the Koperasi, UMKM and Berita cards come
@@ -14,6 +14,7 @@ export const berandaPage = defineType({
     { name: "pariwisata", title: "Pariwisata" },
     { name: "umkm", title: "UMKM" },
     { name: "berita", title: "Berita" },
+    { name: "instagram", title: "Instagram" },
   ],
   fields: [
     defineField({
@@ -137,6 +138,66 @@ export const berandaPage = defineType({
       group: "berita",
       description: "Card berita diambil dari dokumen Berita.",
       validation: (rule) => rule.required(),
+    }),
+
+    defineField({
+      name: "instagramTitle",
+      title: "Judul Section Instagram",
+      type: "string",
+      group: "instagram",
+      initialValue: "Ikuti Kami di Instagram",
+    }),
+    defineField({
+      name: "instagramDescription",
+      title: "Deskripsi Instagram",
+      type: "text",
+      rows: 2,
+      group: "instagram",
+    }),
+    defineField({
+      name: "instagramAccounts",
+      title: "Akun Instagram",
+      type: "array",
+      group: "instagram",
+      description: "Satu card per akun, paling bawah di Beranda. Kosongkan untuk menyembunyikan section.",
+      of: [
+        defineArrayMember({
+          name: "instagramAccount",
+          title: "Akun",
+          type: "object",
+          fields: [
+            defineField({
+              name: "username",
+              title: "Username",
+              type: "string",
+              description: 'Tanpa "@" dan tanpa link, contoh: umkm.rec',
+              validation: (rule) =>
+                rule
+                  .required()
+                  .regex(/^[A-Za-z0-9._]{1,30}$/, { name: "username Instagram" })
+                  .error('Hanya huruf, angka, titik, dan "_" (tanpa "@" atau link).'),
+            }),
+            defineField({
+              name: "name",
+              title: "Nama (opsional)",
+              type: "string",
+              description: 'Contoh: "UMKM Rempang Eco City". Kosongkan untuk hanya menampilkan @username.',
+            }),
+            defineField({
+              name: "description",
+              title: "Deskripsi Singkat (opsional)",
+              type: "text",
+              rows: 2,
+              validation: (rule) => rule.max(140),
+            }),
+          ],
+          preview: {
+            select: { username: "username", name: "name" },
+            prepare: ({ username, name }) => ({ title: `@${username ?? ""}`, subtitle: name }),
+          },
+        }),
+      ],
+      validation: (rule) => rule.max(6),
     }),
   ],
   preview: {

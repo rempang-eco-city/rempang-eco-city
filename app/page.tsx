@@ -8,6 +8,7 @@ import KoperasiSection from "@/components/sections/KoperasiSection";
 import PariwisataSection from "@/components/sections/PariwisataSection";
 import UMKMSection from "@/components/sections/UMKMSection";
 import BeritaTerbaru from "@/components/sections/BeritaTerbaru";
+import InstagramSection from "@/components/sections/InstagramSection";
 import {
   getBerandaPage,
   getKoperasiList,
@@ -67,6 +68,11 @@ export default async function Home() {
           umkms={umkms}
         />
         <BeritaTerbaru title={beranda.beritaTitle} articles={articles} />
+        <InstagramSection
+          title={beranda.instagramTitle}
+          description={beranda.instagramDescription}
+          accounts={beranda.instagramAccounts}
+        />
       </div>
       <Footer />
     </main>
