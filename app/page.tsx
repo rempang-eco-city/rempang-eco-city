@@ -17,6 +17,7 @@ import {
   getUmkmItems,
 } from "@/lib/sanity/queries";
 import { FEATURES } from "@/lib/features";
+import { getInstagramFeeds } from "@/lib/instagram";
 
 // Matches the 4-column Berita grid on large screens.
 const HOME_NEWS_LIMIT = 4;
@@ -36,6 +37,10 @@ export default async function Home() {
   ]);
 
   if (!beranda) notFound();
+
+  const instagramFeeds = await getInstagramFeeds(
+    beranda.instagramAccounts.map(({ username }) => username)
+  );
 
   return (
     <main>
@@ -72,6 +77,7 @@ export default async function Home() {
           title={beranda.instagramTitle}
           description={beranda.instagramDescription}
           accounts={beranda.instagramAccounts}
+          feeds={instagramFeeds}
         />
       </div>
       <Footer />
