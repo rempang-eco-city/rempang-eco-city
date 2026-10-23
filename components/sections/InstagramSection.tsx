@@ -57,7 +57,7 @@ export default function InstagramSection({ title, description, accounts }: Props
                   <Instagram size={28} strokeWidth={2} />
                 </span>
                 <div className="min-w-0">
-                  <p className="truncate font-heading text-lg font-bold text-text-primary">
+                  <p className="break-words font-heading text-lg font-bold leading-snug text-text-primary">
                     {account.name || `@${account.username}`}
                   </p>
                   {account.name && (
