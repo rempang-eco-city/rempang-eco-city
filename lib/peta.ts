@@ -14,6 +14,8 @@ export const PETA_KATEGORI_OPTIONS = [
   { value: "kesehatan", title: "Fasilitas Kesehatan" },
   { value: "sanggar-tari", title: "Sanggar Tari" },
   { value: "bengkel", title: "Bengkel" },
+  { value: "laundry", title: "Laundry" },
+  { value: "rental-transport", title: "Rental Transportasi" },
   { value: "koperasi", title: "Koperasi" },
   { value: "kantor-pemerintahan", title: "Kantor Pemerintahan" },
   { value: "tni-polri", title: "TNI / Polri" },

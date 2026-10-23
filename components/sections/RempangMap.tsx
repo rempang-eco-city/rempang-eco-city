@@ -7,6 +7,7 @@ import "leaflet/dist/leaflet.css";
 import {
   Anchor,
   BedDouble,
+  Car,
   ArrowLeft,
   Coffee,
   Cookie,
@@ -26,6 +27,7 @@ import {
   ShoppingBasket,
   Store,
   UtensilsCrossed,
+  WashingMachine,
   Wrench,
   type LucideProps,
 } from "lucide-react";
@@ -124,6 +126,8 @@ const KATEGORI_STYLE: Record<PetaKategori, { color: string; Icon: ComponentType<
   kesehatan: { color: "#dc2626", Icon: Hospital },
   "sanggar-tari": { color: "#c026d3", Icon: Music },
   bengkel: { color: "#57534e", Icon: Wrench },
+  laundry: { color: "#0891b2", Icon: WashingMachine },
+  "rental-transport": { color: "#b45309", Icon: Car },
   koperasi: { color: "#0057A8", Icon: Store },
   "kantor-pemerintahan": { color: "#4338ca", Icon: Landmark },
   "tni-polri": { color: "#166534", Icon: Shield },
