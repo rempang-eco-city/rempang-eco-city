@@ -14,6 +14,7 @@ export const profilPage = defineType({
     { name: "demografi", title: "Demografi" },
     { name: "pendaftaran", title: "Pendaftaran Warga" },
     { name: "modul", title: "Modul" },
+    { name: "roadmap", title: "Roadmap" },
   ],
   fields: [
     defineField({
@@ -321,6 +322,54 @@ export const profilPage = defineType({
           },
         }),
       ],
+    }),
+
+    defineField({
+      name: "roadmapTitle",
+      title: "Judul Bagian Roadmap",
+      type: "string",
+      group: "roadmap",
+      initialValue: "Roadmap",
+      description: "Tampil setelah Modul. Bagian ini hanya tampil jika Gambar dan File PDF diisi.",
+    }),
+    defineField({
+      name: "roadmapDocTitle",
+      title: "Judul Dokumen",
+      type: "string",
+      group: "roadmap",
+      description: 'Judul di kartu sebelah kanan gambar. Contoh: "Roadmap Kawasan Rempang Eco City"',
+    }),
+    defineField({
+      name: "roadmapDescription",
+      title: "Deskripsi",
+      type: "text",
+      rows: 3,
+      group: "roadmap",
+      description: "Penjelasan singkat isi roadmap, tampil di kartu.",
+    }),
+    defineField({
+      name: "roadmapImage",
+      title: "Gambar (landscape 16:9)",
+      type: "image",
+      options: { hotspot: true },
+      group: "roadmap",
+      description: "Misalnya halaman ringkasan atau infografis roadmap, ukuran 1920×1080 paling cocok.",
+    }),
+    defineField({
+      name: "roadmapFile",
+      title: "File PDF",
+      type: "file",
+      options: { accept: ".pdf" },
+      group: "roadmap",
+      description:
+        'Kompres dulu jika lebih dari ±15 MB (misalnya Export "Smallest file size" di Canva) agar cepat dibuka di HP.',
+    }),
+    defineField({
+      name: "roadmapTahun",
+      title: "Tahun (opsional)",
+      type: "string",
+      group: "roadmap",
+      description: 'Contoh: "2026"',
     }),
   ],
   preview: {

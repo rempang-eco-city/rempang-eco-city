@@ -529,6 +529,19 @@ export type ProfilPage = {
   modulTitle?: string;
   modulDescription?: string;
   modulItems: ProfilModulItem[];
+  roadmapTitle?: string;
+  /** Only set when both the image and the PDF are filled in. */
+  roadmap: ProfilRoadmap | null;
+};
+
+export type ProfilRoadmap = {
+  title?: string;
+  description?: string;
+  image: string;
+  fileUrl: string;
+  /** Bytes. */
+  fileSize: number;
+  tahun?: string;
 };
 
 export type ProfilModulItem = {
@@ -582,6 +595,18 @@ export async function getProfilPage() {
           tahun
         },
         []
+      ),
+      roadmapTitle,
+      "roadmap": select(
+        defined(roadmapImage.asset) && defined(roadmapFile.asset) => {
+          "title": roadmapDocTitle,
+          "description": roadmapDescription,
+          "image": roadmapImage.asset->url,
+          "fileUrl": roadmapFile.asset->url,
+          "fileSize": roadmapFile.asset->size,
+          "tahun": roadmapTahun
+        },
+        null
       )
     }`,
     {},

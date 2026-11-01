@@ -2,10 +2,19 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowRight, ClipboardList, Download, Home, UserPlus } from "lucide-react";
+import {
+  ArrowRight,
+  BookOpen,
+  ClipboardList,
+  Download,
+  Home,
+  Map as MapIcon,
+  Maximize2,
+  UserPlus,
+} from "lucide-react";
 import FasilitasMarquee from "@/components/FasilitasMarquee";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
-import type { ProfilModulItem, ProfilPage } from "@/lib/sanity/queries";
+import type { ProfilModulItem, ProfilPage, ProfilRoadmap } from "@/lib/sanity/queries";
 import { sanityImageUrl } from "@/lib/sanity/image";
 import { modulSektorTitle } from "@/lib/modul";
 
@@ -267,8 +276,92 @@ export default function ProfilContent({ profil }: { profil: ProfilPage }) {
             </div>
           </motion.section>
         )}
+
+        {profil.roadmap && <RoadmapSection title={profil.roadmapTitle} roadmap={profil.roadmap} />}
       </div>
     </div>
+  );
+}
+
+/** One document: a 16:9 preview image beside a card that opens the full PDF. */
+function RoadmapSection({ title, roadmap }: { title?: string; roadmap: ProfilRoadmap }) {
+  const meta = ["PDF", formatFileSize(roadmap.fileSize), roadmap.tahun].filter(Boolean).join(" · ");
+
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay: 0.1 }}
+      className="mt-16 pt-16 border-t border-border-color"
+    >
+      <h2 className="font-heading font-bold text-2xl md:text-3xl text-primary-blue mb-8">
+        {title || "Roadmap"}
+      </h2>
+
+      <div className="grid items-stretch gap-6 lg:grid-cols-[1.65fr_1fr]">
+        <a
+          href={roadmap.fileUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          // 16:9 when stacked; beside the card it fills the row height instead, since a
+          // stretched aspect-ratio box would grow wider than its column.
+          className="group relative block aspect-video min-w-0 overflow-hidden rounded-2xl bg-slate-100 shadow-[0_18px_36px_rgba(15,23,42,0.12)] lg:aspect-auto lg:h-full lg:min-h-[340px]"
+          aria-label={`Buka ${roadmap.title || "roadmap"} (PDF)`}
+        >
+          <img
+            src={sanityImageUrl(roadmap.image, 1400)}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          />
+          <span className="absolute inset-0 flex items-end justify-end bg-gradient-to-t from-black/40 via-transparent to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold text-text-primary">
+              <Maximize2 size={14} aria-hidden="true" />
+              Lihat ukuran penuh
+            </span>
+          </span>
+        </a>
+
+        <div className="relative flex flex-col overflow-hidden rounded-2xl bg-gradient-to-br from-primary-dark via-primary-blue to-[#0a6fd1] p-6 text-white shadow-[0_18px_36px_rgba(0,59,115,0.25)] md:p-8">
+          <span className="pointer-events-none absolute -right-14 -top-14 h-44 w-44 rounded-full border-[24px] border-white/[0.06]" />
+
+          <span className="relative inline-flex items-center gap-1.5 self-start rounded-full bg-primary-yellow px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary-dark">
+            <MapIcon size={14} aria-hidden="true" />
+            Dokumen Roadmap
+          </span>
+          <h3 className="relative mt-4 font-heading text-2xl font-bold leading-snug">
+            {roadmap.title || "Roadmap Kawasan Rempang Eco City"}
+          </h3>
+          <p className="relative mt-1 text-sm text-white/70">{meta}</p>
+          {roadmap.description && (
+            <p className="relative mt-4 whitespace-pre-line text-sm leading-relaxed text-white/85">
+              {roadmap.description}
+            </p>
+          )}
+
+          <div className="relative mt-auto flex flex-col gap-3 pt-6">
+            <a
+              href={roadmap.fileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-primary-blue shadow-[0_10px_24px_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5 hover:bg-slate-50"
+            >
+              <BookOpen size={18} aria-hidden="true" />
+              Lihat Roadmap Lengkap
+              <ArrowRight size={18} className="transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+            </a>
+            {/* Sanity's ?dl= serves the file as a download under its original name. */}
+            <a
+              href={`${roadmap.fileUrl}?dl=`}
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+            >
+              <Download size={16} aria-hidden="true" />
+              Unduh PDF
+            </a>
+          </div>
+        </div>
+      </div>
+    </motion.section>
   );
 }
 
