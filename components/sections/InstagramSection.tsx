@@ -150,7 +150,12 @@ function InstagramFeed({ accounts, feeds }: { accounts: InstagramAccount[]; feed
         </a>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3">
+      {/* 4 columns for 8 posts; 3 for Behold's free-plan 6, so no row is half empty. */}
+      <div
+        className={`grid grid-cols-2 gap-2 md:gap-3 ${
+          posts.length % 4 === 0 ? "md:grid-cols-4" : "md:grid-cols-3"
+        }`}
+      >
         {posts.map((post) => {
           const Badge = MEDIA_BADGE[post.mediaType];
           return (

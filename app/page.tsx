@@ -38,9 +38,7 @@ export default async function Home() {
 
   if (!beranda) notFound();
 
-  const instagramFeeds = await getInstagramFeeds(
-    beranda.instagramAccounts.map(({ username }) => username)
-  );
+  const instagramFeeds = await getInstagramFeeds(beranda.instagramAccounts);
 
   return (
     <main>

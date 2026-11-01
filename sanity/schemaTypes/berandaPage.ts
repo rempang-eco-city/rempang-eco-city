@@ -178,6 +178,21 @@ export const berandaPage = defineType({
                   .error('Hanya huruf, angka, titik, dan "_" (tanpa "@" atau link).'),
             }),
             defineField({
+              name: "feedUrl",
+              title: "Link Feed Behold (opsional)",
+              type: "url",
+              description:
+                "Untuk menampilkan postingan terbaru akun ini di Beranda. Dari behold.so → feed dengan output JSON → salin link-nya (https://feeds.behold.so/...). Kosongkan untuk hanya menampilkan card.",
+              validation: (rule) =>
+                rule
+                  .uri({ scheme: ["https"] })
+                  .custom((url) =>
+                    !url || /^https:\/\/feeds\.behold\.so\/[A-Za-z0-9]+\/?$/.test(url)
+                      ? true
+                      : "Harus link feed Behold, contoh: https://feeds.behold.so/AbC123"
+                  ),
+            }),
+            defineField({
               name: "photo",
               title: "Foto Profil (opsional)",
               type: "image",

@@ -1,10 +1,8 @@
-import { createClient } from "@sanity/client";
-import { apiVersion, dataset, projectId } from "@/sanity/env";
-import { INSTAGRAM_SECRETS_ID } from "@/sanity/schemaTypes/instagramSecrets";
+import type { InstagramAccount } from "@/lib/sanity/queries";
 
-// Latest posts per account for the Beranda Instagram section, read with the
-// Instagram API (Instagram Login). Server only: it uses SANITY_API_TOKEN to
-// read and renew the access tokens stored in the Studio's "Token Instagram".
+// Latest posts per account for the Beranda Instagram section, read from each
+// account's Behold JSON feed (behold.so handles the Instagram login and tokens).
+// Feed format: https://behold.so/docs/json-feeds
 
 export type InstagramPost = {
   id: string;
@@ -14,109 +12,63 @@ export type InstagramPost = {
   permalink: string;
 };
 
-/** username → latest posts; accounts without a working token are left out. */
+/** Lowercase username → latest posts; accounts without a working feed are left out. */
 export type InstagramFeeds = Record<string, InstagramPost[]>;
 
 const POST_LIMIT = 8;
-// Instagram's media URLs are signed and expire after a few days, so refetch
-// well within that; the page itself revalidates every 60 s.
-const FEED_REVALIDATE = 15 * 60;
-// Long-lived tokens last 60 days; renew halfway so a few failed tries don't matter.
-const REFRESH_AFTER_MS = 30 * 24 * 60 * 60 * 1000;
+// Behold refreshes free feeds daily (paid: within minutes), so hourly is plenty
+// and keeps the request count well inside its plan limits.
+const FEED_REVALIDATE = 60 * 60;
 
-type StoredToken = { _key: string; username: string; token: string; refreshedAt?: string };
+type BeholdSize = { mediaUrl?: string };
 
-type MediaResponse = {
-  data?: {
+type BeholdFeed = {
+  posts?: {
     id: string;
-    caption?: string;
-    media_type: InstagramPost["mediaType"];
-    media_url?: string;
-    thumbnail_url?: string;
+    mediaType: InstagramPost["mediaType"];
     permalink: string;
+    caption?: string;
+    prunedCaption?: string;
+    mediaUrl?: string;
+    thumbnailUrl?: string;
+    sizes?: { small?: BeholdSize; medium?: BeholdSize; large?: BeholdSize };
   }[];
 };
 
-export async function getInstagramFeeds(usernames: string[]): Promise<InstagramFeeds> {
-  const sanityToken = process.env.SANITY_API_TOKEN;
-  if (!sanityToken || usernames.length === 0) return {};
-
-  const client = createClient({ projectId, dataset, apiVersion, token: sanityToken, useCdn: false });
-  let tokens: StoredToken[];
-  try {
-    tokens = await client.fetch<StoredToken[]>(
-      `coalesce(*[_id == $id][0].tokens[defined(username) && defined(token)], [])`,
-      { id: INSTAGRAM_SECRETS_ID }
-    );
-  } catch (error) {
-    console.error("Instagram: could not read tokens", error);
-    return {};
-  }
-
-  const wanted = new Set(usernames.map((u) => u.toLowerCase()));
+export async function getInstagramFeeds(accounts: InstagramAccount[]): Promise<InstagramFeeds> {
   const entries = await Promise.all(
-    tokens
-      .filter(({ username }) => wanted.has(username.toLowerCase()))
-      .map(async (stored) => {
-        const token = await refreshIfDue(client, stored);
-        const posts = await fetchPosts(stored.username, token);
-        return [stored.username.toLowerCase(), posts] as const;
-      })
+    accounts
+      .filter((account): account is InstagramAccount & { feedUrl: string } => Boolean(account.feedUrl))
+      .map(async ({ username, feedUrl }) => [username.toLowerCase(), await fetchPosts(username, feedUrl)] as const)
   );
   return Object.fromEntries(entries.filter(([, posts]) => posts.length > 0));
 }
 
-async function fetchPosts(username: string, token: string): Promise<InstagramPost[]> {
-  const params = new URLSearchParams({
-    fields: "id,caption,media_type,media_url,thumbnail_url,permalink",
-    limit: String(POST_LIMIT),
-    access_token: token,
-  });
+async function fetchPosts(username: string, feedUrl: string): Promise<InstagramPost[]> {
   try {
-    const res = await fetch(`https://graph.instagram.com/me/media?${params}`, {
-      next: { revalidate: FEED_REVALIDATE },
-    });
+    const res = await fetch(feedUrl, { next: { revalidate: FEED_REVALIDATE } });
     if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
-    const { data = [] } = (await res.json()) as MediaResponse;
-    return data.flatMap((m) => {
-      // Videos are shown by their cover image.
-      const imageUrl = m.media_type === "VIDEO" ? m.thumbnail_url : m.media_url;
+    const { posts = [] } = (await res.json()) as BeholdFeed;
+    return posts.slice(0, POST_LIMIT).flatMap((post) => {
+      // Behold's resized WebP copies; Instagram's own URLs are huge and expire.
+      const imageUrl =
+        post.sizes?.medium?.mediaUrl ??
+        post.sizes?.large?.mediaUrl ??
+        (post.mediaType === "VIDEO" ? post.thumbnailUrl : post.mediaUrl);
       return imageUrl
-        ? [{ id: m.id, caption: m.caption, mediaType: m.media_type, imageUrl, permalink: m.permalink }]
+        ? [
+            {
+              id: post.id,
+              caption: post.prunedCaption || post.caption,
+              mediaType: post.mediaType,
+              imageUrl,
+              permalink: post.permalink,
+            },
+          ]
         : [];
     });
   } catch (error) {
-    console.error(`Instagram: could not load @${username}`, error);
+    console.error(`Instagram: could not load the Behold feed for @${username}`, error);
     return [];
-  }
-}
-
-/** Renews a token older than REFRESH_AFTER_MS and saves it; returns the token to use. */
-async function refreshIfDue(client: ReturnType<typeof createClient>, stored: StoredToken) {
-  const last = stored.refreshedAt ? Date.parse(stored.refreshedAt) : 0;
-  if (Date.now() - last < REFRESH_AFTER_MS) return stored.token;
-
-  try {
-    const params = new URLSearchParams({ grant_type: "ig_refresh_token", access_token: stored.token });
-    // Cached by URL (i.e. per old token) so concurrent renders refresh only once.
-    const res = await fetch(`https://graph.instagram.com/refresh_access_token?${params}`, {
-      next: { revalidate: 60 * 60 },
-    });
-    if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
-    const { access_token } = (await res.json()) as { access_token?: string };
-    if (!access_token) throw new Error("no access_token in response");
-
-    await client
-      .patch(INSTAGRAM_SECRETS_ID)
-      .set({
-        [`tokens[_key=="${stored._key}"].token`]: access_token,
-        [`tokens[_key=="${stored._key}"].refreshedAt`]: new Date().toISOString(),
-      })
-      .commit();
-    return access_token;
-  } catch (error) {
-    // Keep using the current token; it stays valid until 60 days after its last renewal.
-    console.error(`Instagram: could not refresh token for @${stored.username}`, error);
-    return stored.token;
   }
 }
