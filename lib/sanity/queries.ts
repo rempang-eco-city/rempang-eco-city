@@ -433,11 +433,8 @@ export type PariwisataPaket = {
 export type PariwisataDestination = {
   _id: string;
   routeKey: PariwisataRouteKey;
-  tabLabel?: string;
   name: string;
   location: string;
-  category: string;
-  summary?: string;
   description: string;
   bestTime?: string;
   facilities: string[];
@@ -646,11 +643,8 @@ export async function getPariwisataPage() {
       "destinations": coalesce(destinations[hidden != true && defined(routeKey) && defined(name)]{
         "_id": _key,
         routeKey,
-        tabLabel,
         name,
         location,
-        category,
-        summary,
         description,
         bestTime,
         "facilities": coalesce(facilities, []),

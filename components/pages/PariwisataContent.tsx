@@ -10,8 +10,8 @@ import type {
 import { sanityImageUrl } from "@/lib/sanity/image";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 
-// Fallback tab text per routeKey when a destination has no tabLabel in the CMS.
-const DEFAULT_TAB_LABELS: Record<PariwisataDestination["routeKey"], string> = {
+// Tab text per routeKey.
+const TAB_LABELS: Record<PariwisataDestination["routeKey"], string> = {
   mancing: "Mancing",
   mangrove: "Mangrove",
   pulau: "Pulau",
@@ -95,7 +95,7 @@ export default function PariwisataContent({
                           : "text-slate-600 hover:text-primary-blue"
                       }`}
                     >
-                      {dest.tabLabel || DEFAULT_TAB_LABELS[dest.routeKey] || dest.name}
+                      {TAB_LABELS[dest.routeKey] || dest.name}
                     </button>
                   );
                 })}

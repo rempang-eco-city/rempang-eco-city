@@ -323,9 +323,8 @@ Jika ada pergantian pengurus, cukup ganti namanya lalu Publish.
 **Setiap destinasi** berisi:
 
 - **Sembunyikan dari website**: untuk destinasi yang belum siap tampil.
-- **Kunci Destinasi**: `mancing`, `mangrove`, atau `pulau`. Masing-masing hanya boleh dipakai sekali.
-- **Label Tab**: opsional.
-- **Nama, Lokasi, Kategori, Ringkasan, Deskripsi, Waktu Terbaik, Fasilitas, Tips**.
+- **Kunci Destinasi**: `mancing`, `mangrove`, atau `pulau`. Masing-masing hanya boleh dipakai sekali, dan menentukan teks tombol pilihan destinasi ("Mancing", "Mangrove", "Pulau").
+- **Nama, Lokasi, Deskripsi, Waktu Terbaik, Fasilitas, Tips**.
 - **Galeri Foto & Video**: item pertama menjadi media utama. Video MP4/WebM, usahakan di bawah 50 MB.
 - **Link WhatsApp**.
 - **Paket & Harga**, misalnya satu paket "Harga Turis" dan satu "Harga Lokal":

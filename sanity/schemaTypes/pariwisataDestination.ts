@@ -1,7 +1,7 @@
 import { defineField, defineType } from "sanity";
 
-// routeKey identifies a destination and picks its default tab label (see
-// DEFAULT_TAB_LABELS in PariwisataContent). Destinations live as an array on
+// routeKey identifies a destination and picks its tab label (see TAB_LABELS
+// in PariwisataContent). Destinations live as an array on
 // the pariwisataPage singleton, so they are edited together with the page.
 export const ROUTE_KEYS = ["mancing", "mangrove", "pulau"] as const;
 
@@ -31,30 +31,10 @@ export const pariwisataDestination = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
-      name: "tabLabel",
-      title: "Label Tab (opsional)",
-      type: "string",
-      description:
-        'Teks pada tombol pilihan destinasi. Contoh: "Pulau Mubut Darat". Jika kosong, memakai label bawaan sesuai Kunci Destinasi.',
-    }),
-    defineField({
       name: "location",
       title: "Lokasi",
       type: "string",
       validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: "category",
-      title: "Kategori",
-      type: "string",
-      description: 'Contoh: "Jasa", "Alam"',
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: "summary",
-      title: "Ringkasan Singkat",
-      type: "text",
-      rows: 2,
     }),
     defineField({
       name: "description",
