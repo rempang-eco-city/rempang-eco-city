@@ -16,6 +16,13 @@ export const koperasi = defineType({
       description: "Section ajakan menjadi anggota, tampil setelah foto pengurus.",
       options: { collapsible: true, collapsed: false },
     },
+    {
+      name: "perikanan",
+      title: "Hasil Perikanan",
+      description:
+        "Section etalase hasil tangkapan, tampil setelah Layanan. Disembunyikan jika angka, produk, dan testimoni semuanya kosong.",
+      options: { collapsible: true, collapsed: true },
+    },
   ],
   fields: [
     defineField({
@@ -123,6 +130,83 @@ export const koperasi = defineType({
       type: "array",
       of: [{ type: "koperasiLayanan" }],
       description: "Tampil sebelum Galeri. Section disembunyikan jika kosong.",
+    }),
+    defineField({
+      name: "perikananDescription",
+      title: "Deskripsi",
+      type: "text",
+      rows: 2,
+      fieldset: "perikanan",
+      description: "Kalimat pembuka di bawah judul section (opsional).",
+    }),
+    defineField({
+      name: "perikananWhatsapp",
+      title: "Link WhatsApp Pemesanan",
+      type: "url",
+      fieldset: "perikanan",
+      description:
+        'Format: https://wa.me/628xxxxxxxxxx. Tombol "Pesan via WhatsApp" di setiap produk hanya tampil jika link ini diisi.',
+      validation: (rule) =>
+        rule
+          .uri({ scheme: ["https"] })
+          .custom((url) =>
+            !url || /^https:\/\/wa\.me\/\d{8,15}$/.test(url)
+              ? true
+              : "Gunakan format https://wa.me/628xxxxxxxxxx (tanpa spasi, tanda + atau tanda hubung)."
+          ),
+    }),
+    defineField({
+      name: "perikananStats",
+      title: "Angka Penjualan",
+      type: "array",
+      fieldset: "perikanan",
+      description: 'Contoh: "2,5 ton" + "Ikan terjual". Disarankan 3 item.',
+      validation: (rule) => rule.max(4),
+      of: [
+        {
+          type: "object",
+          name: "perikananStat",
+          title: "Angka",
+          fields: [
+            defineField({
+              name: "value",
+              title: "Nilai",
+              type: "string",
+              description: 'Contoh: "2,5 ton", "120+"',
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "label",
+              title: "Label",
+              type: "string",
+              description: 'Contoh: "Ikan terjual", "Pembeli", "Nelayan mitra"',
+              validation: (rule) => rule.required(),
+            }),
+          ],
+          preview: { select: { title: "value", subtitle: "label" } },
+        },
+      ],
+    }),
+    defineField({
+      name: "perikananStatsNote",
+      title: "Keterangan Angka (opsional)",
+      type: "string",
+      fieldset: "perikanan",
+      description: 'Tampil di bawah angka. Contoh: "Data hingga Oktober 2026"',
+    }),
+    defineField({
+      name: "perikananProduk",
+      title: "Katalog Produk",
+      type: "array",
+      fieldset: "perikanan",
+      of: [{ type: "koperasiProdukIkan" }],
+    }),
+    defineField({
+      name: "perikananTestimoni",
+      title: "Testimoni Pembeli",
+      type: "array",
+      fieldset: "perikanan",
+      of: [{ type: "koperasiTestimoni" }],
     }),
     defineField({
       name: "galleryItems",

@@ -27,6 +27,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
+import KoperasiPerikanan from "@/components/pages/KoperasiPerikanan";
 import StrukturOrganisasi from "@/components/StrukturOrganisasi";
 import type { KoperasiDetail } from "@/lib/sanity/queries";
 import { sanityImageUrl } from "@/lib/sanity/image";
@@ -303,6 +304,8 @@ export default function KoperasiDetailContent({
           </div>
         </section>
       )}
+
+      <KoperasiPerikanan koperasi={koperasi} />
 
       {galleryItems.length > 0 && (
         <KoperasiGallery name={name} galleryItems={galleryItems} />

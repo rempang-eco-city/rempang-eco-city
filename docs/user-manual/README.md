@@ -283,8 +283,23 @@ Buka **Halaman Koperasi**, lalu pilih koperasi.
 | Pengurus | Foto pengurus (nama, jabatan, foto). |
 | Keanggotaan | Deskripsi dan **Link WhatsApp Pendaftaran** (format `https://wa.me/628xxxxxxxxxx`). Section ini hanya tampil jika link diisi. |
 | Fasilitas, Layanan | Section disembunyikan jika kosong. Layanan berisi nama, pilihan ikon, dan deskripsi. |
+| **Hasil Perikanan** (bagian yang bisa dibuka-tutup) | Etalase hasil tangkapan, tampil setelah Layanan. Lihat penjelasan di bawah. |
 | Galeri Kegiatan | Judul, deskripsi, dan minimal 1 foto per kegiatan. |
 | Laporan Keuangan | Judul, cover portrait (rasio A4), dan file PDF / Excel (maks. 5 MB) / Word (maks. 10 MB). |
+
+### Mengisi Hasil Perikanan
+
+Section **Hasil Perikanan** hanya tampil jika minimal salah satu dari Angka Penjualan, Katalog Produk, atau Testimoni Pembeli diisi.
+
+- **Deskripsi**: kalimat pembuka di bawah judul (opsional).
+- **Link WhatsApp Pemesanan**: format `https://wa.me/628xxxxxxxxxx`. Tombol **Pesan** di setiap produk membuka chat dengan pesan otomatis, misalnya *"Halo Koperasi Transmigrasi, saya ingin memesan Ikan Kakap Merah."* Tanpa link ini, tombol Pesan tidak tampil.
+- **Angka Penjualan**: maksimal 4, disarankan 3. Contoh: Nilai `2,5 ton`, Label `Ikan terjual`. Isi **Keterangan Angka** (misalnya *"Data hingga Oktober 2026"*) dan perbarui angkanya secara berkala.
+- **Katalog Produk**, untuk setiap produk:
+  - Nama dan foto (landscape 4:3) wajib diisi.
+  - **Ketersediaan**: *Tersedia*, *Musiman*, atau *Habis*. Produk yang habis ditampilkan abu-abu tanpa tombol Pesan.
+  - **Harga** (opsional): angka saja, contoh `65000`, lalu pilih satuannya (per kg / ekor / paket). Jika dikosongkan, tertulis *"Tanya harga via WhatsApp"*.
+  - **Keterangan Singkat** (opsional), contoh *"Minimal pembelian 5 kg"*.
+- **Testimoni Pembeli**: nama dan isi testimoni wajib. Keterangan (contoh *"Pemilik rumah makan, Batam"*), Jumlah Pembelian (contoh *"Beli rutin 50 kg/minggu"*), dan foto bersifat opsional; tanpa foto, inisial nama ditampilkan.
 
 ### Mengisi Struktur Kepengurusan / Organisasi
 

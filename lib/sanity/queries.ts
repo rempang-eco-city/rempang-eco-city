@@ -3,6 +3,7 @@ import { sanityClient } from "./client";
 import type { LayananIconKey } from "@/lib/layananIcons";
 import { parseKoordinat, toPetaKategori, type PetaKategori } from "@/lib/peta";
 import type { ModulSektor } from "@/lib/modul";
+import type { ProdukStatus, ProdukUnit } from "@/lib/perikanan";
 
 const REVALIDATE_SECONDS = 60;
 
@@ -293,6 +294,25 @@ export type KoperasiFasilitas = {
   image: string;
 };
 
+export type KoperasiPerikananStat = { value: string; label: string };
+
+export type KoperasiProdukIkan = {
+  name: string;
+  image: string;
+  status: ProdukStatus;
+  price?: number;
+  unit: ProdukUnit;
+  note?: string;
+};
+
+export type KoperasiTestimoni = {
+  name: string;
+  role?: string;
+  quote: string;
+  purchase?: string;
+  photo?: string;
+};
+
 export type KoperasiLayanan = {
   title: string;
   icon: LayananIconKey;
@@ -320,6 +340,12 @@ export type KoperasiDetail = KoperasiListItem & {
   layanan: KoperasiLayanan[];
   galleryItems: KoperasiGalleryItem[];
   laporanKeuangan: KoperasiLaporanKeuangan[];
+  perikananDescription?: string;
+  perikananWhatsapp?: string;
+  perikananStats: KoperasiPerikananStat[];
+  perikananStatsNote?: string;
+  perikananProduk: KoperasiProdukIkan[];
+  perikananTestimoni: KoperasiTestimoni[];
 };
 
 const koperasiListFields = `
@@ -367,6 +393,27 @@ export async function getKoperasiByRouteKey(routeKey: string) {
       membershipWhatsapp,
       fasilitas[]{ name, description, "image": image.asset->url },
       layanan[]{ title, icon, description },
+      perikananDescription,
+      perikananWhatsapp,
+      "perikananStats": coalesce(perikananStats[defined(value) && defined(label)]{ value, label }, []),
+      perikananStatsNote,
+      "perikananProduk": coalesce(
+        perikananProduk[defined(name) && defined(image.asset)]{
+          name,
+          "image": image.asset->url,
+          "status": coalesce(status, "tersedia"),
+          price,
+          "unit": coalesce(unit, "kg"),
+          note
+        },
+        []
+      ),
+      "perikananTestimoni": coalesce(
+        perikananTestimoni[defined(name) && defined(quote)]{
+          name, role, quote, purchase, "photo": photo.asset->url
+        },
+        []
+      ),
       galleryItems[]{ title, description, "images": images[].asset->url },
       laporanKeuangan[]{
         title,
