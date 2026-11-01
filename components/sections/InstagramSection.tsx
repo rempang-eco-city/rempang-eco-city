@@ -40,6 +40,8 @@ export default function InstagramSection({ title, description, accounts, feeds }
           )}
         </motion.div>
 
+        <InstagramFeed accounts={accounts} feeds={feeds} />
+
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {accounts.map((account, index) => (
             <motion.a
@@ -76,8 +78,6 @@ export default function InstagramSection({ title, description, accounts, feeds }
             </motion.a>
           ))}
         </div>
-
-        <InstagramFeed accounts={accounts} feeds={feeds} />
       </div>
     </section>
   );
@@ -104,7 +104,7 @@ function InstagramFeed({ accounts, feeds }: { accounts: InstagramAccount[]; feed
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6 }}
-      className="mt-10 rounded-2xl border border-border-color bg-white p-4 shadow-[0_8px_20px_rgba(15,23,42,0.03)] md:p-6"
+      className="mb-10 rounded-2xl border border-border-color bg-white p-4 shadow-[0_8px_20px_rgba(15,23,42,0.03)] md:p-6"
     >
       {withPosts.length > 1 && (
         <div className="mb-5 flex flex-wrap gap-2" role="tablist" aria-label="Pilih akun Instagram">
@@ -142,8 +142,7 @@ function InstagramFeed({ accounts, feeds }: { accounts: InstagramAccount[]; feed
           href={profileUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
-          style={{ background: INSTAGRAM_GRADIENT }}
+          className="inline-flex items-center gap-2 rounded-full bg-primary-blue px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
         >
           <Instagram size={16} />
           Ikuti di Instagram
@@ -172,12 +171,12 @@ function InstagramFeed({ accounts, feeds }: { accounts: InstagramAccount[]; feed
                 loading="lazy"
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
+              {/* Thin outline so posts with a white background don't melt into the card */}
+              <span className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-black/10" />
               {Badge && (
-                <Badge
-                  size={18}
-                  className="absolute right-2 top-2 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]"
-                  aria-hidden="true"
-                />
+                <span className="absolute right-2 top-2 rounded-full bg-black/45 p-1.5 text-white" aria-hidden="true">
+                  <Badge size={14} />
+                </span>
               )}
               {post.caption && (
                 <span className="absolute inset-0 flex items-end bg-gradient-to-t from-black/75 via-black/20 to-transparent p-3 opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
