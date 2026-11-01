@@ -3,7 +3,6 @@
 import { useState } from "react";
 import {
   Armchair,
-  CircleCheck,
   Cog,
   DoorOpen,
   ExternalLink,
@@ -297,22 +296,6 @@ export default function KoperasiDetailContent({
                     <p className="mt-2 text-sm leading-relaxed text-text-secondary">
                       {item.description}
                     </p>
-                    {item.highlights.length > 0 && (
-                      <ul className="mt-4 space-y-2 border-t border-slate-100 pt-4">
-                        {item.highlights.map((point, pointIndex) => (
-                          <li
-                            key={`${point}-${pointIndex}`}
-                            className="flex items-start gap-2 text-sm text-text-primary"
-                          >
-                            <CircleCheck
-                              size={16}
-                              className="mt-0.5 flex-shrink-0 text-[#2bb673]"
-                            />
-                            {point}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
                   </article>
                 );
               })}

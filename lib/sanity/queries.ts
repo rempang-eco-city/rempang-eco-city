@@ -297,7 +297,6 @@ export type KoperasiLayanan = {
   title: string;
   icon: LayananIconKey;
   description: string;
-  highlights: string[];
 };
 
 export type KoperasiLaporanKeuangan = {
@@ -367,7 +366,7 @@ export async function getKoperasiByRouteKey(routeKey: string) {
       membershipDescription,
       membershipWhatsapp,
       fasilitas[]{ name, description, "image": image.asset->url },
-      layanan[]{ title, icon, description, "highlights": coalesce(highlights, []) },
+      layanan[]{ title, icon, description },
       galleryItems[]{ title, description, "images": images[].asset->url },
       laporanKeuangan[]{
         title,

@@ -28,14 +28,6 @@ export const koperasiLayanan = defineType({
       rows: 3,
       validation: (rule) => rule.required().max(240),
     }),
-    defineField({
-      name: "highlights",
-      title: "Poin Keunggulan (opsional)",
-      type: "array",
-      of: [{ type: "string" }],
-      description: "Poin singkat yang tampil dengan tanda centang. Disarankan maksimal 4.",
-      validation: (rule) => rule.max(6),
-    }),
   ],
   preview: {
     select: { title: "title", subtitle: "description" },

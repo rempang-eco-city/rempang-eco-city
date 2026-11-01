@@ -282,7 +282,7 @@ Buka **Halaman Koperasi**, lalu pilih koperasi.
 | Gambar Struktur (cadangan) | Hanya dipakai jika Struktur Kepengurusan kosong. |
 | Pengurus | Foto pengurus (nama, jabatan, foto). |
 | Keanggotaan | Deskripsi dan **Link WhatsApp Pendaftaran** (format `https://wa.me/628xxxxxxxxxx`). Section ini hanya tampil jika link diisi. |
-| Fasilitas, Layanan | Section disembunyikan jika kosong. Layanan punya pilihan ikon dan Poin Keunggulan (maksimal 6). |
+| Fasilitas, Layanan | Section disembunyikan jika kosong. Layanan berisi nama, pilihan ikon, dan deskripsi. |
 | Galeri Kegiatan | Judul, deskripsi, dan minimal 1 foto per kegiatan. |
 | Laporan Keuangan | Judul, cover portrait (rasio A4), dan file PDF / Excel (maks. 5 MB) / Word (maks. 10 MB). |
 
