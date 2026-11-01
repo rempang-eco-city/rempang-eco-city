@@ -1,4 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { MODUL_SEKTOR_OPTIONS } from "../../lib/modul";
 
 // Singleton: exactly one document with _id "profilPage" (see sanity/structure.ts).
 export const profilPage = defineType({
@@ -11,6 +12,7 @@ export const profilPage = defineType({
     { name: "lembaga", title: "Lembaga Kemasyarakatan" },
     { name: "fasilitas", title: "Fasilitas" },
     { name: "demografi", title: "Demografi" },
+    { name: "modul", title: "Modul" },
   ],
   fields: [
     defineField({
@@ -201,6 +203,96 @@ export const profilPage = defineType({
       rows: 2,
       group: "demografi",
       description: "Tampil di kotak kuning di bawah data. Kosongkan untuk menyembunyikan.",
+    }),
+
+    defineField({
+      name: "modulTitle",
+      title: "Judul Bagian Modul",
+      type: "string",
+      group: "modul",
+      initialValue: "Modul",
+    }),
+    defineField({
+      name: "modulDescription",
+      title: "Deskripsi Bagian Modul",
+      type: "text",
+      rows: 2,
+      group: "modul",
+    }),
+    defineField({
+      name: "modulItems",
+      title: "Daftar Modul",
+      type: "array",
+      group: "modul",
+      description: "Tampil paling bawah di halaman Profil. Kosongkan untuk menyembunyikan bagian ini.",
+      validation: (rule) => rule.max(6),
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "modulItem",
+          title: "Modul",
+          fields: [
+            defineField({
+              name: "title",
+              title: "Judul",
+              type: "string",
+              description: 'Contoh: "Modul Pengembangan Pariwisata Berbasis Masyarakat"',
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "sektor",
+              title: "Sektor",
+              type: "string",
+              options: { list: [...MODUL_SEKTOR_OPTIONS], layout: "radio", direction: "horizontal" },
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "cover",
+              title: "Cover (portrait)",
+              type: "image",
+              options: { hotspot: true },
+              description: "Halaman pertama modul sebagai gambar, rasio kertas A4 (portrait).",
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "file",
+              title: "File PDF",
+              type: "file",
+              options: { accept: ".pdf" },
+              description:
+                "Kompres dulu jika lebih dari ±15 MB (misalnya Export \"Smallest file size\" di Canva) agar cepat dibuka di HP.",
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "description",
+              title: "Deskripsi Singkat (opsional)",
+              type: "text",
+              rows: 3,
+              validation: (rule) => rule.max(200),
+            }),
+            defineField({
+              name: "penyusun",
+              title: "Disusun oleh (opsional)",
+              type: "string",
+              description: 'Contoh: "Tim Ekspedisi Patriot Universitas Indonesia"',
+            }),
+            defineField({
+              name: "tahun",
+              title: "Tahun (opsional)",
+              type: "string",
+              description: 'Contoh: "2026"',
+            }),
+          ],
+          preview: {
+            select: { title: "title", sektor: "sektor", media: "cover" },
+            prepare: ({ title, sektor, media }) => ({
+              title,
+              subtitle: MODUL_SEKTOR_OPTIONS.find(({ value }) => value === sektor)?.title,
+              media,
+            }),
+          },
+        }),
+      ],
     }),
   ],
   preview: {

@@ -2,6 +2,7 @@ import type { PortableTextBlock as RichTextBlock } from "@portabletext/react";
 import { sanityClient } from "./client";
 import type { LayananIconKey } from "@/lib/layananIcons";
 import { parseKoordinat, toPetaKategori, type PetaKategori } from "@/lib/peta";
+import type { ModulSektor } from "@/lib/modul";
 
 const REVALIDATE_SECONDS = 60;
 
@@ -478,9 +479,25 @@ export type ProfilPage = {
   demografiDescription?: string;
   demografiStats: ProfilDemografiStat[];
   demografiNote?: string;
+  modulTitle?: string;
+  modulDescription?: string;
+  modulItems: ProfilModulItem[];
+};
+
+export type ProfilModulItem = {
+  title: string;
+  sektor: ModulSektor;
+  cover: string;
+  fileUrl: string;
+  /** Bytes. */
+  fileSize: number;
+  description?: string;
+  penyusun?: string;
+  tahun?: string;
 };
 
 // fasilitasItems without a photo are skipped: the marquee is image-only.
+// Likewise modulItems without a cover or PDF (drafts in the Studio).
 export async function getProfilPage() {
   const page = await sanityFetch<
     (Omit<ProfilPage, "aboutBody"> & { aboutBody: PortableTextBlock[] | null }) | null
@@ -503,7 +520,22 @@ export async function getProfilPage() {
       demografiTitle,
       demografiDescription,
       "demografiStats": coalesce(demografiStats[]{ label, value }, []),
-      demografiNote
+      demografiNote,
+      modulTitle,
+      modulDescription,
+      "modulItems": coalesce(
+        modulItems[defined(title) && defined(sektor) && defined(cover.asset) && defined(file.asset)]{
+          title,
+          sektor,
+          "cover": cover.asset->url,
+          "fileUrl": file.asset->url,
+          "fileSize": file.asset->size,
+          description,
+          penyusun,
+          tahun
+        },
+        []
+      )
     }`,
     {},
     ["profilPage"]

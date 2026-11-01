@@ -2,8 +2,17 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { BookOpen, Download } from "lucide-react";
 import FasilitasMarquee from "@/components/FasilitasMarquee";
-import type { ProfilPage } from "@/lib/sanity/queries";
+import type { ProfilModulItem, ProfilPage } from "@/lib/sanity/queries";
+import { sanityImageUrl } from "@/lib/sanity/image";
+import { modulSektorTitle, type ModulSektor } from "@/lib/modul";
+
+const SEKTOR_BADGE: Record<ModulSektor, string> = {
+  perikanan: "bg-sky-600",
+  pariwisata: "bg-emerald-600",
+  umkm: "bg-amber-500",
+};
 
 export default function ProfilContent({ profil }: { profil: ProfilPage }) {
   return (
@@ -159,7 +168,99 @@ export default function ProfilContent({ profil }: { profil: ProfilPage }) {
             </div>
           )}
         </motion.section>
+
+        {/* Modul */}
+        {profil.modulItems.length > 0 && (
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="mt-16 pt-16 border-t border-border-color"
+          >
+            <h2 className="font-heading font-bold text-2xl md:text-3xl text-primary-blue mb-6">
+              {profil.modulTitle || "Modul"}
+            </h2>
+            {profil.modulDescription && (
+              <p className="text-text-secondary mb-4">{profil.modulDescription}</p>
+            )}
+
+            {/* Flex-wrap so an incomplete last row is centered; widths mirror
+                1 / 2 / 3 columns with the 1.25rem (gap-5) gutter. */}
+            <div className="mt-10 flex flex-wrap justify-center gap-5">
+              {profil.modulItems.map((modul, index) => (
+                <ModulCard key={`${modul.title}-${index}`} modul={modul} />
+              ))}
+            </div>
+          </motion.section>
+        )}
       </div>
     </div>
   );
+}
+
+function ModulCard({ modul }: { modul: ProfilModulItem }) {
+  const meta = [modul.penyusun, modul.tahun].filter(Boolean).join(" · ");
+
+  return (
+    // Phones: cover thumbnail beside the text, so three modules don't make a
+    // very long scroll. Larger screens: cover on top, like the Laporan cards.
+    <article className="group flex w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_20px_rgba(15,23,42,0.03)] transition-all hover:shadow-[0_18px_36px_rgba(15,23,42,0.08)] sm:w-[calc((100%-1.25rem)/2)] sm:flex-col md:w-[calc((100%-2.5rem)/3)]">
+      <a
+        href={modul.fileUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="relative block aspect-[1/1.414] w-28 shrink-0 self-start overflow-hidden bg-slate-100 sm:w-auto"
+        aria-label={`Baca ${modul.title}`}
+      >
+        <img
+          src={sanityImageUrl(modul.cover, 600)}
+          alt=""
+          loading="lazy"
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+        <span
+          className={`absolute left-2 top-2 rounded-full px-2 py-0.5 text-[11px] font-semibold text-white shadow sm:left-3 sm:top-3 sm:px-3 sm:py-1 sm:text-xs ${SEKTOR_BADGE[modul.sektor]}`}
+        >
+          {modulSektorTitle(modul.sektor)}
+        </span>
+      </a>
+
+      <div className="flex min-w-0 flex-1 flex-col p-3 sm:p-4">
+        <h3 className="font-semibold leading-snug text-text-primary">{modul.title}</h3>
+        {meta && <p className="mt-1 text-xs text-text-secondary">{meta}</p>}
+        {modul.description && (
+          <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-text-secondary sm:line-clamp-none">
+            {modul.description}
+          </p>
+        )}
+
+        <div className="mt-auto flex gap-2 pt-4">
+          <a
+            href={modul.fileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-primary-blue px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
+          >
+            <BookOpen size={16} />
+            Baca
+          </a>
+          {/* Sanity's ?dl= serves the file as a download under its original name. */}
+          <a
+            href={`${modul.fileUrl}?dl=`}
+            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-border-color px-3 py-2 text-sm font-semibold text-text-primary transition-colors hover:border-primary-blue hover:text-primary-blue"
+          >
+            <Download size={16} />
+            Unduh
+          </a>
+        </div>
+        <p className="mt-2 text-center text-xs text-text-secondary">PDF · {formatFileSize(modul.fileSize)}</p>
+      </div>
+    </article>
+  );
+}
+
+function formatFileSize(bytes: number) {
+  const mb = bytes / 1024 / 1024;
+  return mb >= 1 ? `${mb.toLocaleString("id-ID", { maximumFractionDigits: 1 })} MB` : `${Math.ceil(bytes / 1024)} KB`;
 }
