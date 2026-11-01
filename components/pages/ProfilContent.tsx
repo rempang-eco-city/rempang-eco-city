@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { CircleCheck, Download } from "lucide-react";
+import { ArrowRight, ClipboardList, Download, Home, UserPlus } from "lucide-react";
 import FasilitasMarquee from "@/components/FasilitasMarquee";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import type { ProfilModulItem, ProfilPage } from "@/lib/sanity/queries";
@@ -164,49 +164,82 @@ export default function ProfilContent({ profil }: { profil: ProfilPage }) {
           )}
         </motion.section>
 
-        {/* Ajakan mendaftar menjadi warga; same style as Keanggotaan on the Koperasi pages */}
+        {/* Ajakan mendaftar menjadi warga: a blue banner with the call to action
+            on the left and the requirements card on the right (stacked on phones). */}
         {profil.pendaftaranWhatsapp && (
           <motion.section
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="mt-16 rounded-3xl border border-primary-blue/15 bg-primary-blue/5 px-6 py-10 text-center md:px-12"
+            className="relative mt-16 overflow-hidden rounded-3xl bg-gradient-to-br from-primary-dark via-primary-blue to-[#0a6fd1] px-6 py-10 text-white shadow-[0_24px_48px_rgba(0,59,115,0.25)] md:px-12 md:py-14"
           >
-            <h2 className="font-heading text-2xl font-bold text-primary-blue md:text-3xl">
-              {profil.pendaftaranTitle || "Daftar Menjadi Warga Rempang Eco City"}
-            </h2>
-            {profil.pendaftaranDescription && (
-              <p className="mx-auto mt-4 max-w-2xl whitespace-pre-line leading-relaxed text-text-secondary">
-                {profil.pendaftaranDescription}
-              </p>
-            )}
+            {/* Decorative shapes */}
+            <span className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full border-[32px] border-white/[0.06]" />
+            <span className="pointer-events-none absolute -bottom-20 -left-10 h-64 w-64 rounded-full bg-white/10 blur-2xl" />
+            <Home
+              className="pointer-events-none absolute -bottom-6 right-6 h-40 w-40 text-white/[0.06] md:h-56 md:w-56"
+              aria-hidden="true"
+            />
 
-            {profil.pendaftaranSyarat.length > 0 && (
-              <div className="mx-auto mt-6 max-w-md rounded-2xl bg-white p-5 text-left shadow-[0_8px_20px_rgba(15,23,42,0.03)]">
-                <p className="font-semibold text-text-primary">Persyaratan</p>
-                <ul className="mt-3 space-y-2">
-                  {profil.pendaftaranSyarat.map((syarat, index) => (
-                    <li key={`${syarat}-${index}`} className="flex items-start gap-2 text-sm text-text-secondary">
-                      <CircleCheck size={16} className="mt-0.5 shrink-0 text-[#2bb673]" />
-                      {syarat}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            <a
-              href={`${profil.pendaftaranWhatsapp}?text=${encodeURIComponent(
-                "Halo, saya ingin mendaftar sebagai warga Rempang Eco City."
-              )}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-8 inline-flex items-center justify-center gap-2 rounded-xl bg-[#2bb673] px-6 py-3 text-sm font-medium text-white transition hover:bg-[#239d63]"
+            <div
+              className={`relative grid items-center gap-8 ${
+                profil.pendaftaranSyarat.length > 0 ? "md:grid-cols-[1.2fr_1fr]" : "text-center"
+              }`}
             >
-              <WhatsAppIcon />
-              Daftar via WhatsApp
-            </a>
+              <div>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-yellow px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary-dark">
+                  <UserPlus size={14} aria-hidden="true" />
+                  Pendaftaran Warga
+                </span>
+                <h2 className="mt-4 font-heading text-3xl font-bold leading-tight md:text-4xl">
+                  {profil.pendaftaranTitle || "Daftar Menjadi Warga Rempang Eco City"}
+                </h2>
+                {profil.pendaftaranDescription && (
+                  <p
+                    className={`mt-4 whitespace-pre-line leading-relaxed text-white/85 ${
+                      profil.pendaftaranSyarat.length > 0 ? "" : "mx-auto max-w-2xl"
+                    }`}
+                  >
+                    {profil.pendaftaranDescription}
+                  </p>
+                )}
+
+                <a
+                  href={`${profil.pendaftaranWhatsapp}?text=${encodeURIComponent(
+                    "Halo, saya ingin mendaftar sebagai warga Rempang Eco City."
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group mt-8 inline-flex items-center justify-center gap-2 rounded-xl bg-[#2bb673] px-6 py-3.5 font-semibold text-white shadow-[0_10px_24px_rgba(43,182,115,0.35)] transition hover:-translate-y-0.5 hover:bg-[#239d63]"
+                >
+                  <WhatsAppIcon className="h-5 w-5" />
+                  Daftar via WhatsApp
+                  <ArrowRight size={18} className="transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+                </a>
+              </div>
+
+              {profil.pendaftaranSyarat.length > 0 && (
+                <div className="rounded-2xl bg-white p-6 text-text-primary shadow-[0_18px_36px_rgba(0,0,0,0.15)]">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-blue/10 text-primary-blue">
+                      <ClipboardList size={20} aria-hidden="true" />
+                    </span>
+                    <p className="font-heading text-lg font-bold">Persyaratan</p>
+                  </div>
+                  <ol className="mt-5 space-y-3">
+                    {profil.pendaftaranSyarat.map((syarat, index) => (
+                      <li key={`${syarat}-${index}`} className="flex items-start gap-3 text-sm leading-relaxed">
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-yellow text-xs font-bold text-primary-dark">
+                          {index + 1}
+                        </span>
+                        <span className="pt-0.5 text-text-secondary">{syarat}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+            </div>
           </motion.section>
         )}
 
