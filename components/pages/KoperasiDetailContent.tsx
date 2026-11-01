@@ -26,7 +26,7 @@ import {
   Fish,
   type LucideIcon,
 } from "lucide-react";
-import WhatsAppIcon from "@/components/WhatsAppIcon";
+import KoperasiKeanggotaan from "@/components/pages/KoperasiKeanggotaan";
 import KoperasiPerikanan from "@/components/pages/KoperasiPerikanan";
 import StrukturOrganisasi from "@/components/StrukturOrganisasi";
 import type { KoperasiDetail } from "@/lib/sanity/queries";
@@ -192,35 +192,7 @@ export default function KoperasiDetailContent({
         </div>
       </section>
 
-      {koperasi.membershipWhatsapp && (
-        <section className="bg-white py-12 md:py-16">
-          <div className="container-content">
-            <div className="rounded-3xl border border-primary-blue/15 bg-primary-blue/5 px-6 py-10 text-center md:px-12">
-              <h2 className="font-heading text-3xl font-bold text-primary-blue md:text-4xl">
-                Keanggotaan {name}
-              </h2>
-              {koperasi.membershipDescription && (
-                <p className="mx-auto mt-4 max-w-3xl whitespace-pre-line text-base leading-relaxed text-text-secondary">
-                  {koperasi.membershipDescription}
-                </p>
-              )}
-
-              <p className="mt-8 text-lg font-semibold text-text-primary">
-                Tertarik menjadi anggota?
-              </p>
-              <a
-                href={koperasi.membershipWhatsapp}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-[#2bb673] px-6 py-3 text-sm font-medium text-white transition hover:bg-[#239d63]"
-              >
-                <WhatsAppIcon />
-                Hubungi via WhatsApp
-              </a>
-            </div>
-          </div>
-        </section>
-      )}
+      <KoperasiKeanggotaan koperasi={koperasi} />
 
       {fasilitas.length > 0 && (
         <section className="bg-slate-50 py-16 md:py-20">
