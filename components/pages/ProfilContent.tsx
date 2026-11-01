@@ -179,8 +179,8 @@ export default function ProfilContent({ profil }: { profil: ProfilPage }) {
               <p className="text-text-secondary mb-4">{profil.modulDescription}</p>
             )}
 
-            {/* Flex-wrap so an incomplete last row is centered. */}
-            <div className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-8 sm:gap-x-10">
+            {/* Three posters fill the row; flex-wrap centers an incomplete last row. */}
+            <div className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-8 sm:gap-x-8">
               {profil.modulItems.map((modul, index) => (
                 <ModulCard key={`${modul.title}-${index}`} modul={modul} />
               ))}
@@ -199,7 +199,7 @@ export default function ProfilContent({ profil }: { profil: ProfilPage }) {
  */
 function ModulCard({ modul }: { modul: ProfilModulItem }) {
   return (
-    <div className="group w-[calc((100%-1.5rem)/2)] sm:w-[200px]">
+    <div className="group w-[calc((100%-1.5rem)/2)] sm:w-[calc((100%-4rem)/3)]">
       <div className="relative">
         {/* Page edges behind the cover */}
         <span className="absolute inset-y-1.5 left-0 right-0 rounded-r-sm border border-slate-200 bg-white transition-transform duration-300 group-hover:translate-x-2.5 group-focus-within:translate-x-2.5" />
