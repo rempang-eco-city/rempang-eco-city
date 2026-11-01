@@ -12,6 +12,7 @@ export const profilPage = defineType({
     { name: "lembaga", title: "Lembaga Kemasyarakatan" },
     { name: "fasilitas", title: "Fasilitas" },
     { name: "demografi", title: "Demografi" },
+    { name: "pendaftaran", title: "Pendaftaran Warga" },
     { name: "modul", title: "Modul" },
   ],
   fields: [
@@ -203,6 +204,46 @@ export const profilPage = defineType({
       rows: 2,
       group: "demografi",
       description: "Tampil di kotak kuning di bawah data. Kosongkan untuk menyembunyikan.",
+    }),
+
+    defineField({
+      name: "pendaftaranTitle",
+      title: "Judul Ajakan",
+      type: "string",
+      group: "pendaftaran",
+      initialValue: "Daftar Menjadi Warga Rempang Eco City",
+    }),
+    defineField({
+      name: "pendaftaranDescription",
+      title: "Deskripsi",
+      type: "text",
+      rows: 3,
+      group: "pendaftaran",
+    }),
+    defineField({
+      name: "pendaftaranSyarat",
+      title: "Persyaratan (opsional)",
+      type: "array",
+      group: "pendaftaran",
+      of: [{ type: "string" }],
+      description: 'Tampil sebagai daftar bercentang. Contoh: "Fotokopi KTP dan Kartu Keluarga". Maksimal 6.',
+      validation: (rule) => rule.max(6),
+    }),
+    defineField({
+      name: "pendaftaranWhatsapp",
+      title: "Link WhatsApp Pendaftaran",
+      type: "url",
+      group: "pendaftaran",
+      description:
+        'Format: https://wa.me/628xxxxxxxxxx. Section ajakan tampil setelah Demografi hanya jika link ini diisi.',
+      validation: (rule) =>
+        rule
+          .uri({ scheme: ["https"] })
+          .custom((url) =>
+            !url || /^https:\/\/wa\.me\/\d{8,15}$/.test(url)
+              ? true
+              : "Gunakan format https://wa.me/628xxxxxxxxxx (tanpa spasi, tanda + atau tanda hubung)."
+          ),
     }),
 
     defineField({

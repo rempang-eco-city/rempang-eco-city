@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Download } from "lucide-react";
+import { CircleCheck, Download } from "lucide-react";
 import FasilitasMarquee from "@/components/FasilitasMarquee";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
 import type { ProfilModulItem, ProfilPage } from "@/lib/sanity/queries";
 import { sanityImageUrl } from "@/lib/sanity/image";
 import { modulSektorTitle } from "@/lib/modul";
@@ -162,6 +163,52 @@ export default function ProfilContent({ profil }: { profil: ProfilPage }) {
             </div>
           )}
         </motion.section>
+
+        {/* Ajakan mendaftar menjadi warga; same style as Keanggotaan on the Koperasi pages */}
+        {profil.pendaftaranWhatsapp && (
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="mt-16 rounded-3xl border border-primary-blue/15 bg-primary-blue/5 px-6 py-10 text-center md:px-12"
+          >
+            <h2 className="font-heading text-2xl font-bold text-primary-blue md:text-3xl">
+              {profil.pendaftaranTitle || "Daftar Menjadi Warga Rempang Eco City"}
+            </h2>
+            {profil.pendaftaranDescription && (
+              <p className="mx-auto mt-4 max-w-2xl whitespace-pre-line leading-relaxed text-text-secondary">
+                {profil.pendaftaranDescription}
+              </p>
+            )}
+
+            {profil.pendaftaranSyarat.length > 0 && (
+              <div className="mx-auto mt-6 max-w-md rounded-2xl bg-white p-5 text-left shadow-[0_8px_20px_rgba(15,23,42,0.03)]">
+                <p className="font-semibold text-text-primary">Persyaratan</p>
+                <ul className="mt-3 space-y-2">
+                  {profil.pendaftaranSyarat.map((syarat, index) => (
+                    <li key={`${syarat}-${index}`} className="flex items-start gap-2 text-sm text-text-secondary">
+                      <CircleCheck size={16} className="mt-0.5 shrink-0 text-[#2bb673]" />
+                      {syarat}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <a
+              href={`${profil.pendaftaranWhatsapp}?text=${encodeURIComponent(
+                "Halo, saya ingin mendaftar sebagai warga Rempang Eco City."
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-8 inline-flex items-center justify-center gap-2 rounded-xl bg-[#2bb673] px-6 py-3 text-sm font-medium text-white transition hover:bg-[#239d63]"
+            >
+              <WhatsAppIcon />
+              Daftar via WhatsApp
+            </a>
+          </motion.section>
+        )}
 
         {/* Modul */}
         {profil.modulItems.length > 0 && (

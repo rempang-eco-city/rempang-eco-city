@@ -522,6 +522,10 @@ export type ProfilPage = {
   demografiDescription?: string;
   demografiStats: ProfilDemografiStat[];
   demografiNote?: string;
+  pendaftaranTitle?: string;
+  pendaftaranDescription?: string;
+  pendaftaranSyarat: string[];
+  pendaftaranWhatsapp?: string;
   modulTitle?: string;
   modulDescription?: string;
   modulItems: ProfilModulItem[];
@@ -562,6 +566,10 @@ export async function getProfilPage() {
       demografiDescription,
       "demografiStats": coalesce(demografiStats[]{ label, value }, []),
       demografiNote,
+      pendaftaranTitle,
+      pendaftaranDescription,
+      "pendaftaranSyarat": coalesce(pendaftaranSyarat[defined(@) && @ != ""], []),
+      pendaftaranWhatsapp,
       modulTitle,
       modulDescription,
       "modulItems": coalesce(
