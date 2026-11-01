@@ -10,6 +10,8 @@ const THEMES = {
     pill: "bg-primary-yellow text-[#1f3f5a]",
     accent: "text-[#1f3f5a]",
     accentSoft: "bg-[#1f3f5a]/10",
+    button: "bg-white text-[#1f3f5a] hover:bg-slate-50",
+    whatsappIcon: "text-[#2bb673]",
   },
   "merah-putih": {
     banner: "from-[#9f2329] via-[#d43f46] to-[#e8676d]",
@@ -17,6 +19,8 @@ const THEMES = {
     pill: "bg-white text-[#d43f46]",
     accent: "text-[#d43f46]",
     accentSoft: "bg-[#d43f46]/10",
+    button: "bg-white text-slate-900 hover:bg-slate-50",
+    whatsappIcon: "text-[#2bb673]",
   },
 } as const;
 
@@ -120,9 +124,9 @@ export default function KoperasiKeanggotaan({ koperasi }: { koperasi: KoperasiDe
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`group mt-8 inline-flex items-center justify-center gap-2 rounded-xl bg-white px-6 py-3.5 font-semibold shadow-[0_10px_24px_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5 hover:bg-slate-50 ${theme.accent}`}
+                className={`group mt-8 inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 font-semibold shadow-[0_10px_24px_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5 ${theme.button}`}
               >
-                <WhatsAppIcon className="h-5 w-5 text-[#2bb673]" />
+                <WhatsAppIcon className={`h-5 w-5 ${theme.whatsappIcon}`} />
                 Daftar via WhatsApp
                 <ArrowRight size={18} className="transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
               </a>
