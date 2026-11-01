@@ -264,19 +264,6 @@ export const profilPage = defineType({
               validation: (rule) => rule.required(),
             }),
             defineField({
-              name: "description",
-              title: "Deskripsi Singkat (opsional)",
-              type: "text",
-              rows: 3,
-              validation: (rule) => rule.max(200),
-            }),
-            defineField({
-              name: "penyusun",
-              title: "Disusun oleh (opsional)",
-              type: "string",
-              description: 'Contoh: "Tim Ekspedisi Patriot Universitas Indonesia"',
-            }),
-            defineField({
               name: "tahun",
               title: "Tahun (opsional)",
               type: "string",

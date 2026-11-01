@@ -2,17 +2,11 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { BookOpen, Download } from "lucide-react";
+import { Download } from "lucide-react";
 import FasilitasMarquee from "@/components/FasilitasMarquee";
 import type { ProfilModulItem, ProfilPage } from "@/lib/sanity/queries";
 import { sanityImageUrl } from "@/lib/sanity/image";
-import { modulSektorTitle, type ModulSektor } from "@/lib/modul";
-
-const SEKTOR_BADGE: Record<ModulSektor, string> = {
-  perikanan: "bg-sky-600",
-  pariwisata: "bg-emerald-600",
-  umkm: "bg-amber-500",
-};
+import { modulSektorTitle } from "@/lib/modul";
 
 export default function ProfilContent({ profil }: { profil: ProfilPage }) {
   return (
@@ -185,9 +179,8 @@ export default function ProfilContent({ profil }: { profil: ProfilPage }) {
               <p className="text-text-secondary mb-4">{profil.modulDescription}</p>
             )}
 
-            {/* Flex-wrap so an incomplete last row is centered; widths mirror
-                1 / 2 / 3 columns with the 1.25rem (gap-5) gutter. */}
-            <div className="mt-10 flex flex-wrap justify-center gap-5">
+            {/* Flex-wrap so an incomplete last row is centered. */}
+            <div className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-8 sm:gap-x-10">
               {profil.modulItems.map((modul, index) => (
                 <ModulCard key={`${modul.title}-${index}`} modul={modul} />
               ))}
@@ -199,64 +192,63 @@ export default function ProfilContent({ profil }: { profil: ProfilPage }) {
   );
 }
 
+/**
+ * Poster-only card, like a magazine rack: on hover the cover lifts, page edges
+ * show on the right, and a band with the title appears. Touch screens can't
+ * hover, so there the title sits below the poster instead.
+ */
 function ModulCard({ modul }: { modul: ProfilModulItem }) {
-  const meta = [modul.penyusun, modul.tahun].filter(Boolean).join(" · ");
-
   return (
-    // Phones: cover thumbnail beside the text, so three modules don't make a
-    // very long scroll. Larger screens: cover on top, like the Laporan cards.
-    <article className="group flex w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_20px_rgba(15,23,42,0.03)] transition-all hover:shadow-[0_18px_36px_rgba(15,23,42,0.08)] sm:w-[calc((100%-1.25rem)/2)] sm:flex-col md:w-[calc((100%-2.5rem)/3)]">
-      <a
-        href={modul.fileUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="relative block aspect-[1/1.414] w-28 shrink-0 self-start overflow-hidden bg-slate-100 sm:w-auto"
-        aria-label={`Baca ${modul.title}`}
-      >
-        <img
-          src={sanityImageUrl(modul.cover, 600)}
-          alt=""
-          loading="lazy"
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
-        <span
-          className={`absolute left-2 top-2 rounded-full px-2 py-0.5 text-[11px] font-semibold text-white shadow sm:left-3 sm:top-3 sm:px-3 sm:py-1 sm:text-xs ${SEKTOR_BADGE[modul.sektor]}`}
-        >
-          {modulSektorTitle(modul.sektor)}
-        </span>
-      </a>
+    <div className="group w-[calc((100%-1.5rem)/2)] sm:w-[200px]">
+      <div className="relative">
+        {/* Page edges behind the cover */}
+        <span className="absolute inset-y-1.5 left-0 right-0 rounded-r-sm border border-slate-200 bg-white transition-transform duration-300 group-hover:translate-x-2.5 group-focus-within:translate-x-2.5" />
+        <span className="absolute inset-y-1 left-0 right-0 rounded-r-sm border border-slate-200 bg-slate-50 transition-transform duration-300 group-hover:translate-x-1.5 group-focus-within:translate-x-1.5" />
 
-      <div className="flex min-w-0 flex-1 flex-col p-3 sm:p-4">
-        <h3 className="font-semibold leading-snug text-text-primary">{modul.title}</h3>
-        {meta && <p className="mt-1 text-xs text-text-secondary">{meta}</p>}
-        {modul.description && (
-          <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-text-secondary sm:line-clamp-none">
-            {modul.description}
-          </p>
-        )}
-
-        <div className="mt-auto flex gap-2 pt-4">
+        <div className="relative aspect-[1/1.414] overflow-hidden rounded-sm bg-slate-100 shadow-[0_10px_24px_rgba(15,23,42,0.22)] transition-all duration-300 group-hover:-translate-x-1 group-hover:-translate-y-1.5 group-hover:shadow-[0_18px_36px_rgba(15,23,42,0.3)] group-focus-within:-translate-x-1 group-focus-within:-translate-y-1.5">
+          <img
+            src={sanityImageUrl(modul.cover, 500)}
+            alt=""
+            loading="lazy"
+            className="h-full w-full object-cover"
+          />
           <a
             href={modul.fileUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-primary-blue px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
-          >
-            <BookOpen size={16} />
-            Baca
-          </a>
-          {/* Sanity's ?dl= serves the file as a download under its original name. */}
-          <a
-            href={`${modul.fileUrl}?dl=`}
-            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-border-color px-3 py-2 text-sm font-semibold text-text-primary transition-colors hover:border-primary-blue hover:text-primary-blue"
-          >
-            <Download size={16} />
-            Unduh
-          </a>
+            className="absolute inset-0 focus:outline-none"
+            aria-label={`Baca ${modul.title} (PDF)`}
+          />
+
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-white/85 px-3 py-3 text-center opacity-0 backdrop-blur-sm transition-all duration-300 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:hidden">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-primary-blue">
+              {modulSektorTitle(modul.sektor)}
+              {modul.tahun && ` · ${modul.tahun}`}
+            </p>
+            <h3 className="mt-0.5 line-clamp-3 text-sm font-semibold leading-snug text-text-primary">
+              {modul.title}
+            </h3>
+            {/* Sanity's ?dl= serves the file as a download under its original name. */}
+            <a
+              href={`${modul.fileUrl}?dl=`}
+              className="pointer-events-auto relative mt-1.5 inline-flex items-center gap-1 text-xs font-medium text-text-secondary hover:text-primary-blue"
+            >
+              <Download size={13} />
+              Unduh PDF · {formatFileSize(modul.fileSize)}
+            </a>
+          </div>
         </div>
-        <p className="mt-2 text-center text-xs text-text-secondary">PDF · {formatFileSize(modul.fileSize)}</p>
       </div>
-    </article>
+
+      <div className="mt-3 hidden text-center [@media(hover:none)]:block">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-primary-blue">
+          {modulSektorTitle(modul.sektor)}
+        </p>
+        <p className="mt-0.5 line-clamp-2 text-sm font-semibold leading-snug text-text-primary">
+          {modul.title}
+        </p>
+      </div>
+    </div>
   );
 }
 

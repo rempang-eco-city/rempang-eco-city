@@ -491,8 +491,6 @@ export type ProfilModulItem = {
   fileUrl: string;
   /** Bytes. */
   fileSize: number;
-  description?: string;
-  penyusun?: string;
   tahun?: string;
 };
 
@@ -530,8 +528,6 @@ export async function getProfilPage() {
           "cover": cover.asset->url,
           "fileUrl": file.asset->url,
           "fileSize": file.asset->size,
-          description,
-          penyusun,
           tahun
         },
         []
