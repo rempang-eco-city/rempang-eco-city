@@ -1,4 +1,4 @@
-import { ArrowRight, CalendarDays, ClipboardList, Gift, Info, Users } from "lucide-react";
+import { ArrowRight, CalendarDays, ClipboardList, Gift, Users } from "lucide-react";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import type { KoperasiDetail } from "@/lib/sanity/queries";
 
@@ -24,42 +24,25 @@ const THEMES = {
   },
 } as const;
 
-const LABEL_ICONS: Record<string, typeof Info> = {
-  syarat: ClipboardList,
-  persyaratan: ClipboardList,
-  manfaat: Gift,
-  keuntungan: Gift,
-};
-
-type Paragraph = { label?: string; text: string };
-
-/**
- * Splits the description into paragraphs; one starting with a short label
- * ("Syarat: …", "Manfaat: …") becomes its own card beside the intro.
- */
-function toParagraphs(description = ""): Paragraph[] {
-  return description
-    .split(/\n\s*\n/)
-    .map((paragraph) => paragraph.trim())
-    .filter(Boolean)
-    .map((paragraph) => {
-      const match = paragraph.match(/^([A-Za-zÀ-ÿ ]{3,24}):\s*([\s\S]+)$/);
-      if (!match) return { text: paragraph };
-      // "Syarat: warga …" reads as a sentence once it has its own card.
-      const text = match[2].trim();
-      return { label: match[1].trim(), text: text.charAt(0).toUpperCase() + text.slice(1) };
-    });
-}
-
 /** Call to action to join the cooperative, themed per cooperative. */
 export default function KoperasiKeanggotaan({ koperasi }: { koperasi: KoperasiDetail }) {
-  const { name, membershipWhatsapp, membershipDescription, memberCount, yearFounded } = koperasi;
+  const {
+    name,
+    membershipTitle,
+    membershipDescription,
+    membershipSyarat,
+    membershipManfaat,
+    membershipWhatsapp,
+    memberCount,
+    yearFounded,
+  } = koperasi;
   if (!membershipWhatsapp) return null;
 
   const theme = THEMES[koperasi.routeKey === "merah-putih" ? "merah-putih" : "transmigrasi"];
-  const paragraphs = toParagraphs(membershipDescription);
-  const intro = paragraphs.filter((p) => !p.label);
-  const cards = paragraphs.filter((p) => p.label);
+  const cards = [
+    { label: "Syarat", icon: ClipboardList, text: membershipSyarat?.trim() },
+    { label: "Manfaat", icon: Gift, text: membershipManfaat?.trim() },
+  ].filter((card) => card.text);
   // Plain wa.me links get a prefilled message; other links are used as they are.
   const href = /^https:\/\/wa\.me\/\d+$/.test(membershipWhatsapp)
     ? `${membershipWhatsapp}?text=${encodeURIComponent(`Halo ${name}, saya tertarik menjadi anggota koperasi.`)}`
@@ -92,18 +75,17 @@ export default function KoperasiKeanggotaan({ koperasi }: { koperasi: KoperasiDe
                 Keanggotaan
               </span>
               <h2 className="mt-4 font-heading text-3xl font-bold leading-tight md:text-4xl">
-                Jadi Anggota {name}
+                {membershipTitle || `Jadi Anggota ${name}`}
               </h2>
-              {intro.map((paragraph, index) => (
+              {membershipDescription && (
                 <p
-                  key={index}
                   className={`mt-4 whitespace-pre-line leading-relaxed text-white/85 ${
                     cards.length > 0 ? "" : "mx-auto max-w-3xl"
                   }`}
                 >
-                  {paragraph.text}
+                  {membershipDescription}
                 </p>
-              ))}
+              )}
 
               <div className={`mt-6 flex flex-wrap gap-3 ${cards.length > 0 ? "" : "justify-center"}`}>
                 <span className="inline-flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2 text-sm backdrop-blur-sm">
@@ -134,11 +116,11 @@ export default function KoperasiKeanggotaan({ koperasi }: { koperasi: KoperasiDe
 
             {cards.length > 0 && (
               <div className="space-y-4">
-                {cards.map((card, index) => {
-                  const Icon = LABEL_ICONS[card.label!.toLowerCase()] ?? Info;
+                {cards.map((card) => {
+                  const Icon = card.icon;
                   return (
                     <div
-                      key={`${card.label}-${index}`}
+                      key={card.label}
                       className="rounded-2xl bg-white p-5 text-text-primary shadow-[0_18px_36px_rgba(0,0,0,0.15)] md:p-6"
                     >
                       <div className="flex items-center gap-3">

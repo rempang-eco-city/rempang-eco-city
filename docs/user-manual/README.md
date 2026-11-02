@@ -283,7 +283,7 @@ Buka **Halaman Koperasi**, lalu pilih koperasi.
 | **Struktur Kepengurusan** | Bagan dibuat otomatis (lihat di bawah). |
 | Gambar Struktur (cadangan) | Hanya dipakai jika Struktur Kepengurusan kosong. |
 | Pengurus | Foto pengurus (nama, jabatan, foto). |
-| Keanggotaan | Deskripsi dan **Link WhatsApp Pendaftaran** (format `https://wa.me/628xxxxxxxxxx`). Section ini hanya tampil jika link diisi, dengan warna sesuai koperasi (biru tua untuk Transmigrasi, merah untuk Merah Putih). Paragraf di Deskripsi yang diawali label, misalnya `Syarat: …` atau `Manfaat: …`, tampil sebagai kartu tersendiri; pisahkan tiap paragraf dengan satu baris kosong. |
+| Keanggotaan | Judul Ajakan (kosong = "Jadi Anggota <Nama Koperasi>"), Deskripsi, Syarat, Manfaat, dan **Link WhatsApp Pendaftaran** (format `https://wa.me/628xxxxxxxxxx`). Section ini hanya tampil jika link diisi, dengan warna sesuai koperasi (biru tua untuk Transmigrasi, merah untuk Merah Putih). Syarat dan Manfaat tampil sebagai kartu di sebelah kanan; kartu yang kosong disembunyikan. |
 | Fasilitas, Layanan | Section disembunyikan jika kosong. Layanan berisi nama, pilihan ikon, dan deskripsi. |
 | **Hasil Perikanan** (bagian yang bisa dibuka-tutup) | Etalase hasil tangkapan, tampil setelah Layanan. Lihat penjelasan di bawah. |
 | Galeri Kegiatan | Judul, deskripsi, dan minimal 1 foto per kegiatan. |

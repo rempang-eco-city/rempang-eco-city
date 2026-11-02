@@ -334,7 +334,10 @@ export type KoperasiDetail = KoperasiListItem & {
   struktur?: StrukturOrganisasi;
   structureImage?: string;
   pengurus: KoperasiPengurus[];
+  membershipTitle?: string;
   membershipDescription?: string;
+  membershipSyarat?: string;
+  membershipManfaat?: string;
   membershipWhatsapp?: string;
   fasilitas: KoperasiFasilitas[];
   layanan: KoperasiLayanan[];
@@ -389,7 +392,10 @@ export async function getKoperasiByRouteKey(routeKey: string) {
       ${strukturProjection},
       "structureImage": structureImage.asset->url,
       pengurus[]{ name, role, "image": image.asset->url },
+      membershipTitle,
       membershipDescription,
+      membershipSyarat,
+      membershipManfaat,
       membershipWhatsapp,
       fasilitas[]{ name, description, "image": image.asset->url },
       layanan[]{ title, icon, description },
