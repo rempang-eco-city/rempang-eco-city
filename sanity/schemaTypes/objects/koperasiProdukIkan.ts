@@ -52,6 +52,21 @@ export const koperasiProdukIkan = defineType({
       description: 'Contoh: "Minimal pembelian 5 kg"',
       validation: (rule) => rule.max(80),
     }),
+    defineField({
+      name: "whatsapp",
+      title: "Link WhatsApp Pemesanan",
+      type: "url",
+      description:
+        'Format: https://wa.me/628xxxxxxxxxx. Nomor penjual produk ini; tombol "Pesan" hanya tampil jika link ini diisi.',
+      validation: (rule) =>
+        rule
+          .uri({ scheme: ["https"] })
+          .custom((url) =>
+            !url || /^https:\/\/wa\.me\/\d{8,15}$/.test(url)
+              ? true
+              : "Gunakan format https://wa.me/628xxxxxxxxxx (tanpa spasi, tanda + atau tanda hubung)."
+          ),
+    }),
   ],
   preview: {
     select: { title: "name", status: "status", price: "price", media: "image" },

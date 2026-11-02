@@ -163,22 +163,6 @@ export const koperasi = defineType({
       description: "Kalimat pembuka di bawah judul section (opsional).",
     }),
     defineField({
-      name: "perikananWhatsapp",
-      title: "Link WhatsApp Pemesanan",
-      type: "url",
-      fieldset: "perikanan",
-      description:
-        'Format: https://wa.me/628xxxxxxxxxx. Tombol "Pesan via WhatsApp" di setiap produk hanya tampil jika link ini diisi.',
-      validation: (rule) =>
-        rule
-          .uri({ scheme: ["https"] })
-          .custom((url) =>
-            !url || /^https:\/\/wa\.me\/\d{8,15}$/.test(url)
-              ? true
-              : "Gunakan format https://wa.me/628xxxxxxxxxx (tanpa spasi, tanda + atau tanda hubung)."
-          ),
-    }),
-    defineField({
       name: "perikananStats",
       title: "Angka Penjualan",
       type: "array",

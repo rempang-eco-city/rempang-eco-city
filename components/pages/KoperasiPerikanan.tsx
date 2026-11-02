@@ -18,14 +18,14 @@ const UNIT_SUFFIX: Record<ProdukUnit, string> = {
 
 /**
  * "Hasil Perikanan": the cooperative's fish catalogue with sales figures and
- * buyer testimonials. Orders go to WhatsApp with the product name prefilled.
+ * buyer testimonials. Orders go to each product's own WhatsApp number with the
+ * product name prefilled.
  * Renders nothing when the figures, products and testimonials are all empty.
  */
 export default function KoperasiPerikanan({ koperasi }: { koperasi: KoperasiDetail }) {
   const {
     name,
     perikananDescription,
-    perikananWhatsapp,
     perikananStats,
     perikananStatsNote,
     perikananProduk,
@@ -78,7 +78,6 @@ export default function KoperasiPerikanan({ koperasi }: { koperasi: KoperasiDeta
                 key={`${produk.name}-${index}`}
                 produk={produk}
                 koperasiName={name}
-                whatsapp={perikananWhatsapp}
               />
             ))}
           </div>
@@ -140,15 +139,13 @@ export default function KoperasiPerikanan({ koperasi }: { koperasi: KoperasiDeta
 function ProdukCard({
   produk,
   koperasiName,
-  whatsapp,
 }: {
   produk: KoperasiProdukIkan;
   koperasiName: string;
-  whatsapp?: string;
 }) {
   const soldOut = produk.status === "habis";
-  const orderHref = whatsapp
-    ? `${whatsapp}?text=${encodeURIComponent(`Halo ${koperasiName}, saya ingin memesan ${produk.name}.`)}`
+  const orderHref = produk.whatsapp
+    ? `${produk.whatsapp}?text=${encodeURIComponent(`Halo ${koperasiName}, saya ingin memesan ${produk.name}.`)}`
     : undefined;
 
   return (
