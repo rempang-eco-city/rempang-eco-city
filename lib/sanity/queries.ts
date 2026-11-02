@@ -303,7 +303,6 @@ export type KoperasiProdukIkan = {
   price?: number;
   unit: ProdukUnit;
   note?: string;
-  whatsapp?: string;
 };
 
 export type KoperasiTestimoni = {
@@ -345,6 +344,7 @@ export type KoperasiDetail = KoperasiListItem & {
   galleryItems: KoperasiGalleryItem[];
   laporanKeuangan: KoperasiLaporanKeuangan[];
   perikananDescription?: string;
+  perikananWhatsapp?: string;
   perikananStats: KoperasiPerikananStat[];
   perikananStatsNote?: string;
   perikananProduk: KoperasiProdukIkan[];
@@ -400,6 +400,7 @@ export async function getKoperasiByRouteKey(routeKey: string) {
       fasilitas[]{ name, description, "image": image.asset->url },
       layanan[]{ title, icon, description },
       perikananDescription,
+      perikananWhatsapp,
       "perikananStats": coalesce(perikananStats[defined(value) && defined(label)]{ value, label }, []),
       perikananStatsNote,
       "perikananProduk": coalesce(
@@ -409,8 +410,7 @@ export async function getKoperasiByRouteKey(routeKey: string) {
           "status": coalesce(status, "tersedia"),
           price,
           "unit": coalesce(unit, "kg"),
-          note,
-          whatsapp
+          note
         },
         []
       ),

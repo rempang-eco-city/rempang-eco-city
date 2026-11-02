@@ -73,7 +73,7 @@ Halaman detail koperasi berisi:
 - foto pengurus;
 - **ajakan menjadi anggota**: banner berwarna sesuai koperasi, kartu Syarat dan Manfaat, serta tombol **Daftar via WhatsApp**;
 - fasilitas dan layanan;
-- **Hasil Perikanan** (saat ini di Koperasi Transmigrasi): angka penjualan, katalog produk dengan tombol **Pesan** via WhatsApp, dan testimoni pembeli;
+- **Hasil Perikanan** (saat ini di Koperasi Transmigrasi): angka penjualan, katalog produk, kotak **Pesan via WhatsApp**, dan testimoni pembeli;
 - galeri kegiatan;
 - **laporan keuangan**. Klik laporan untuk membukanya di tab baru. PDF dibuka langsung, sedangkan Excel dan Word ditampilkan lewat Microsoft Office Online.
 
@@ -324,13 +324,13 @@ Buka **Halaman Koperasi**, lalu pilih koperasi.
 Section **Hasil Perikanan** hanya tampil jika minimal salah satu dari Angka Penjualan, Katalog Produk, atau Testimoni Pembeli diisi.
 
 - **Deskripsi**: kalimat pembuka di bawah judul (opsional).
+- **Link WhatsApp Pemesanan**: satu nomor untuk semua produk, format `https://wa.me/628xxxxxxxxxx`. Di bawah katalog tampil kotak **Pesan via WhatsApp** yang membuka chat dengan pesan otomatis *"Halo Koperasi Transmigrasi, saya ingin memesan hasil perikanan."* beserta isian Produk dan Jumlah. Tanpa link ini, kotak tersebut tidak tampil.
 - **Angka Penjualan**: maksimal 4, disarankan 3. Contoh: Nilai `2,5 ton`, Label `Ikan terjual`. Isi **Keterangan Angka** (misalnya *"Data hingga Oktober 2026"*) dan perbarui angkanya secara berkala.
 - **Katalog Produk**, untuk setiap produk:
   - Nama dan foto (landscape 4:3) wajib diisi.
-  - **Ketersediaan**: *Tersedia*, *Musiman*, atau *Habis*. Produk yang habis ditampilkan abu-abu tanpa tombol Pesan.
+  - **Ketersediaan**: *Tersedia*, *Musiman*, atau *Habis*. Produk yang habis ditampilkan abu-abu.
   - **Harga** (opsional): angka saja, contoh `65000`, lalu pilih satuannya (per kg / ekor / paket). Jika dikosongkan, tertulis *"Tanya harga via WhatsApp"*.
   - **Keterangan Singkat** (opsional), contoh *"Minimal pembelian 5 kg"*.
-  - **Link WhatsApp Pemesanan**: nomor penjual produk ini, format `https://wa.me/628xxxxxxxxxx`. Tombol **Pesan** membuka chat dengan pesan otomatis, misalnya *"Halo Koperasi Transmigrasi, saya ingin memesan Ikan Kakap Merah."* Tanpa link ini, tombol Pesan tidak tampil.
 - **Testimoni Pembeli**: nama dan isi testimoni wajib. Keterangan (contoh *"Pemilik rumah makan, Batam"*), Jumlah Pembelian (contoh *"Beli rutin 50 kg/minggu"*), dan foto bersifat opsional; tanpa foto, inisial nama ditampilkan.
 
 ### Mengisi Struktur Kepengurusan / Organisasi
@@ -439,7 +439,7 @@ Section Berita di Beranda menampilkan 4 berita. Aktifkan **Featured di Beranda**
 | Foto tidak tampil / gagal diunggah | File HEIC atau terlalu besar. Ubah ke JPG. |
 | Section hilang dari halaman | Beberapa section sengaja disembunyikan jika datanya kosong, misalnya Fasilitas, Layanan, Laporan Keuangan, Keanggotaan (tanpa link WhatsApp), Hasil Perikanan (tanpa angka, produk, dan testimoni), Pendaftaran Warga (tanpa link WhatsApp), Modul (tanpa modul), Roadmap (tanpa gambar atau PDF), dan Instagram (tanpa akun). |
 | Postingan Instagram tidak tampil | Link Feed Behold kosong atau salah, atau feed di Behold kosong. Lihat [Feed Behold](#konten-halaman). |
-| Tombol Pesan tidak muncul di produk perikanan | Link WhatsApp Pemesanan produk itu kosong, atau Ketersediaannya *Habis*. |
+| Kotak Pesan via WhatsApp tidak muncul di Hasil Perikanan | Link WhatsApp Pemesanan di bagian Hasil Perikanan kosong, atau Katalog Produk masih kosong. |
 
 ---
 

@@ -1,4 +1,4 @@
-import { Quote, ShoppingBag } from "lucide-react";
+import { ArrowRight, Fish, Quote, ShoppingBag } from "lucide-react";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import type { KoperasiDetail, KoperasiProdukIkan } from "@/lib/sanity/queries";
 import { sanityImageUrl } from "@/lib/sanity/image";
@@ -18,14 +18,15 @@ const UNIT_SUFFIX: Record<ProdukUnit, string> = {
 
 /**
  * "Hasil Perikanan": the cooperative's fish catalogue with sales figures and
- * buyer testimonials. Orders go to each product's own WhatsApp number with the
- * product name prefilled.
+ * buyer testimonials. All orders go to one WhatsApp number, so the catalogue
+ * ends with a single order panel instead of a button on every product.
  * Renders nothing when the figures, products and testimonials are all empty.
  */
 export default function KoperasiPerikanan({ koperasi }: { koperasi: KoperasiDetail }) {
   const {
     name,
     perikananDescription,
+    perikananWhatsapp,
     perikananStats,
     perikananStatsNote,
     perikananProduk,
@@ -74,13 +75,13 @@ export default function KoperasiPerikanan({ koperasi }: { koperasi: KoperasiDeta
           // Flex-wrap so a short list stays centered; widths mirror 2 / 3 / 4 columns (gap-5 = 1.25rem).
           <div className="flex flex-wrap justify-center gap-5">
             {perikananProduk.map((produk, index) => (
-              <ProdukCard
-                key={`${produk.name}-${index}`}
-                produk={produk}
-                koperasiName={name}
-              />
+              <ProdukCard key={`${produk.name}-${index}`} produk={produk} />
             ))}
           </div>
+        )}
+
+        {perikananProduk.length > 0 && perikananWhatsapp && (
+          <OrderPanel koperasiName={name} whatsapp={perikananWhatsapp} />
         )}
 
         {perikananTestimoni.length > 0 && (
@@ -136,17 +137,8 @@ export default function KoperasiPerikanan({ koperasi }: { koperasi: KoperasiDeta
   );
 }
 
-function ProdukCard({
-  produk,
-  koperasiName,
-}: {
-  produk: KoperasiProdukIkan;
-  koperasiName: string;
-}) {
+function ProdukCard({ produk }: { produk: KoperasiProdukIkan }) {
   const soldOut = produk.status === "habis";
-  const orderHref = produk.whatsapp
-    ? `${produk.whatsapp}?text=${encodeURIComponent(`Halo ${koperasiName}, saya ingin memesan ${produk.name}.`)}`
-    : undefined;
 
   return (
     <article className="flex w-[calc((100%-1.25rem)/2)] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_20px_rgba(15,23,42,0.03)] md:w-[calc((100%-2.5rem)/3)] lg:w-[calc((100%-3.75rem)/4)]">
@@ -164,7 +156,7 @@ function ProdukCard({
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col p-3 md:p-4">
+      <div className={`flex flex-1 flex-col p-3 md:p-4 ${soldOut ? "opacity-60" : ""}`}>
         <h3 className="font-heading font-bold leading-snug text-text-primary">{produk.name}</h3>
         {produk.price != null ? (
           <p className="mt-1 font-semibold text-primary-blue">
@@ -175,28 +167,43 @@ function ProdukCard({
           <p className="mt-1 text-sm text-text-secondary">Tanya harga via WhatsApp</p>
         )}
         {produk.note && <p className="mt-1 text-xs text-text-secondary">{produk.note}</p>}
-
-        {orderHref && (
-          <div className="mt-auto pt-4">
-            {soldOut ? (
-              <span className="flex w-full items-center justify-center rounded-xl bg-slate-100 px-3 py-2 text-sm font-medium text-text-secondary">
-                Stok habis
-              </span>
-            ) : (
-              <a
-                href={orderHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#2bb673] px-3 py-2 text-sm font-medium text-white transition hover:bg-[#239d63]"
-              >
-                <WhatsAppIcon />
-                Pesan
-              </a>
-            )}
-          </div>
-        )}
       </div>
     </article>
+  );
+}
+
+/** One WhatsApp number serves every product, so ordering is a single call to action. */
+function OrderPanel({ koperasiName, whatsapp }: { koperasiName: string; whatsapp: string }) {
+  // Plain wa.me links get a prefilled message; other links are used as they are.
+  const href = /^https:\/\/wa\.me\/\d+$/.test(whatsapp)
+    ? `${whatsapp}?text=${encodeURIComponent(
+        `Halo ${koperasiName}, saya ingin memesan hasil perikanan.\n\nProduk: \nJumlah: `
+      )}`
+    : whatsapp;
+
+  return (
+    <div className="mt-8 flex flex-col items-start gap-5 rounded-2xl border border-[#2bb673]/25 bg-white p-5 shadow-[0_8px_20px_rgba(15,23,42,0.04)] md:flex-row md:items-center md:p-6">
+      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#2bb673]/10 text-[#2bb673]">
+        <Fish size={24} aria-hidden="true" />
+      </span>
+      <div className="flex-1">
+        <p className="font-heading text-lg font-bold text-text-primary">Pesan hasil perikanan</p>
+        <p className="mt-1 text-sm leading-relaxed text-text-secondary">
+          Semua produk dipesan lewat satu nomor WhatsApp {koperasiName}. Sebutkan produk dan jumlahnya,
+          lalu koperasi akan mengonfirmasi harga dan ketersediaannya.
+        </p>
+      </div>
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#2bb673] px-6 py-3.5 font-semibold text-white shadow-[0_10px_24px_rgba(43,182,115,0.25)] transition hover:-translate-y-0.5 hover:bg-[#239d63] md:w-auto"
+      >
+        <WhatsAppIcon className="h-5 w-5" />
+        Pesan via WhatsApp
+        <ArrowRight size={18} className="transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+      </a>
+    </div>
   );
 }
 
