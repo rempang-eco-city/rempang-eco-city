@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
   BookOpen,
@@ -11,6 +13,7 @@ import {
   Map as MapIcon,
   Maximize2,
   UserPlus,
+  X,
 } from "lucide-react";
 import FasilitasMarquee from "@/components/FasilitasMarquee";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
@@ -286,6 +289,7 @@ export default function ProfilContent({ profil }: { profil: ProfilPage }) {
 /** One document: a 16:9 preview image beside a card that opens the full PDF. */
 function RoadmapSection({ title, roadmap }: { title?: string; roadmap: ProfilRoadmap }) {
   const meta = ["PDF", formatFileSize(roadmap.fileSize), roadmap.tahun].filter(Boolean).join(" · ");
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   return (
     <motion.section
@@ -300,14 +304,13 @@ function RoadmapSection({ title, roadmap }: { title?: string; roadmap: ProfilRoa
       </h2>
 
       <div className="grid items-stretch gap-6 lg:grid-cols-[1.65fr_1fr]">
-        <a
-          href={roadmap.fileUrl}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          type="button"
+          onClick={() => setPreviewOpen(true)}
           // 16:9 when stacked; beside the card it fills the row height instead, since a
           // stretched aspect-ratio box would grow wider than its column.
           className="group relative block aspect-video min-w-0 overflow-hidden rounded-2xl bg-slate-100 shadow-[0_18px_36px_rgba(15,23,42,0.12)] lg:aspect-auto lg:h-full lg:min-h-[340px]"
-          aria-label={`Buka ${roadmap.title || "roadmap"} (PDF)`}
+          aria-label={`Lihat gambar ${roadmap.title || "roadmap"} ukuran penuh`}
         >
           <img
             src={sanityImageUrl(roadmap.image, 1400)}
@@ -320,7 +323,7 @@ function RoadmapSection({ title, roadmap }: { title?: string; roadmap: ProfilRoa
               Lihat ukuran penuh
             </span>
           </span>
-        </a>
+        </button>
 
         <div className="relative flex flex-col overflow-hidden rounded-2xl bg-gradient-to-br from-primary-dark via-primary-blue to-[#0a6fd1] p-6 text-white shadow-[0_18px_36px_rgba(0,59,115,0.25)] md:p-8">
           <span className="pointer-events-none absolute -right-14 -top-14 h-44 w-44 rounded-full border-[24px] border-white/[0.06]" />
@@ -361,7 +364,83 @@ function RoadmapSection({ title, roadmap }: { title?: string; roadmap: ProfilRoa
           </div>
         </div>
       </div>
+
+      <ImageLightbox
+        open={previewOpen}
+        onClose={() => setPreviewOpen(false)}
+        src={sanityImageUrl(roadmap.image, 2400)}
+        alt={roadmap.title || "Roadmap Kawasan Rempang Eco City"}
+      />
     </motion.section>
+  );
+}
+
+/**
+ * Full-screen image preview. Rendered into <body> because a fixed element
+ * inside the animated (transformed) section would be positioned against it.
+ */
+function ImageLightbox({
+  open,
+  onClose,
+  src,
+  alt,
+}: {
+  open: boolean;
+  onClose: () => void;
+  src: string;
+  alt: string;
+}) {
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (event: KeyboardEvent) => event.key === "Escape" && onClose();
+    const { overflow } = document.body.style;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = overflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open, onClose]);
+
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          role="dialog"
+          aria-modal="true"
+          aria-label={alt}
+          onClick={onClose}
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm md:p-10"
+        >
+          <button
+            type="button"
+            onClick={onClose}
+            autoFocus
+            className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-white/25"
+            aria-label="Tutup"
+          >
+            <X size={22} />
+          </button>
+          <motion.img
+            initial={{ scale: 0.96 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0.96 }}
+            transition={{ duration: 0.2 }}
+            src={src}
+            alt={alt}
+            onClick={(event) => event.stopPropagation()}
+            className="max-h-full max-w-full rounded-lg object-contain shadow-2xl"
+          />
+        </motion.div>
+      )}
+    </AnimatePresence>,
+    document.body
   );
 }
 
