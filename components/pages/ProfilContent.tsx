@@ -308,14 +308,21 @@ function RoadmapSection({ title, roadmap }: { title?: string; roadmap: ProfilRoa
           type="button"
           onClick={() => setPreviewOpen(true)}
           // 16:9 when stacked; beside the card it fills the row height instead, since a
-          // stretched aspect-ratio box would grow wider than its column.
-          className="group relative block aspect-video min-w-0 overflow-hidden rounded-2xl bg-slate-100 shadow-[0_18px_36px_rgba(15,23,42,0.12)] lg:aspect-auto lg:h-full lg:min-h-[340px]"
+          // stretched aspect-ratio box would grow wider than its column. The image is
+          // contained so it always shows whole, over a blurred copy filling the rest.
+          className="group relative block aspect-video min-w-0 overflow-hidden rounded-2xl bg-slate-900 shadow-[0_18px_36px_rgba(15,23,42,0.12)] lg:aspect-auto lg:h-full lg:min-h-[340px]"
           aria-label={`Lihat gambar ${roadmap.title || "roadmap"} ukuran penuh`}
         >
           <img
             src={sanityImageUrl(roadmap.image, 1400)}
             alt=""
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full scale-110 object-cover opacity-60 blur-2xl"
+          />
+          <img
+            src={sanityImageUrl(roadmap.image, 1400)}
+            alt=""
+            className="absolute inset-0 h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.03]"
           />
           <span className="absolute inset-0 flex items-end justify-end bg-gradient-to-t from-black/40 via-transparent to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold text-text-primary">
