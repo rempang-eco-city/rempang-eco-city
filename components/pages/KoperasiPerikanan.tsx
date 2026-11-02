@@ -75,13 +75,17 @@ export default function KoperasiPerikanan({ koperasi }: { koperasi: KoperasiDeta
           // Flex-wrap so a short list stays centered; widths mirror 2 / 3 / 4 columns (gap-5 = 1.25rem).
           <div className="flex flex-wrap justify-center gap-5">
             {perikananProduk.map((produk, index) => (
-              <ProdukCard key={`${produk.name}-${index}`} produk={produk} />
+              <ProdukCard
+                key={`${produk.name}-${index}`}
+                produk={produk}
+                noPriceText={koperasi.perikananNoPriceText || "Tanya harga via WhatsApp"}
+              />
             ))}
           </div>
         )}
 
         {perikananProduk.length > 0 && perikananWhatsapp && (
-          <OrderPanel koperasiName={name} whatsapp={perikananWhatsapp} />
+          <OrderPanel koperasi={koperasi} whatsapp={perikananWhatsapp} />
         )}
 
         {perikananTestimoni.length > 0 && (
@@ -137,7 +141,7 @@ export default function KoperasiPerikanan({ koperasi }: { koperasi: KoperasiDeta
   );
 }
 
-function ProdukCard({ produk }: { produk: KoperasiProdukIkan }) {
+function ProdukCard({ produk, noPriceText }: { produk: KoperasiProdukIkan; noPriceText: string }) {
   const soldOut = produk.status === "habis";
 
   return (
@@ -164,7 +168,7 @@ function ProdukCard({ produk }: { produk: KoperasiProdukIkan }) {
             <span className="text-sm font-normal text-text-secondary">{UNIT_SUFFIX[produk.unit]}</span>
           </p>
         ) : (
-          <p className="mt-1 text-sm text-text-secondary">Tanya harga via WhatsApp</p>
+          <p className="mt-1 text-sm text-text-secondary">{noPriceText}</p>
         )}
         {produk.note && <p className="mt-1 text-xs text-text-secondary">{produk.note}</p>}
       </div>
@@ -173,12 +177,19 @@ function ProdukCard({ produk }: { produk: KoperasiProdukIkan }) {
 }
 
 /** One WhatsApp number serves every product, so ordering is a single call to action. */
-function OrderPanel({ koperasiName, whatsapp }: { koperasiName: string; whatsapp: string }) {
+function OrderPanel({ koperasi, whatsapp }: { koperasi: KoperasiDetail; whatsapp: string }) {
+  const {
+    name,
+    perikananOrderTitle,
+    perikananOrderDescription,
+    perikananOrderButton,
+    perikananOrderMessage,
+  } = koperasi;
+  const message =
+    perikananOrderMessage?.trim() || `Halo ${name}, saya ingin memesan hasil perikanan.\n\nProduk: \nJumlah: `;
   // Plain wa.me links get a prefilled message; other links are used as they are.
   const href = /^https:\/\/wa\.me\/\d+$/.test(whatsapp)
-    ? `${whatsapp}?text=${encodeURIComponent(
-        `Halo ${koperasiName}, saya ingin memesan hasil perikanan.\n\nProduk: \nJumlah: `
-      )}`
+    ? `${whatsapp}?text=${encodeURIComponent(message)}`
     : whatsapp;
 
   return (
@@ -187,10 +198,12 @@ function OrderPanel({ koperasiName, whatsapp }: { koperasiName: string; whatsapp
         <Fish size={24} aria-hidden="true" />
       </span>
       <div className="flex-1">
-        <p className="font-heading text-lg font-bold text-text-primary">Pesan hasil perikanan</p>
-        <p className="mt-1 text-sm leading-relaxed text-text-secondary">
-          Semua produk dipesan lewat satu nomor WhatsApp {koperasiName}. Sebutkan produk dan jumlahnya,
-          lalu koperasi akan mengonfirmasi harga dan ketersediaannya.
+        <p className="font-heading text-lg font-bold text-text-primary">
+          {perikananOrderTitle || "Pesan hasil perikanan"}
+        </p>
+        <p className="mt-1 whitespace-pre-line text-sm leading-relaxed text-text-secondary">
+          {perikananOrderDescription ||
+            `Semua produk dipesan lewat satu nomor WhatsApp ${name}. Sebutkan produk dan jumlahnya, lalu koperasi akan mengonfirmasi harga dan ketersediaannya.`}
         </p>
       </div>
       <a
@@ -200,7 +213,7 @@ function OrderPanel({ koperasiName, whatsapp }: { koperasiName: string; whatsapp
         className="group inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#2bb673] px-6 py-3.5 font-semibold text-white shadow-[0_10px_24px_rgba(43,182,115,0.25)] transition hover:-translate-y-0.5 hover:bg-[#239d63] md:w-auto"
       >
         <WhatsAppIcon className="h-5 w-5" />
-        Pesan via WhatsApp
+        {perikananOrderButton || "Pesan via WhatsApp"}
         <ArrowRight size={18} className="transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
       </a>
     </div>

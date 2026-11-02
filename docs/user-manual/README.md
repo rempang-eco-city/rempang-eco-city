@@ -325,6 +325,8 @@ Section **Hasil Perikanan** hanya tampil jika minimal salah satu dari Angka Penj
 
 - **Deskripsi**: kalimat pembuka di bawah judul (opsional).
 - **Link WhatsApp Pemesanan**: satu nomor untuk semua produk, format `https://wa.me/628xxxxxxxxxx`. Di bawah katalog tampil kotak **Pesan via WhatsApp** yang membuka chat dengan pesan otomatis *"Halo Koperasi Transmigrasi, saya ingin memesan hasil perikanan."* beserta isian Produk dan Jumlah. Tanpa link ini, kotak tersebut tidak tampil.
+- **Teks Produk Tanpa Harga** (opsional): pengganti *"Tanya harga via WhatsApp"* di kartu produk yang harganya kosong.
+- **Judul, Deskripsi, dan Teks Tombol Kotak Pemesanan**, serta **Pesan Otomatis WhatsApp** (opsional): mengatur teks kotak pemesanan dan isi chat yang terisi otomatis. Jika dikosongkan, teks bawaan yang dipakai.
 - **Angka Penjualan**: maksimal 4, disarankan 3. Contoh: Nilai `2,5 ton`, Label `Ikan terjual`. Isi **Keterangan Angka** (misalnya *"Data hingga Oktober 2026"*) dan perbarui angkanya secara berkala.
 - **Katalog Produk**, untuk setiap produk:
   - Nama dan foto (landscape 4:3) wajib diisi.
