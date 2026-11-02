@@ -289,6 +289,12 @@ export const profilPage = defineType({
               validation: (rule) => rule.required(),
             }),
             defineField({
+              name: "tahun",
+              title: "Tahun (opsional)",
+              type: "string",
+              description: 'Contoh: "2026"',
+            }),
+            defineField({
               name: "cover",
               title: "Cover (portrait)",
               type: "image",
@@ -304,12 +310,6 @@ export const profilPage = defineType({
               description:
                 "Kompres dulu jika lebih dari ±15 MB (misalnya Export \"Smallest file size\" di Canva) agar cepat dibuka di HP.",
               validation: (rule) => rule.required(),
-            }),
-            defineField({
-              name: "tahun",
-              title: "Tahun (opsional)",
-              type: "string",
-              description: 'Contoh: "2026"',
             }),
           ],
           preview: {
@@ -348,6 +348,13 @@ export const profilPage = defineType({
       description: "Penjelasan singkat isi roadmap, tampil di kartu.",
     }),
     defineField({
+      name: "roadmapTahun",
+      title: "Tahun (opsional)",
+      type: "string",
+      group: "roadmap",
+      description: 'Contoh: "2026"',
+    }),
+    defineField({
       name: "roadmapImage",
       title: "Gambar (landscape 16:9)",
       type: "image",
@@ -363,13 +370,6 @@ export const profilPage = defineType({
       group: "roadmap",
       description:
         'Kompres dulu jika lebih dari ±15 MB (misalnya Export "Smallest file size" di Canva) agar cepat dibuka di HP.',
-    }),
-    defineField({
-      name: "roadmapTahun",
-      title: "Tahun (opsional)",
-      type: "string",
-      group: "roadmap",
-      description: 'Contoh: "2026"',
     }),
   ],
   preview: {
