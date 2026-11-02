@@ -33,12 +33,13 @@ Menu utama ada di bagian atas setiap halaman: **Beranda**, **Profil REC**, **Kop
 Beranda berisi ringkasan seluruh website, dari atas ke bawah:
 
 1. **Hero**: judul, deskripsi, dan tombol menuju halaman lain.
-2. **Peta Wilayah**: peta interaktif (lihat [A3](#a3-memakai-peta-interaktif)).
-3. **Koperasi**: card Koperasi Transmigrasi dan Koperasi Merah Putih.
-4. **Pariwisata**: carousel foto wisata.
-5. **UMKM**: daftar UMKM pilihan.
-6. **Berita**: 4 berita, berita *featured* didahulukan.
-7. **Ikuti Kami di Instagram**: postingan terbaru akun Instagram REC dan card akun-akunnya (lihat [A4](#a4-menghubungi-umkm-dan-mengikuti-instagram)).
+2. **Mengapa Website Ini Penting?**: tujuan website dan manfaatnya bagi koperasi, perikanan, UMKM, pariwisata, serta berita dan peta. Setiap kartu punya tautan ke halaman terkait.
+3. **Peta Wilayah**: peta interaktif (lihat [A3](#a3-memakai-peta-interaktif)).
+4. **Koperasi**: card Koperasi Transmigrasi dan Koperasi Merah Putih.
+5. **Pariwisata**: carousel foto wisata.
+6. **UMKM**: daftar UMKM pilihan.
+7. **Berita**: 4 berita, berita *featured* didahulukan.
+8. **Ikuti Kami di Instagram**: postingan terbaru akun Instagram REC dan card akun-akunnya (lihat [A4](#a4-menghubungi-umkm-dan-mengikuti-instagram)).
 
 ### Profil REC
 
@@ -220,6 +221,8 @@ Buka **Halaman Beranda → Konten Halaman**. Isinya dibagi per tab sesuai sectio
 | **Hero** | Judul Hero | Tekan Enter untuk pindah baris. |
 | | Deskripsi Hero, Teks Tombol, Gambar Hero | — |
 | | Link Tombol | Halaman di website ini (contoh `/profil`) atau link lengkap `https://...`. |
+| **Manfaat Website** | Judul Section Manfaat, Deskripsi (Tujuan Website) | Pisahkan paragraf Deskripsi dengan satu baris kosong. |
+| | Daftar Manfaat | Maksimal 6. Setiap item berisi **Bidang** (Koperasi, Perikanan, UMKM, Pariwisata, atau Berita & Peta) dan teks **Manfaat** (maksimal 280 karakter). Bidang menentukan ikon dan tautan kartu. Kosongkan daftar untuk menyembunyikan section. |
 | **Peta Wilayah** | Judul Peta, Deskripsi Peta | Titik di peta diisi lewat menu *Lokasi di Peta*. |
 | | Alamat / Lokasi di Google Maps | Dipakai tombol "Buka di Google Maps". Bisa alamat atau Plus Code. |
 | **Koperasi** | Judul Section Koperasi | Card diambil otomatis dari *Halaman Koperasi*. |

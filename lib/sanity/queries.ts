@@ -2,6 +2,7 @@ import type { PortableTextBlock as RichTextBlock } from "@portabletext/react";
 import { sanityClient } from "./client";
 import type { LayananIconKey } from "@/lib/layananIcons";
 import { parseKoordinat, toPetaKategori, type PetaKategori } from "@/lib/peta";
+import type { ManfaatBidang } from "@/lib/manfaat";
 import type { ModulSektor } from "@/lib/modul";
 import type { ProdukStatus, ProdukUnit } from "@/lib/perikanan";
 
@@ -643,6 +644,9 @@ export type BerandaPage = {
   heroButtonLabel: string;
   heroButtonLink: string;
   heroImage: string;
+  manfaatTitle?: string;
+  manfaatDescription?: string;
+  manfaatItems: { bidang: ManfaatBidang; description: string }[];
   petaTitle: string;
   petaDescription?: string;
   petaAddress: string;
@@ -674,6 +678,9 @@ export async function getBerandaPage() {
       heroButtonLabel,
       heroButtonLink,
       "heroImage": heroImage.asset->url,
+      manfaatTitle,
+      manfaatDescription,
+      "manfaatItems": coalesce(manfaatItems[defined(bidang) && defined(description)]{ bidang, description }, []),
       petaTitle,
       petaDescription,
       petaAddress,
