@@ -1,5 +1,4 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { MANFAAT_BIDANG_OPTIONS } from "../../lib/manfaat";
 
 // Singleton: exactly one document with _id "berandaPage" (see sanity/structure.ts).
 // Only the section copy lives here; the Koperasi, UMKM and Berita cards come
@@ -10,7 +9,6 @@ export const berandaPage = defineType({
   type: "document",
   groups: [
     { name: "hero", title: "Hero", default: true },
-    { name: "manfaat", title: "Manfaat Website" },
     { name: "peta", title: "Peta Wilayah" },
     { name: "koperasi", title: "Koperasi" },
     { name: "pariwisata", title: "Pariwisata" },
@@ -58,62 +56,6 @@ export const berandaPage = defineType({
       options: { hotspot: true },
       group: "hero",
       validation: (rule) => rule.required(),
-    }),
-
-    defineField({
-      name: "manfaatTitle",
-      title: "Judul Section Manfaat",
-      type: "string",
-      group: "manfaat",
-      initialValue: "Mengapa Website Ini Penting?",
-      description: "Section tampil setelah Hero. Kosongkan Daftar Manfaat untuk menyembunyikannya.",
-    }),
-    defineField({
-      name: "manfaatDescription",
-      title: "Deskripsi (Tujuan Website)",
-      type: "text",
-      rows: 5,
-      group: "manfaat",
-      description: "Pisahkan paragraf dengan satu baris kosong.",
-    }),
-    defineField({
-      name: "manfaatItems",
-      title: "Daftar Manfaat",
-      type: "array",
-      group: "manfaat",
-      validation: (rule) => rule.max(6),
-      of: [
-        defineArrayMember({
-          type: "object",
-          name: "manfaatItem",
-          title: "Manfaat",
-          fields: [
-            defineField({
-              name: "bidang",
-              title: "Bidang",
-              type: "string",
-              options: { list: [...MANFAAT_BIDANG_OPTIONS], layout: "radio", direction: "horizontal" },
-              description: "Menentukan ikon dan halaman tujuan tautan di kartu.",
-              validation: (rule) => rule.required(),
-            }),
-            defineField({
-              name: "description",
-              title: "Manfaat",
-              type: "text",
-              rows: 3,
-              description: "Apa yang bisa dikembangkan dan manfaatnya bagi warga.",
-              validation: (rule) => rule.required().max(280),
-            }),
-          ],
-          preview: {
-            select: { bidang: "bidang", subtitle: "description" },
-            prepare: ({ bidang, subtitle }) => ({
-              title: MANFAAT_BIDANG_OPTIONS.find(({ value }) => value === bidang)?.title ?? "Manfaat",
-              subtitle,
-            }),
-          },
-        }),
-      ],
     }),
 
     defineField({

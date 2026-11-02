@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeroBanner from "@/components/sections/HeroBanner";
-import ManfaatSection from "@/components/sections/ManfaatSection";
 import PetaWilayah from "@/components/sections/PetaWilayah";
 import KoperasiSection from "@/components/sections/KoperasiSection";
 import PariwisataSection from "@/components/sections/PariwisataSection";
@@ -51,11 +50,6 @@ export default async function Home() {
           buttonLabel={beranda.heroButtonLabel}
           buttonLink={beranda.heroButtonLink}
           image={beranda.heroImage}
-        />
-        <ManfaatSection
-          title={beranda.manfaatTitle}
-          description={beranda.manfaatDescription}
-          items={beranda.manfaatItems}
         />
         <PetaWilayah
           title={beranda.petaTitle}
