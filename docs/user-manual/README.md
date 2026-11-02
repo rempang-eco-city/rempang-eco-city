@@ -4,11 +4,9 @@ Panduan penggunaan website **Rempang Eco City** untuk pengunjung, admin konten, 
 
 | | |
 |---|---|
-| Alamat website | **https://rempang-eco-city.com** (aktif mulai 20 November 2026) |
+| Alamat website | **https://rempang-eco-city.com** |
 | Alamat CMS (Studio) | **https://rempang-eco-city.com/studio** |
 | Repositori kode | https://github.com/rempang-eco-city/rempang-eco-city |
-
-> Sebelum 20 November 2026, gunakan alamat sementara yang sedang dipakai. Cukup ganti bagian domainnya; semua halaman dan `/studio` tetap sama.
 
 **Daftar isi**
 
@@ -40,13 +38,25 @@ Beranda berisi ringkasan seluruh website, dari atas ke bawah:
 4. **Pariwisata**: carousel foto wisata.
 5. **UMKM**: daftar UMKM pilihan.
 6. **Berita**: 4 berita, berita *featured* didahulukan.
-7. **Ikuti Kami di Instagram**: card akun Instagram, dibuka di tab baru.
+7. **Ikuti Kami di Instagram**: postingan terbaru akun Instagram REC dan card akun-akunnya (lihat [A4](#a4-menghubungi-umkm-dan-mengikuti-instagram)).
 
 ### Profil REC
 
 ![Profil](gambar/site-profil.jpg)
 
-Berisi tentang Rempang Eco City, lembaga kemasyarakatan, fasilitas (deretan foto bergerak), dan data demografi.
+Dari atas ke bawah:
+
+1. Tentang Rempang Eco City.
+2. Lembaga kemasyarakatan.
+3. Fasilitas (deretan foto bergerak).
+4. Data demografi.
+5. **Daftar Menjadi Warga**: banner biru dengan persyaratan dan tombol **Daftar via WhatsApp**.
+6. **Modul**: poster modul (Pengantar, Perikanan, Pariwisata, UMKM, Website). Arahkan kursor ke poster untuk melihat judulnya; di HP, judul tampil di bawah poster. Klik poster untuk membaca PDF, atau **Unduh PDF** untuk menyimpannya.
+7. **Roadmap**: gambar ringkasan roadmap dan kartu biru. Klik gambar (**Lihat ukuran penuh**) untuk melihatnya lebih besar; tutup dengan ✕, tombol Esc, atau klik area gelap. Tombol **Lihat Roadmap Lengkap** membuka PDF, dan **Unduh PDF** menyimpannya.
+
+![Modul](gambar/site-profil-modul.jpg)
+
+![Roadmap](gambar/site-profil-roadmap.jpg)
 
 ### Koperasi
 
@@ -61,12 +71,15 @@ Halaman detail koperasi berisi:
 - tentang koperasi, tahun berdiri, dan jumlah anggota;
 - **struktur kepengurusan** dalam bentuk bagan;
 - foto pengurus;
-- ajakan menjadi anggota, dengan tombol **Hubungi via WhatsApp**;
+- **ajakan menjadi anggota**: banner berwarna sesuai koperasi, kartu Syarat dan Manfaat, serta tombol **Daftar via WhatsApp**;
 - fasilitas dan layanan;
+- **Hasil Perikanan** (saat ini di Koperasi Transmigrasi): angka penjualan, katalog produk dengan tombol **Pesan** via WhatsApp, dan testimoni pembeli;
 - galeri kegiatan;
 - **laporan keuangan**. Klik laporan untuk membukanya di tab baru. PDF dibuka langsung, sedangkan Excel dan Word ditampilkan lewat Microsoft Office Online.
 
 ![Struktur kepengurusan](gambar/site-koperasi-struktur.jpg)
+
+![Keanggotaan koperasi](gambar/site-koperasi-keanggotaan.jpg)
 
 ### Pariwisata
 
@@ -133,7 +146,10 @@ Tautan **Buka di Google Maps** di bawah peta membuka lokasi kawasan di Google Ma
 ## A4. Menghubungi UMKM dan mengikuti Instagram
 
 - **UMKM, koperasi, dan wisata**: gunakan tombol WhatsApp di halaman detailnya.
-- **Instagram**: section paling bawah Beranda. Klik card akun untuk membuka profil Instagram-nya di tab baru.
+- **Instagram**: section paling bawah Beranda.
+  - Bagian atas menampilkan postingan terbaru salah satu akun. Klik postingan untuk membukanya di Instagram, atau klik **Ikuti di Instagram**.
+  - Card akun di bawahnya dipakai untuk memilih akun yang postingannya ditampilkan (**Lihat postingan ↑**). Card yang sedang dipilih bertanda **✓ Sedang ditampilkan**.
+  - Akun yang belum terhubung ke feed bertuliskan **Kunjungi Instagram** dan langsung membuka profilnya di tab baru.
 
 ![Instagram](gambar/site-instagram.jpg)
 
@@ -218,10 +234,24 @@ Buka **Halaman Beranda → Konten Halaman**. Isinya dibagi per tab sesuai sectio
 
 - **Username**: tanpa "@" dan tanpa link, contoh `umkm.rec`.
 - **Foto Profil (opsional)**: gambar persegi. Kalau kosong, tampil logo Instagram.
+- **Link Feed Behold (opsional)**: untuk menampilkan postingan terbaru akun ini di Beranda (lihat di bawah). Kalau kosong, card hanya berupa link ke profil Instagram.
+- **Foto Profil (opsional)**: gambar persegi. Kalau kosong, tampil logo Instagram.
 - **Nama (opsional)**: kalau kosong, card hanya menampilkan @username.
 - Kosongkan seluruh daftar untuk menyembunyikan section Instagram.
 
 > Foto profil tidak bisa diambil otomatis dari Instagram. Jika foto profil di Instagram berganti, unggah ulang di sini.
+
+**Feed Behold** mengambil postingan terbaru dari Instagram secara otomatis, jadi foto postingan tidak perlu diunggah satu per satu.
+
+1. Masuk ke **behold.so**, lalu hubungkan akun Instagram yang ingin ditampilkan. Akun harus bertipe **Bisnis** atau **Kreator**, bukan akun pribadi.
+2. Buat feed baru dengan tipe **JSON**.
+3. Salin link feed yang diawali `https://feeds.behold.so/`.
+4. Tempel di **Link Feed Behold** pada akun yang sesuai, lalu **Publish**.
+
+Catatan:
+
+- Postingan baru muncul di website dalam **±1 jam**, juga tergantung jadwal pembaruan dari Behold.
+- Jika feed tidak muncul padahal link sudah diisi, buka dashboard Behold, **hubungkan ulang (reconnect)** akun tersebut, lalu klik **Refresh**. Ini biasanya terjadi jika tipe akun diganti setelah dihubungkan. Jika link feed dihapus atau dibuat ulang di Behold, tempel link yang baru di Studio.
 
 ### Lokasi di Peta
 
@@ -277,13 +307,13 @@ Buka **Halaman Koperasi**, lalu pilih koperasi.
 |---|---|
 | Nama Koperasi | — |
 | Halaman Tujuan | `transmigrasi` atau `merah-putih`. Menentukan alamat halamannya. |
-| Deskripsi Singkat | Untuk card di Beranda, maksimal 160 karakter. |
+| Deskripsi Singkat (untuk card Beranda) | Maksimal 160 karakter. |
 | Deskripsi Header Halaman | Kalau kosong, memakai Deskripsi Singkat. |
 | Foto Utama, Deskripsi Tentang, Tahun Berdiri, Jumlah Anggota | Wajib. |
 | **Struktur Kepengurusan** | Bagan dibuat otomatis (lihat di bawah). |
 | Gambar Struktur (cadangan) | Hanya dipakai jika Struktur Kepengurusan kosong. |
 | Pengurus | Foto pengurus (nama, jabatan, foto). |
-| Keanggotaan | Judul Ajakan (kosong = "Jadi Anggota <Nama Koperasi>"), Deskripsi, Syarat, Manfaat, dan **Link WhatsApp Pendaftaran** (format `https://wa.me/628xxxxxxxxxx`). Section ini hanya tampil jika link diisi, dengan warna sesuai koperasi (biru tua untuk Transmigrasi, merah untuk Merah Putih). Syarat dan Manfaat tampil sebagai kartu di sebelah kanan; kartu yang kosong disembunyikan. |
+| **Keanggotaan** (bagian yang bisa dibuka-tutup) | Judul Ajakan (kosong = "Jadi Anggota <Nama Koperasi>"), Deskripsi, Syarat, Manfaat, dan **Link WhatsApp Pendaftaran** (format `https://wa.me/628xxxxxxxxxx`). Section ini hanya tampil jika link diisi, dengan warna sesuai koperasi (biru tua untuk Transmigrasi, merah untuk Merah Putih). Syarat dan Manfaat tampil sebagai kartu di sebelah kanan; kartu yang kosong disembunyikan. |
 | Fasilitas, Layanan | Section disembunyikan jika kosong. Layanan berisi nama, pilihan ikon, dan deskripsi. |
 | **Hasil Perikanan** (bagian yang bisa dibuka-tutup) | Etalase hasil tangkapan, tampil setelah Layanan. Lihat penjelasan di bawah. |
 | Galeri Kegiatan | Judul, deskripsi, dan minimal 1 foto per kegiatan. |
@@ -407,7 +437,9 @@ Section Berita di Beranda menampilkan 4 berita. Aktifkan **Featured di Beranda**
 | Lokasi tidak muncul di peta | Koordinat salah format (harus `lintang, bujur`). Atau dokumen belum di-Publish. Atau filter kategori di peta sedang aktif. |
 | Titik di peta meleset dari Google Maps | Koordinat diambil dari link share (`@...`). Ambil ulang dengan **klik kanan** di Google Maps. |
 | Foto tidak tampil / gagal diunggah | File HEIC atau terlalu besar. Ubah ke JPG. |
-| Section hilang dari halaman | Beberapa section sengaja disembunyikan jika datanya kosong, misalnya Fasilitas, Layanan, Laporan Keuangan, Keanggotaan (tanpa link WhatsApp), dan Instagram (tanpa akun). |
+| Section hilang dari halaman | Beberapa section sengaja disembunyikan jika datanya kosong, misalnya Fasilitas, Layanan, Laporan Keuangan, Keanggotaan (tanpa link WhatsApp), Hasil Perikanan (tanpa angka, produk, dan testimoni), Pendaftaran Warga (tanpa link WhatsApp), Modul (tanpa modul), Roadmap (tanpa gambar atau PDF), dan Instagram (tanpa akun). |
+| Postingan Instagram tidak tampil | Link Feed Behold kosong atau salah, atau feed di Behold kosong. Lihat [Feed Behold](#konten-halaman). |
+| Tombol Pesan tidak muncul di produk perikanan | Link WhatsApp Pemesanan produk itu kosong, atau Ketersediaannya *Habis*. |
 
 ---
 
@@ -427,6 +459,8 @@ Section Berita di Beranda menampilkan 4 berita. Aktifkan **Featured di Beranda**
 | `components/StrukturOrganisasi.tsx` | Bagan struktur dari data CMS |
 | `lib/sanity/queries.ts` | Semua query GROQ dan tipe datanya |
 | `lib/peta.ts` | Daftar kategori peta |
+| `lib/instagram.ts` | Mengambil feed Behold per akun Instagram |
+| `lib/modul.ts`, `lib/perikanan.ts` | Pilihan sektor modul; status dan satuan produk perikanan |
 | `lib/blokRumah.ts` | Data blok rumah dan nomor rumah |
 | `lib/features.ts` | Saklar fitur (contoh: menyembunyikan Pariwisata) |
 | `sanity/schemaTypes/` | Schema CMS |
@@ -455,6 +489,7 @@ Section Berita di Beranda menampilkan 4 berita. Aktifkan **Featured di Beranda**
 ## C3. Deploy dan cache
 
 - Data dari Sanity di-cache dengan **ISR selama 60 detik** (`REVALIDATE_SECONDS` di `lib/sanity/queries.ts`).
+- Feed Instagram (Behold) di-cache **1 jam** (`lib/instagram.ts`).
 - Sanity juga memakai CDN. Setelah data diubah lewat API, hasil query bisa tertunda sebentar.
 - Saat build lokal, Next.js menyimpan hasil fetch di `.next/cache/fetch-cache`. Jika build lokal menampilkan data lama, hapus folder itu lalu build ulang.
 - Kode di-deploy dari repositori GitHub. Perubahan schema baru terlihat di Studio produksi setelah deploy.
