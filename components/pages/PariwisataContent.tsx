@@ -14,7 +14,7 @@ import WhatsAppIcon from "@/components/WhatsAppIcon";
 const TAB_LABELS: Record<PariwisataDestination["routeKey"], string> = {
   mancing: "Mancing",
   mangrove: "Mangrove",
-  pulau: "Pulau",
+  bahari: "Bahari",
 };
 
 const formatRupiah = (value: number) => `Rp${value.toLocaleString("id-ID")}`;

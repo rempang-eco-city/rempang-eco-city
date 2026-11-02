@@ -459,7 +459,7 @@ export async function getKoperasiByRouteKey(routeKey: string) {
   } satisfies KoperasiDetail;
 }
 
-export type PariwisataRouteKey = "mancing" | "mangrove" | "pulau";
+export type PariwisataRouteKey = "mancing" | "mangrove" | "bahari";
 
 export type PariwisataMedia = {
   type: "image" | "video";

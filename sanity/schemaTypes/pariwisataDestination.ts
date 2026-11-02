@@ -3,7 +3,7 @@ import { defineField, defineType } from "sanity";
 // routeKey identifies a destination and picks its tab label (see TAB_LABELS
 // in PariwisataContent). Destinations live as an array on
 // the pariwisataPage singleton, so they are edited together with the page.
-export const ROUTE_KEYS = ["mancing", "mangrove", "pulau"] as const;
+export const ROUTE_KEYS = ["mancing", "mangrove", "bahari"] as const;
 
 export const pariwisataDestination = defineType({
   name: "pariwisataDestination",
