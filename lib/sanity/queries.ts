@@ -645,7 +645,6 @@ export type BerandaPage = {
 export type InstagramAccount = {
   username: string;
   name?: string;
-  description?: string;
   photo?: string;
   /** Behold JSON feed with the account's latest posts. */
   feedUrl?: string;
@@ -671,7 +670,7 @@ export async function getBerandaPage() {
       beritaTitle,
       instagramTitle,
       instagramDescription,
-      "instagramAccounts": coalesce(instagramAccounts[defined(username)]{ username, name, description, "photo": photo.asset->url, feedUrl }, [])
+      "instagramAccounts": coalesce(instagramAccounts[defined(username)]{ username, name, "photo": photo.asset->url, feedUrl }, [])
     }`,
     {},
     ["berandaPage"]

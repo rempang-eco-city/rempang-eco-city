@@ -144,10 +144,6 @@ function AccountCardBody({ account }: { account: InstagramAccount }) {
           )}
         </div>
       </div>
-
-      {account.description && (
-        <p className="mt-4 text-sm leading-relaxed text-text-secondary">{account.description}</p>
-      )}
     </>
   );
 }

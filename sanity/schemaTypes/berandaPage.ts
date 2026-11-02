@@ -206,13 +206,6 @@ export const berandaPage = defineType({
               type: "string",
               description: 'Contoh: "UMKM Rempang Eco City". Kosongkan untuk hanya menampilkan @username.',
             }),
-            defineField({
-              name: "description",
-              title: "Deskripsi Singkat (opsional)",
-              type: "text",
-              rows: 2,
-              validation: (rule) => rule.max(140),
-            }),
           ],
           preview: {
             select: { username: "username", name: "name", media: "photo" },

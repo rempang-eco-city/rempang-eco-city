@@ -219,7 +219,6 @@ Buka **Halaman Beranda → Konten Halaman**. Isinya dibagi per tab sesuai sectio
 - **Username**: tanpa "@" dan tanpa link, contoh `umkm.rec`.
 - **Foto Profil (opsional)**: gambar persegi. Kalau kosong, tampil logo Instagram.
 - **Nama (opsional)**: kalau kosong, card hanya menampilkan @username.
-- **Deskripsi Singkat (opsional)**: maksimal 140 karakter.
 - Kosongkan seluruh daftar untuk menyembunyikan section Instagram.
 
 > Foto profil tidak bisa diambil otomatis dari Instagram. Jika foto profil di Instagram berganti, unggah ulang di sini.
