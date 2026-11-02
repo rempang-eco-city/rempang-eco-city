@@ -264,7 +264,7 @@ Buka **Halaman Beranda → Lokasi di Peta**. Setiap dokumen adalah satu titik di
 | **Fasilitas** | Daftar fasilitas (nama dan foto, rasio 4:3 paling cocok). Ditampilkan sebagai deretan foto bergerak. Fasilitas tanpa foto tidak tampil. |
 | **Demografi** | Daftar data (Label + Nilai, contoh "Total Penduduk" / "12.450") dan Catatan. Catatan tampil di kotak kuning; kosongkan untuk menyembunyikan. |
 | **Pendaftaran Warga** | Kotak ajakan mendaftar menjadi warga, tampil setelah Demografi. Isi Judul, Deskripsi, Persyaratan (opsional, maksimal 6, tampil bercentang), dan **Link WhatsApp Pendaftaran** (format `https://wa.me/628xxxxxxxxxx`). Kotak ini hanya tampil jika link diisi. Tombol "Daftar via WhatsApp" membuka chat dengan pesan *"Halo, saya ingin mendaftar sebagai warga Rempang Eco City."* |
-| **Modul** | Judul, deskripsi, dan Daftar Modul (paling bawah halaman). Setiap modul berisi Judul, Sektor (Perikanan / Pariwisata / UMKM), Cover portrait (rasio A4), File PDF, dan Tahun (opsional). Kompres PDF yang lebih dari ±15 MB. |
+| **Modul** | Judul, deskripsi, dan Daftar Modul (paling bawah halaman). Setiap modul berisi Judul, Sektor (Pengantar / Perikanan / Pariwisata / UMKM / Website), Cover portrait (rasio A4), File PDF, dan Tahun (opsional). Kompres PDF yang lebih dari ±15 MB. |
 | **Roadmap** | Satu dokumen, tampil setelah Modul: gambar landscape di kiri dan kartu biru di kanan berisi tombol **Lihat Roadmap Lengkap** (membuka PDF) dan **Unduh PDF**. Isi Judul Bagian, Judul Dokumen, Deskripsi, **Gambar (landscape 16:9, misalnya 1920×1080)**, **File PDF**, dan Tahun (opsional). Bagian ini hanya tampil jika Gambar dan File PDF diisi. |
 
 ## B5. Halaman Koperasi

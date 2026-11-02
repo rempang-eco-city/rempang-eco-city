@@ -1,11 +1,12 @@
 // Sectors of the modules on the Profil page. Shared by the Sanity schema (the
-// choice in the Studio) and the site (components/pages/ProfilContent.tsx gives
-// each one a badge colour), so adding an option here requires adding its style
-// there — TypeScript enforces that.
+// choice in the Studio) and the site (components/pages/ProfilContent.tsx shows
+// the title above each module's name).
 export const MODUL_SEKTOR_OPTIONS = [
+  { value: "pengantar", title: "Pengantar" },
   { value: "perikanan", title: "Perikanan" },
   { value: "pariwisata", title: "Pariwisata" },
   { value: "umkm", title: "UMKM" },
+  { value: "website", title: "Website" },
 ] as const;
 
 export type ModulSektor = (typeof MODUL_SEKTOR_OPTIONS)[number]["value"];
