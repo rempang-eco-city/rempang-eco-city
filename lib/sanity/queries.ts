@@ -345,13 +345,9 @@ export type KoperasiDetail = KoperasiListItem & {
   laporanKeuangan: KoperasiLaporanKeuangan[];
   perikananDescription?: string;
   perikananWhatsapp?: string;
-  perikananNoPriceText?: string;
   perikananOrderTitle?: string;
   perikananOrderDescription?: string;
-  perikananOrderButton?: string;
-  perikananOrderMessage?: string;
   perikananStats: KoperasiPerikananStat[];
-  perikananStatsNote?: string;
   perikananProduk: KoperasiProdukIkan[];
   perikananTestimoni: KoperasiTestimoni[];
 };
@@ -406,13 +402,9 @@ export async function getKoperasiByRouteKey(routeKey: string) {
       layanan[]{ title, icon, description },
       perikananDescription,
       perikananWhatsapp,
-      perikananNoPriceText,
       perikananOrderTitle,
       perikananOrderDescription,
-      perikananOrderButton,
-      perikananOrderMessage,
       "perikananStats": coalesce(perikananStats[defined(value) && defined(label)]{ value, label }, []),
-      perikananStatsNote,
       "perikananProduk": coalesce(
         perikananProduk[defined(name) && defined(image.asset)]{
           name,

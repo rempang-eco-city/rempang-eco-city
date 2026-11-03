@@ -28,7 +28,6 @@ export default function KoperasiPerikanan({ koperasi }: { koperasi: KoperasiDeta
     perikananDescription,
     perikananWhatsapp,
     perikananStats,
-    perikananStatsNote,
     perikananProduk,
     perikananTestimoni,
   } = koperasi;
@@ -65,9 +64,6 @@ export default function KoperasiPerikanan({ koperasi }: { koperasi: KoperasiDeta
                 </div>
               ))}
             </div>
-            {perikananStatsNote && (
-              <p className="mt-3 text-center text-xs text-text-secondary">{perikananStatsNote}</p>
-            )}
           </div>
         )}
 
@@ -75,11 +71,7 @@ export default function KoperasiPerikanan({ koperasi }: { koperasi: KoperasiDeta
           // Flex-wrap so a short list stays centered; widths mirror 2 / 3 / 4 columns (gap-5 = 1.25rem).
           <div className="flex flex-wrap justify-center gap-5">
             {perikananProduk.map((produk, index) => (
-              <ProdukCard
-                key={`${produk.name}-${index}`}
-                produk={produk}
-                noPriceText={koperasi.perikananNoPriceText || "Tanya harga via WhatsApp"}
-              />
+              <ProdukCard key={`${produk.name}-${index}`} produk={produk} />
             ))}
           </div>
         )}
@@ -141,7 +133,7 @@ export default function KoperasiPerikanan({ koperasi }: { koperasi: KoperasiDeta
   );
 }
 
-function ProdukCard({ produk, noPriceText }: { produk: KoperasiProdukIkan; noPriceText: string }) {
+function ProdukCard({ produk }: { produk: KoperasiProdukIkan }) {
   const soldOut = produk.status === "habis";
 
   return (
@@ -168,7 +160,7 @@ function ProdukCard({ produk, noPriceText }: { produk: KoperasiProdukIkan; noPri
             <span className="text-sm font-normal text-text-secondary">{UNIT_SUFFIX[produk.unit]}</span>
           </p>
         ) : (
-          <p className="mt-1 text-sm text-text-secondary">{noPriceText}</p>
+          <p className="mt-1 text-sm text-text-secondary">Tanya harga via WhatsApp</p>
         )}
         {produk.note && <p className="mt-1 text-xs text-text-secondary">{produk.note}</p>}
       </div>
@@ -178,15 +170,8 @@ function ProdukCard({ produk, noPriceText }: { produk: KoperasiProdukIkan; noPri
 
 /** One WhatsApp number serves every product, so ordering is a single call to action. */
 function OrderPanel({ koperasi, whatsapp }: { koperasi: KoperasiDetail; whatsapp: string }) {
-  const {
-    name,
-    perikananOrderTitle,
-    perikananOrderDescription,
-    perikananOrderButton,
-    perikananOrderMessage,
-  } = koperasi;
-  const message =
-    perikananOrderMessage?.trim() || `Halo ${name}, saya ingin memesan hasil perikanan.\n\nProduk: \nJumlah: `;
+  const { name, perikananOrderTitle, perikananOrderDescription } = koperasi;
+  const message = `Halo ${name}, saya ingin memesan hasil perikanan.\n\nProduk: \nJumlah: `;
   // Plain wa.me links get a prefilled message; other links are used as they are.
   const href = /^https:\/\/wa\.me\/\d+$/.test(whatsapp)
     ? `${whatsapp}?text=${encodeURIComponent(message)}`
@@ -213,7 +198,7 @@ function OrderPanel({ koperasi, whatsapp }: { koperasi: KoperasiDetail; whatsapp
         className="group inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#2bb673] px-6 py-3.5 font-semibold text-white shadow-[0_10px_24px_rgba(43,182,115,0.25)] transition hover:-translate-y-0.5 hover:bg-[#239d63] md:w-auto"
       >
         <WhatsAppIcon className="h-5 w-5" />
-        {perikananOrderButton || "Pesan via WhatsApp"}
+        Pesan via WhatsApp
         <ArrowRight size={18} className="transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
       </a>
     </div>

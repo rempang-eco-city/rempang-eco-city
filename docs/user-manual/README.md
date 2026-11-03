@@ -303,21 +303,18 @@ Buka **Halaman Koperasi**, lalu pilih koperasi.
 
 ![Koperasi di Studio](gambar/studio-koperasi.jpg)
 
-| Kolom | Keterangan |
+Isian koperasi dibagi per tab, sesuai urutan section di halaman:
+
+| Tab | Isi |
 |---|---|
-| Nama Koperasi | — |
-| Halaman Tujuan | `transmigrasi` atau `merah-putih`. Menentukan alamat halamannya. |
-| Deskripsi Singkat (untuk card Beranda) | Maksimal 160 karakter. |
-| Deskripsi Header Halaman | Kalau kosong, memakai Deskripsi Singkat. |
-| Foto Utama, Deskripsi Tentang, Tahun Berdiri, Jumlah Anggota | Wajib. |
-| **Struktur Kepengurusan** | Bagan dibuat otomatis (lihat di bawah). |
-| Gambar Struktur (cadangan) | Hanya dipakai jika Struktur Kepengurusan kosong. |
-| Pengurus | Foto pengurus (nama, jabatan, foto). |
-| **Keanggotaan** (bagian yang bisa dibuka-tutup) | Judul Ajakan (kosong = "Jadi Anggota <Nama Koperasi>"), Deskripsi, Syarat, Manfaat, dan **Link WhatsApp Pendaftaran** (format `https://wa.me/628xxxxxxxxxx`). Section ini hanya tampil jika link diisi, dengan warna sesuai koperasi (biru tua untuk Transmigrasi, merah untuk Merah Putih). Syarat dan Manfaat tampil sebagai kartu di sebelah kanan; kartu yang kosong disembunyikan. |
-| Fasilitas, Layanan | Section disembunyikan jika kosong. Layanan berisi nama, pilihan ikon, dan deskripsi. |
-| **Hasil Perikanan** (bagian yang bisa dibuka-tutup) | Etalase hasil tangkapan, tampil setelah Layanan. Lihat penjelasan di bawah. |
-| Galeri Kegiatan | Judul, deskripsi, dan minimal 1 foto per kegiatan. |
-| Laporan Keuangan | Judul, cover portrait (rasio A4), dan file PDF / Excel (maks. 5 MB) / Word (maks. 10 MB). |
+| **Header** | Nama Koperasi; Halaman Tujuan (`transmigrasi` atau `merah-putih`, menentukan alamat halaman); Deskripsi Singkat untuk card Beranda (maksimal 160 karakter); Deskripsi Header Halaman (kalau kosong, memakai Deskripsi Singkat). |
+| **Tentang** | Foto Utama, Deskripsi Tentang, Tahun Berdiri, Jumlah Anggota (wajib). |
+| **Struktur & Pengurus** | **Struktur Kepengurusan** (bagan dibuat otomatis, lihat di bawah); Gambar Struktur (cadangan, hanya dipakai jika Struktur kosong); Pengurus (nama, jabatan, foto). |
+| **Keanggotaan** | Judul Ajakan (kosong = "Jadi Anggota <Nama Koperasi>"), Deskripsi, Syarat, Manfaat, dan **Link WhatsApp Pendaftaran** (format `https://wa.me/628xxxxxxxxxx`). Section ini hanya tampil jika link diisi, dengan warna sesuai koperasi (biru tua untuk Transmigrasi, merah untuk Merah Putih). Syarat dan Manfaat tampil sebagai kartu di sebelah kanan; kartu yang kosong disembunyikan. |
+| **Fasilitas**, **Layanan** | Section disembunyikan jika kosong. Layanan berisi nama, pilihan ikon, dan deskripsi. |
+| **Hasil Perikanan** | Etalase hasil tangkapan, tampil setelah Layanan. Lihat penjelasan di bawah. |
+| **Galeri Kegiatan** | Judul, deskripsi, dan minimal 1 foto per kegiatan. |
+| **Laporan Keuangan** | Judul, cover portrait (rasio A4), dan file PDF / Excel (maks. 5 MB) / Word (maks. 10 MB). |
 
 ### Mengisi Hasil Perikanan
 
@@ -325,9 +322,8 @@ Section **Hasil Perikanan** hanya tampil jika minimal salah satu dari Angka Penj
 
 - **Deskripsi**: kalimat pembuka di bawah judul (opsional).
 - **Link WhatsApp Pemesanan**: satu nomor untuk semua produk, format `https://wa.me/628xxxxxxxxxx`. Di bawah katalog tampil kotak **Pesan via WhatsApp** yang membuka chat dengan pesan otomatis *"Halo Koperasi Transmigrasi, saya ingin memesan hasil perikanan."* beserta isian Produk dan Jumlah. Tanpa link ini, kotak tersebut tidak tampil.
-- **Teks Produk Tanpa Harga** (opsional): pengganti *"Tanya harga via WhatsApp"* di kartu produk yang harganya kosong.
-- **Judul, Deskripsi, dan Teks Tombol Kotak Pemesanan**, serta **Pesan Otomatis WhatsApp** (opsional): mengatur teks kotak pemesanan dan isi chat yang terisi otomatis. Jika dikosongkan, teks bawaan yang dipakai.
-- **Angka Penjualan**: maksimal 4, disarankan 3. Contoh: Nilai `2,5 ton`, Label `Ikan terjual`. Isi **Keterangan Angka** (misalnya *"Data hingga Oktober 2026"*) dan perbarui angkanya secara berkala.
+- **Judul Kotak Pemesanan** dan **Deskripsi Kotak Pemesanan**: teks kotak pemesanan di bawah katalog.
+- **Angka Penjualan**: maksimal 4, disarankan 3. Contoh: Nilai `2,5 ton`, Label `Ikan terjual`. Perbarui angkanya secara berkala.
 - **Katalog Produk**, untuk setiap produk:
   - Nama dan foto (landscape 4:3) wajib diisi.
   - **Ketersediaan**: *Tersedia*, *Musiman*, atau *Habis*. Produk yang habis ditampilkan abu-abu.

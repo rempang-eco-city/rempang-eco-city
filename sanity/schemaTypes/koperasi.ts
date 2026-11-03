@@ -9,31 +9,29 @@ export const koperasi = defineType({
   name: "koperasi",
   title: "Koperasi",
   type: "document",
-  fieldsets: [
-    {
-      name: "keanggotaan",
-      title: "Keanggotaan",
-      description: "Section ajakan menjadi anggota, tampil setelah foto pengurus.",
-      options: { collapsible: true, collapsed: false },
-    },
-    {
-      name: "perikanan",
-      title: "Hasil Perikanan",
-      description:
-        "Section etalase hasil tangkapan, tampil setelah Layanan. Disembunyikan jika angka, produk, dan testimoni semuanya kosong.",
-      options: { collapsible: true, collapsed: true },
-    },
+  groups: [
+    { name: "header", title: "Header", default: true },
+    { name: "tentang", title: "Tentang" },
+    { name: "struktur", title: "Struktur & Pengurus" },
+    { name: "keanggotaan", title: "Keanggotaan" },
+    { name: "fasilitas", title: "Fasilitas" },
+    { name: "layanan", title: "Layanan" },
+    { name: "perikanan", title: "Hasil Perikanan" },
+    { name: "galeri", title: "Galeri Kegiatan" },
+    { name: "laporan", title: "Laporan Keuangan" },
   ],
   fields: [
     defineField({
       name: "name",
       title: "Nama Koperasi",
+      group: "header",
       type: "string",
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: "routeKey",
       title: "Halaman Tujuan",
+      group: "header",
       type: "string",
       description: "Menentukan halaman /koperasi/... mana yang menampilkan dokumen ini.",
       options: { list: [...ROUTE_KEYS] },
@@ -42,6 +40,7 @@ export const koperasi = defineType({
     defineField({
       name: "homeCardDescription",
       title: "Deskripsi Singkat (untuk card Beranda)",
+      group: "header",
       type: "text",
       rows: 2,
       validation: (rule) => rule.required().max(160),
@@ -49,6 +48,7 @@ export const koperasi = defineType({
     defineField({
       name: "pageDescription",
       title: "Deskripsi Header Halaman",
+      group: "header",
       type: "text",
       rows: 2,
       description:
@@ -57,6 +57,7 @@ export const koperasi = defineType({
     defineField({
       name: "heroImage",
       title: "Foto Utama",
+      group: "tentang",
       type: "image",
       options: { hotspot: true },
       description: "Dipakai di card Beranda maupun bagian Tentang.",
@@ -65,6 +66,7 @@ export const koperasi = defineType({
     defineField({
       name: "about",
       title: "Deskripsi Tentang",
+      group: "tentang",
       type: "array",
       of: [{ type: "block" }],
       validation: (rule) => rule.required(),
@@ -72,24 +74,28 @@ export const koperasi = defineType({
     defineField({
       name: "yearFounded",
       title: "Tahun Berdiri",
+      group: "tentang",
       type: "string",
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: "memberCount",
       title: "Jumlah Anggota",
+      group: "tentang",
       type: "string",
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: "struktur",
       title: "Struktur Kepengurusan",
+      group: "struktur",
       type: "strukturOrganisasi",
       description: "Bagan dibuat otomatis dari isian ini. Jika ada pergantian pengurus, cukup ganti namanya.",
     }),
     defineField({
       name: "structureImage",
       title: "Gambar Struktur Kepengurusan (cadangan)",
+      group: "struktur",
       type: "image",
       options: { hotspot: true },
       description: "Hanya dipakai jika Struktur Kepengurusan di atas kosong.",
@@ -97,6 +103,8 @@ export const koperasi = defineType({
     defineField({
       name: "pengurus",
       title: "Pengurus",
+      group: "struktur",
+      description: "Foto pengurus, tampil setelah bagan struktur.",
       type: "array",
       of: [{ type: "koperasiPengurus" }],
     }),
@@ -104,7 +112,7 @@ export const koperasi = defineType({
       name: "membershipTitle",
       title: "Judul Ajakan",
       type: "string",
-      fieldset: "keanggotaan",
+      group: "keanggotaan",
       description: 'Kosongkan untuk memakai "Jadi Anggota <Nama Koperasi>".',
     }),
     defineField({
@@ -112,7 +120,7 @@ export const koperasi = defineType({
       title: "Deskripsi Keanggotaan",
       type: "text",
       rows: 3,
-      fieldset: "keanggotaan",
+      group: "keanggotaan",
       description: "Ajakan singkat di bawah judul.",
     }),
     defineField({
@@ -120,7 +128,7 @@ export const koperasi = defineType({
       title: "Syarat (opsional)",
       type: "text",
       rows: 3,
-      fieldset: "keanggotaan",
+      group: "keanggotaan",
       description: "Tampil sebagai kartu Syarat di sebelah kanan. Kosongkan untuk menyembunyikan kartu.",
     }),
     defineField({
@@ -128,14 +136,14 @@ export const koperasi = defineType({
       title: "Manfaat (opsional)",
       type: "text",
       rows: 3,
-      fieldset: "keanggotaan",
+      group: "keanggotaan",
       description: "Tampil sebagai kartu Manfaat di sebelah kanan. Kosongkan untuk menyembunyikan kartu.",
     }),
     defineField({
       name: "membershipWhatsapp",
       title: "Link WhatsApp Pendaftaran",
       type: "url",
-      fieldset: "keanggotaan",
+      group: "keanggotaan",
       description:
         'Format: https://wa.me/628xxxxxxxxxx. Section Keanggotaan hanya tampil jika link ini diisi.',
       validation: (rule) => rule.uri({ scheme: ["https"] }),
@@ -143,6 +151,7 @@ export const koperasi = defineType({
     defineField({
       name: "fasilitas",
       title: "Fasilitas",
+      group: "fasilitas",
       type: "array",
       of: [{ type: "koperasiFasilitas" }],
       description: "Tampil sebelum Galeri. Section disembunyikan jika kosong.",
@@ -150,6 +159,7 @@ export const koperasi = defineType({
     defineField({
       name: "layanan",
       title: "Layanan",
+      group: "layanan",
       type: "array",
       of: [{ type: "koperasiLayanan" }],
       description: "Tampil sebelum Galeri. Section disembunyikan jika kosong.",
@@ -159,14 +169,15 @@ export const koperasi = defineType({
       title: "Deskripsi",
       type: "text",
       rows: 2,
-      fieldset: "perikanan",
-      description: "Kalimat pembuka di bawah judul section (opsional).",
+      group: "perikanan",
+      description:
+        "Kalimat pembuka di bawah judul section (opsional). Section Hasil Perikanan disembunyikan jika angka, produk, dan testimoni semuanya kosong.",
     }),
     defineField({
       name: "perikananWhatsapp",
       title: "Link WhatsApp Pemesanan",
       type: "url",
-      fieldset: "perikanan",
+      group: "perikanan",
       description:
         'Format: https://wa.me/628xxxxxxxxxx. Satu nomor untuk semua produk; kotak "Pesan via WhatsApp" di bawah katalog hanya tampil jika link ini diisi.',
       validation: (rule) =>
@@ -179,50 +190,26 @@ export const koperasi = defineType({
           ),
     }),
     defineField({
-      name: "perikananNoPriceText",
-      title: "Teks Produk Tanpa Harga",
-      type: "string",
-      fieldset: "perikanan",
-      description: 'Tampil di kartu produk yang Harga-nya kosong. Kosongkan untuk memakai "Tanya harga via WhatsApp".',
-      validation: (rule) => rule.max(40),
-    }),
-    defineField({
       name: "perikananOrderTitle",
       title: "Judul Kotak Pemesanan",
       type: "string",
-      fieldset: "perikanan",
-      description: 'Kosongkan untuk memakai "Pesan hasil perikanan".',
+      group: "perikanan",
+      description: "Judul kotak di bawah katalog produk.",
+      initialValue: "Pesan hasil perikanan",
     }),
     defineField({
       name: "perikananOrderDescription",
       title: "Deskripsi Kotak Pemesanan",
       type: "text",
       rows: 2,
-      fieldset: "perikanan",
-      description: "Penjelasan singkat cara memesan. Kosongkan untuk memakai teks bawaan.",
-    }),
-    defineField({
-      name: "perikananOrderButton",
-      title: "Teks Tombol Pemesanan",
-      type: "string",
-      fieldset: "perikanan",
-      description: 'Kosongkan untuk memakai "Pesan via WhatsApp".',
-      validation: (rule) => rule.max(30),
-    }),
-    defineField({
-      name: "perikananOrderMessage",
-      title: "Pesan Otomatis WhatsApp",
-      type: "text",
-      rows: 4,
-      fieldset: "perikanan",
-      description:
-        "Teks yang sudah terisi saat pembeli membuka chat. Tekan Enter untuk pindah baris. Kosongkan untuk memakai teks bawaan.",
+      group: "perikanan",
+      description: "Penjelasan singkat cara memesan, di bawah judul kotak.",
     }),
     defineField({
       name: "perikananStats",
       title: "Angka Penjualan",
       type: "array",
-      fieldset: "perikanan",
+      group: "perikanan",
       description: 'Contoh: "2,5 ton" + "Ikan terjual". Disarankan 3 item.',
       validation: (rule) => rule.max(4),
       of: [
@@ -251,35 +238,30 @@ export const koperasi = defineType({
       ],
     }),
     defineField({
-      name: "perikananStatsNote",
-      title: "Keterangan Angka (opsional)",
-      type: "string",
-      fieldset: "perikanan",
-      description: 'Tampil di bawah angka. Contoh: "Data hingga Oktober 2026"',
-    }),
-    defineField({
       name: "perikananProduk",
       title: "Katalog Produk",
       type: "array",
-      fieldset: "perikanan",
+      group: "perikanan",
       of: [{ type: "koperasiProdukIkan" }],
     }),
     defineField({
       name: "perikananTestimoni",
       title: "Testimoni Pembeli",
       type: "array",
-      fieldset: "perikanan",
+      group: "perikanan",
       of: [{ type: "koperasiTestimoni" }],
     }),
     defineField({
       name: "galleryItems",
       title: "Galeri Kegiatan",
+      group: "galeri",
       type: "array",
       of: [{ type: "koperasiGalleryItem" }],
     }),
     defineField({
       name: "laporanKeuangan",
       title: "Laporan Keuangan",
+      group: "laporan",
       type: "array",
       of: [{ type: "koperasiLaporanKeuangan" }],
       description: "Tampil setelah Galeri. Section disembunyikan jika kosong.",
