@@ -179,6 +179,7 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
   const [satelliteView, setSatelliteView] = useState<SatelliteView | null>(null);
   const [showSlope, setShowSlope] = useState(false);
   const [showBlok, setShowBlok] = useState(true);
+  const [showLokasi, setShowLokasi] = useState(true);
   const [filter, setFilter] = useState<Filter>("semua");
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
@@ -304,7 +305,7 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map) return;
+    if (!map || !showLokasi) return;
 
     const group = L.layerGroup().addTo(map);
     visibleLokasi.forEach((item) => {
@@ -332,7 +333,7 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
     return () => {
       group.remove();
     };
-  }, [visibleLokasi, selectedId]);
+  }, [visibleLokasi, selectedId, showLokasi]);
 
   // Zoom to the places of the chosen category (not on the first render, where
   // the map already starts on all places).
@@ -385,12 +386,31 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
     }
   };
 
+  const toggleLokasi = () => {
+    // Our markers are not drawn on Google either.
+    if (satelliteView) {
+      setSatelliteView(null);
+      setShowLokasi(true);
+    } else {
+      setShowLokasi((value) => !value);
+    }
+  };
+
   const slopeVisible = showSlope && !satelliteView;
   const blokVisible = showBlok && !satelliteView;
+  const lokasiVisible = showLokasi && !satelliteView;
 
+  // Picking a category or a place from the list brings the markers back, or
+  // the map would fly to an empty spot.
   const changeFilter = (next: Filter) => {
     setFilter(next);
     setSelectedId(null);
+    setShowLokasi(true);
+  };
+
+  const selectLokasi = (id: string) => {
+    setSelectedId(id);
+    setShowLokasi(true);
   };
 
   return (
@@ -437,28 +457,17 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
               </button>
             ))}
           </div>
-          <button
-            type="button"
-            aria-pressed={slopeVisible}
-            onClick={toggleSlope}
-            className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold shadow-md transition ${
-              slopeVisible ? "bg-primary-blue text-white" : "bg-white text-slate-700 hover:text-primary-blue"
-            }`}
-          >
-            <Mountain size={14} />
+          {lokasi.length > 0 && (
+            <LayerToggle active={lokasiVisible} onClick={toggleLokasi} Icon={MapPin}>
+              Tempat
+            </LayerToggle>
+          )}
+          <LayerToggle active={slopeVisible} onClick={toggleSlope} Icon={Mountain}>
             Tanjakan
-          </button>
-          <button
-            type="button"
-            aria-pressed={blokVisible}
-            onClick={toggleBlok}
-            className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold shadow-md transition ${
-              blokVisible ? "bg-primary-blue text-white" : "bg-white text-slate-700 hover:text-primary-blue"
-            }`}
-          >
-            <Home size={14} />
+          </LayerToggle>
+          <LayerToggle active={blokVisible} onClick={toggleBlok} Icon={Home}>
             Blok Rumah
-          </button>
+          </LayerToggle>
         </div>
 
         {(slopeVisible || blokVisible) && (
@@ -526,7 +535,7 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
                   <li key={item._id}>
                     <button
                       type="button"
-                      onClick={() => setSelectedId(item._id)}
+                      onClick={() => selectLokasi(item._id)}
                       className="flex w-full items-center gap-3 px-4 py-3 text-left transition hover:bg-slate-50"
                     >
                       <KategoriBadgeIcon kategori={item.category} />
@@ -547,6 +556,32 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
         )}
       </aside>
     </div>
+  );
+}
+
+function LayerToggle({
+  active,
+  onClick,
+  Icon,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  Icon: ComponentType<LucideProps>;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={active}
+      onClick={onClick}
+      className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold shadow-md transition ${
+        active ? "bg-primary-blue text-white" : "bg-white text-slate-700 hover:text-primary-blue"
+      }`}
+    >
+      <Icon size={14} />
+      {children}
+    </button>
   );
 }
 
