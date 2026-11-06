@@ -130,7 +130,7 @@ Peta di Beranda menampilkan tempat-tempat di kawasan perumahan relokasi.
 | **Satelit / Peta / Google** | Ganti tampilan. *Satelit*: foto udara (citra lama, sebelum pembangunan). *Peta*: peta jalan OpenStreetMap. *Google*: citra satelit Google yang lebih baru, tetapi titik lokasi, blok rumah, dan Tanjakan tidak bisa ditampilkan di mode ini. |
 | **Tempat** | Menampilkan atau menyembunyikan ikon tempat (warung, masjid, koperasi, dll.). Aktif secara bawaan. Memilih kategori atau tempat di daftar samping akan menampilkannya lagi. |
 | **Tanjakan** | Mewarnai kemiringan lahan, dari hijau (datar) sampai merah (curam). Ini perkiraan dari data elevasi satelit, bukan hasil ukur jalan. |
-| **Blok Rumah** | Menampilkan garis blok perumahan (saat ini Blok A2, A3, B2, B3, dan C6; blok lain menyusul). Nama blok muncul saat peta diperbesar, dan nomor rumah saat diperbesar lebih jauh. Klik blok untuk melihat jumlah rumahnya. |
+| **Blok Rumah** | Menampilkan garis blok perumahan (saat ini Blok A2, A3, B2, B3, C6, D5, dan D6; blok lain menyusul). Nama blok muncul saat peta diperbesar, dan nomor rumah saat diperbesar lebih jauh. Klik blok untuk melihat jumlah rumahnya. |
 | **Tempat di Sekitar** (panel kanan; di HP di bawah peta) | Daftar semua tempat. Klik chip kategori untuk memfilter (misalnya Warung Makan, Masjid / Mushola, Sekolah). |
 
 **Melihat detail tempat.** Klik ikon di peta atau nama tempat di daftar. Panel akan menampilkan foto, kategori, keterangan, dan tombol:
