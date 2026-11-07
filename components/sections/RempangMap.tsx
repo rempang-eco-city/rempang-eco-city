@@ -96,11 +96,16 @@ const BLOK_COLOR: Record<string, string> = {
 const BLOK_LABEL_ZOOM = 17;
 const RUMAH_ZOOM = 18;
 
+// Facility plots inside the estate (the mushola) are outlined in green.
+const FASILITAS_COLOR = "#16a34a";
+
 function blokIcon(name: string, color: string) {
+  // Block codes fit the minimum width; longer names such as "Mushola" grow it.
+  const width = Math.max(44, name.length * 8 + 16);
   return L.divIcon({
     className: "",
-    iconSize: [44, 22],
-    iconAnchor: [22, 11],
+    iconSize: [width, 22],
+    iconAnchor: [width / 2, 11],
     html: `<span class="flex h-full w-full items-center justify-center rounded-md border-2 bg-white/90 text-xs font-bold shadow" style="border-color:${color};color:${color}">${name}</span>`,
   });
 }
@@ -264,7 +269,7 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
     const rumah = L.layerGroup();
 
     BLOK_RUMAH.forEach((blok) => {
-      const color = BLOK_COLOR[blok.name[0]] ?? "#334155";
+      const color = blok.fasilitas ? FASILITAS_COLOR : (BLOK_COLOR[blok.name[0]] ?? "#334155");
       L.polygon(blok.polygon, {
         color,
         weight: 2,
@@ -273,8 +278,10 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
         fillOpacity: 0.12,
       })
         .bindPopup(
-          `<p class="text-sm font-semibold">Blok ${blok.name}</p>` +
-            `<p class="text-xs">${blok.houses.length} rumah</p>`
+          blok.fasilitas
+            ? `<p class="text-sm font-semibold">${blok.name}</p>`
+            : `<p class="text-sm font-semibold">Blok ${blok.name}</p>` +
+                `<p class="text-xs">${blok.houses.length} rumah</p>`
         )
         .addTo(outlines);
       L.marker(blok.label, { icon: blokIcon(blok.name, color), interactive: false, keyboard: false }).addTo(names);
