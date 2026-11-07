@@ -183,8 +183,8 @@ export default function RempangMap({ lokasi }: { lokasi: PetaLokasi[] }) {
   // null = Leaflet map; set = Google satellite iframe at that view.
   const [satelliteView, setSatelliteView] = useState<SatelliteView | null>(null);
   const [showSlope, setShowSlope] = useState(false);
-  const [showBlok, setShowBlok] = useState(true);
-  const [showLokasi, setShowLokasi] = useState(true);
+  const [showBlok, setShowBlok] = useState(false);
+  const [showLokasi, setShowLokasi] = useState(false);
   const [filter, setFilter] = useState<Filter>("semua");
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
