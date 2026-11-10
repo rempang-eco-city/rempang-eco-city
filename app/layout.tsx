@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 import "./globals.css";
 import { FEATURES } from "@/lib/features";
 
@@ -38,6 +39,7 @@ export default function RootLayout({
       <body className="font-body bg-bg-light text-text-primary antialiased">
         {children}
         <Analytics />
+        <GoogleAnalytics />
       </body>
     </html>
   );
