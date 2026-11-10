@@ -1,5 +1,10 @@
 import { defineField, defineType } from "sanity";
-import { PRODUK_STATUS_OPTIONS, PRODUK_UNIT_OPTIONS } from "../../../lib/perikanan";
+import {
+  PRODUK_KATEGORI_OPTIONS,
+  PRODUK_STATUS_OPTIONS,
+  PRODUK_UNIT_OPTIONS,
+  formatHarga,
+} from "../../../lib/perikanan";
 
 export const koperasiProdukIkan = defineType({
   name: "koperasiProdukIkan",
@@ -10,16 +15,24 @@ export const koperasiProdukIkan = defineType({
       name: "name",
       title: "Nama Produk",
       type: "string",
-      description: 'Contoh: "Ikan Kakap Merah"',
+      description: 'Contoh: "Belanak"',
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "kategori",
+      title: "Kategori",
+      type: "string",
+      options: { list: [...PRODUK_KATEGORI_OPTIONS], layout: "radio", direction: "horizontal" },
+      initialValue: "lokal",
+      description: "Ikan Lokal tampil di tabel harga; Ikan Ekspor tampil di daftar terpisah.",
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: "image",
-      title: "Foto",
+      title: "Foto (opsional)",
       type: "image",
       options: { hotspot: true },
-      description: "Foto landscape (rasio 4:3) paling cocok.",
-      validation: (rule) => rule.required(),
+      description: "Foto persegi paling cocok. Tanpa foto, ikon ikan ditampilkan.",
     }),
     defineField({
       name: "status",
@@ -31,11 +44,28 @@ export const koperasiProdukIkan = defineType({
     }),
     defineField({
       name: "price",
-      title: "Harga (opsional)",
+      title: "Harga Lokal (opsional)",
       type: "number",
       description:
-        'Angka saja, tanpa titik. Contoh: 65000. Kosongkan jika harga sering berubah; website akan menampilkan "Tanya harga via WhatsApp".',
+        'Harga untuk warga REC. Angka saja, tanpa titik. Contoh: 60000. Untuk harga rentang (25.000–30.000), isi harga terendah di sini. Kosongkan jika harga sering berubah; website akan menampilkan "Tanya harga".',
       validation: (rule) => rule.min(0).integer(),
+    }),
+    defineField({
+      name: "priceMax",
+      title: "Harga Lokal Tertinggi (opsional)",
+      type: "number",
+      description: "Hanya untuk harga rentang. Contoh: 30000.",
+      hidden: ({ parent }) => parent?.price == null,
+      validation: (rule) =>
+        rule
+          .min(0)
+          .integer()
+          .custom((max, context) => {
+            const price = (context.parent as { price?: number } | undefined)?.price;
+            return max == null || price == null || max > price
+              ? true
+              : "Harga tertinggi harus lebih besar dari Harga Lokal.";
+          }),
     }),
     defineField({
       name: "unit",
@@ -54,12 +84,13 @@ export const koperasiProdukIkan = defineType({
     }),
   ],
   preview: {
-    select: { title: "name", status: "status", price: "price", media: "image" },
-    prepare: ({ title, status, price, media }) => ({
+    select: { title: "name", kategori: "kategori", status: "status", price: "price", priceMax: "priceMax", media: "image" },
+    prepare: ({ title, kategori, status, price, priceMax, media }) => ({
       title,
       subtitle: [
+        PRODUK_KATEGORI_OPTIONS.find(({ value }) => value === kategori)?.title,
         PRODUK_STATUS_OPTIONS.find(({ value }) => value === status)?.title,
-        price != null ? `Rp${Number(price).toLocaleString("id-ID")}` : null,
+        formatHarga(price ?? undefined, priceMax ?? undefined),
       ]
         .filter(Boolean)
         .join(" · "),

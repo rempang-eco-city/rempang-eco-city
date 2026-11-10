@@ -206,6 +206,16 @@ export const koperasi = defineType({
       description: "Penjelasan singkat cara memesan, di bawah judul kotak.",
     }),
     defineField({
+      name: "perikananSelisihHarga",
+      title: "Selisih Harga Luar REC / Ekspor",
+      type: "number",
+      group: "perikanan",
+      description:
+        "Ditambahkan ke Harga Lokal setiap ikan untuk pembeli dari luar REC. Contoh: 5000, sehingga Rp60.000 menjadi Rp65.000. Kosongkan untuk menyembunyikan kolom harga luar REC.",
+      initialValue: 5000,
+      validation: (rule) => rule.min(0).integer(),
+    }),
+    defineField({
       name: "perikananStats",
       title: "Angka Penjualan",
       type: "array",
@@ -239,7 +249,7 @@ export const koperasi = defineType({
     }),
     defineField({
       name: "perikananProduk",
-      title: "Katalog Produk",
+      title: "Daftar Ikan & Harga",
       type: "array",
       group: "perikanan",
       of: [{ type: "koperasiProdukIkan" }],

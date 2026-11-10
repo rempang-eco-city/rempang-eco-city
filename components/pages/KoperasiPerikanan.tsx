@@ -2,7 +2,7 @@ import { ArrowRight, Fish, Quote, ShoppingBag } from "lucide-react";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import type { KoperasiDetail, KoperasiProdukIkan } from "@/lib/sanity/queries";
 import { sanityImageUrl } from "@/lib/sanity/image";
-import { produkStatusTitle, type ProdukStatus, type ProdukUnit } from "@/lib/perikanan";
+import { formatHarga, produkStatusTitle, type ProdukStatus, type ProdukUnit } from "@/lib/perikanan";
 
 const STATUS_BADGE: Record<ProdukStatus, string> = {
   tersedia: "bg-[#2bb673] text-white",
@@ -11,14 +11,16 @@ const STATUS_BADGE: Record<ProdukStatus, string> = {
 };
 
 const UNIT_SUFFIX: Record<ProdukUnit, string> = {
-  kg: " / kg",
-  ekor: " / ekor",
-  paket: " / paket",
+  kg: "/kg",
+  ekor: "/ekor",
+  paket: "/paket",
 };
 
 /**
- * "Hasil Perikanan": the cooperative's fish catalogue with sales figures and
- * buyer testimonials. All orders go to one WhatsApp number, so the catalogue
+ * "Hasil Perikanan": the cooperative's fish price list with sales figures and
+ * buyer testimonials. Local fish get a price table (REC price and, when a
+ * markup is set, the price for buyers outside REC); export fish get their own
+ * list. All orders go to one WhatsApp number, so the catalogue
  * ends with a single order panel instead of a button on every product.
  * Renders nothing when the figures, products and testimonials are all empty.
  */
@@ -30,7 +32,11 @@ export default function KoperasiPerikanan({ koperasi }: { koperasi: KoperasiDeta
     perikananStats,
     perikananProduk,
     perikananTestimoni,
+    perikananSelisihHarga,
   } = koperasi;
+
+  const lokal = perikananProduk.filter((produk) => produk.kategori === "lokal");
+  const ekspor = perikananProduk.filter((produk) => produk.kategori === "ekspor");
 
   if (perikananStats.length + perikananProduk.length + perikananTestimoni.length === 0) return null;
 
@@ -67,14 +73,11 @@ export default function KoperasiPerikanan({ koperasi }: { koperasi: KoperasiDeta
           </div>
         )}
 
-        {perikananProduk.length > 0 && (
-          // Flex-wrap so a short list stays centered; widths mirror 2 / 3 / 4 columns (gap-5 = 1.25rem).
-          <div className="flex flex-wrap justify-center gap-5">
-            {perikananProduk.map((produk, index) => (
-              <ProdukCard key={`${produk.name}-${index}`} produk={produk} />
-            ))}
-          </div>
+        {lokal.length > 0 && (
+          <HargaTable title="Ikan Lokal" produk={lokal} selisih={perikananSelisihHarga} />
         )}
+
+        {ekspor.length > 0 && <EksporList produk={ekspor} hasLokal={lokal.length > 0} />}
 
         {perikananProduk.length > 0 && perikananWhatsapp && (
           <OrderPanel koperasi={koperasi} whatsapp={perikananWhatsapp} />
@@ -133,45 +136,129 @@ export default function KoperasiPerikanan({ koperasi }: { koperasi: KoperasiDeta
   );
 }
 
-function ProdukCard({ produk }: { produk: KoperasiProdukIkan }) {
-  const soldOut = produk.status === "habis";
+/** Price table; on phones each row stacks the prices under their labels on the right. */
+function HargaTable({ title, produk, selisih }: { title: string; produk: KoperasiProdukIkan[]; selisih?: number }) {
+  const showLuar = selisih != null;
 
   return (
-    <article className="flex w-[calc((100%-1.25rem)/2)] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_20px_rgba(15,23,42,0.03)] md:w-[calc((100%-2.5rem)/3)] lg:w-[calc((100%-3.75rem)/4)]">
-      <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
-        <img
-          src={sanityImageUrl(produk.image, 600)}
-          alt={produk.name}
-          loading="lazy"
-          className={`h-full w-full object-cover ${soldOut ? "grayscale" : ""}`}
-        />
-        <span
-          className={`absolute left-2 top-2 rounded-full px-2.5 py-0.5 text-xs font-semibold shadow ${STATUS_BADGE[produk.status]}`}
-        >
-          {produkStatusTitle(produk.status)}
-        </span>
+    <div>
+      <h3 className="mb-4 font-heading text-2xl font-bold text-text-primary">{title}</h3>
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_20px_rgba(15,23,42,0.03)]">
+        <div className="hidden bg-primary-blue px-5 py-3 text-sm font-semibold text-white md:flex">
+          <span className="flex-1">Nama Ikan</span>
+          <span className="w-48 text-right">Harga Lokal (REC)</span>
+          {showLuar && <span className="w-56 text-right">Harga Luar REC / Ekspor</span>}
+        </div>
+        <ul>
+          {produk.map((item, index) => {
+            const lokal = formatHarga(item.price, item.priceMax);
+            const luar = formatHarga(item.price, item.priceMax, selisih);
+            const unit = UNIT_SUFFIX[item.unit];
+            return (
+              <li
+                key={`${item.name}-${index}`}
+                className={`flex items-center gap-3 px-4 py-3 md:px-5 ${index > 0 ? "border-t border-slate-100" : ""} ${
+                  item.status === "habis" ? "opacity-60" : ""
+                }`}
+              >
+                <IkanThumb produk={item} />
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold text-text-primary">{item.name}</p>
+                  <StatusBadge status={item.status} />
+                  {item.note && <p className="text-xs text-text-secondary">{item.note}</p>}
+                </div>
+                {lokal ? (
+                  <div className="flex shrink-0 flex-col items-end gap-1 text-right md:flex-row md:gap-0">
+                    <p className="md:w-48">
+                      <span className="block text-[11px] text-text-secondary md:hidden">Lokal</span>
+                      <span className="font-semibold text-primary-blue">{lokal}</span>
+                      <span className="text-xs text-text-secondary">{unit}</span>
+                    </p>
+                    {showLuar && luar && (
+                      <p className="md:w-56">
+                        <span className="block text-[11px] text-text-secondary md:hidden">Luar REC / Ekspor</span>
+                        <span className="font-semibold text-text-primary">{luar}</span>
+                        <span className="text-xs text-text-secondary">{unit}</span>
+                      </p>
+                    )}
+                  </div>
+                ) : (
+                  <p className="shrink-0 text-right text-sm text-text-secondary">Tanya harga</p>
+                )}
+              </li>
+            );
+          })}
+        </ul>
       </div>
+    </div>
+  );
+}
 
-      <div className={`flex flex-1 flex-col p-3 md:p-4 ${soldOut ? "opacity-60" : ""}`}>
-        <h3 className="font-heading font-bold leading-snug text-text-primary">{produk.name}</h3>
-        {produk.price != null ? (
-          <p className="mt-1 font-semibold text-primary-blue">
-            Rp{produk.price.toLocaleString("id-ID")}
-            <span className="text-sm font-normal text-text-secondary">{UNIT_SUFFIX[produk.unit]}</span>
-          </p>
-        ) : (
-          <p className="mt-1 text-sm text-text-secondary">Tanya harga via WhatsApp</p>
-        )}
-        {produk.note && <p className="mt-1 text-xs text-text-secondary">{produk.note}</p>}
-      </div>
-    </article>
+/** Export fish are usually priced per order, so they are listed as name tiles. */
+function EksporList({ produk, hasLokal }: { produk: KoperasiProdukIkan[]; hasLokal: boolean }) {
+  return (
+    <div className={hasLokal ? "mt-10" : ""}>
+      <h3 className="font-heading text-2xl font-bold text-text-primary">Ikan Ekspor</h3>
+      <p className="mb-4 mt-1 text-sm text-text-secondary">Harga mengikuti pasar dan jumlah pesanan. Tanyakan lewat WhatsApp.</p>
+      {/* Widths mirror 2 / 3 / 4 columns (gap-3 = 0.75rem). */}
+      <ul className="flex flex-wrap gap-3">
+        {produk.map((item, index) => {
+          const harga = formatHarga(item.price, item.priceMax);
+          return (
+            <li
+              key={`${item.name}-${index}`}
+              className={`flex w-[calc((100%-0.75rem)/2)] items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_8px_20px_rgba(15,23,42,0.03)] md:w-[calc((100%-1.5rem)/3)] lg:w-[calc((100%-2.25rem)/4)] ${
+                item.status === "habis" ? "opacity-60" : ""
+              }`}
+            >
+              <IkanThumb produk={item} />
+              <div className="min-w-0">
+                <p className="font-semibold leading-snug text-text-primary">{item.name}</p>
+                {harga && (
+                  <p className="text-sm font-semibold text-primary-blue">
+                    {harga}
+                    <span className="text-xs font-normal text-text-secondary">{UNIT_SUFFIX[item.unit]}</span>
+                  </p>
+                )}
+                <StatusBadge status={item.status} />
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
+function IkanThumb({ produk }: { produk: KoperasiProdukIkan }) {
+  return produk.image ? (
+    <img
+      src={sanityImageUrl(produk.image, 96)}
+      alt=""
+      loading="lazy"
+      className={`h-10 w-10 shrink-0 rounded-xl object-cover ${produk.status === "habis" ? "grayscale" : ""}`}
+    />
+  ) : (
+    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-blue/10 text-primary-blue" aria-hidden="true">
+      <Fish size={20} />
+    </span>
+  );
+}
+
+/** Only out-of-the-ordinary stock is flagged; "Tersedia" is the default and stays quiet. */
+function StatusBadge({ status }: { status: ProdukStatus }) {
+  if (status === "tersedia") return null;
+  return (
+    <span className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[11px] font-semibold ${STATUS_BADGE[status]}`}>
+      {produkStatusTitle(status)}
+    </span>
   );
 }
 
 /** One WhatsApp number serves every product, so ordering is a single call to action. */
 function OrderPanel({ koperasi, whatsapp }: { koperasi: KoperasiDetail; whatsapp: string }) {
   const { name, perikananOrderTitle, perikananOrderDescription } = koperasi;
-  const message = `Halo ${name}, saya ingin memesan hasil perikanan.\n\nProduk: \nJumlah: `;
+  const message = `Halo ${name}, saya ingin memesan hasil perikanan.\n\nProduk: \nJumlah: \nPembeli dari (REC / luar REC): `;
   // Plain wa.me links get a prefilled message; other links are used as they are.
   const href = /^https:\/\/wa\.me\/\d+$/.test(whatsapp)
     ? `${whatsapp}?text=${encodeURIComponent(message)}`

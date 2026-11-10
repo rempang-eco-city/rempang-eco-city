@@ -3,7 +3,7 @@ import { sanityClient } from "./client";
 import type { LayananIconKey } from "@/lib/layananIcons";
 import { parseKoordinat, toPetaKategori, type PetaKategori } from "@/lib/peta";
 import type { ModulSektor } from "@/lib/modul";
-import type { ProdukStatus, ProdukUnit } from "@/lib/perikanan";
+import type { ProdukKategori, ProdukStatus, ProdukUnit } from "@/lib/perikanan";
 
 const REVALIDATE_SECONDS = 60;
 
@@ -298,9 +298,12 @@ export type KoperasiPerikananStat = { value: string; label: string };
 
 export type KoperasiProdukIkan = {
   name: string;
-  image: string;
+  kategori: ProdukKategori;
+  image?: string;
   status: ProdukStatus;
+  /** Local (REC) price, or the low end of a range. */
   price?: number;
+  priceMax?: number;
   unit: ProdukUnit;
   note?: string;
 };
@@ -347,6 +350,8 @@ export type KoperasiDetail = KoperasiListItem & {
   perikananWhatsapp?: string;
   perikananOrderTitle?: string;
   perikananOrderDescription?: string;
+  /** Added to the local price for buyers outside REC / export; no column when empty. */
+  perikananSelisihHarga?: number;
   perikananStats: KoperasiPerikananStat[];
   perikananProduk: KoperasiProdukIkan[];
   perikananTestimoni: KoperasiTestimoni[];
@@ -404,13 +409,16 @@ export async function getKoperasiByRouteKey(routeKey: string) {
       perikananWhatsapp,
       perikananOrderTitle,
       perikananOrderDescription,
+      perikananSelisihHarga,
       "perikananStats": coalesce(perikananStats[defined(value) && defined(label)]{ value, label }, []),
       "perikananProduk": coalesce(
-        perikananProduk[defined(name) && defined(image.asset)]{
+        perikananProduk[defined(name)]{
           name,
+          "kategori": coalesce(kategori, "lokal"),
           "image": image.asset->url,
           "status": coalesce(status, "tersedia"),
           price,
+          priceMax,
           "unit": coalesce(unit, "kg"),
           note
         },
