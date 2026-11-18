@@ -271,7 +271,7 @@ export default function ProfilContent({ profil }: { profil: ProfilPage }) {
               <p className="text-text-secondary mb-4">{profil.modulDescription}</p>
             )}
 
-            {/* Three posters fill the row; flex-wrap centers an incomplete last row. */}
+            {/* Two posters per row; flex-wrap centers an incomplete last row. */}
             <div className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-8 sm:gap-x-8">
               {profil.modulItems.map((modul, index) => (
                 <ModulCard key={`${modul.title}-${index}`} modul={modul} />
@@ -458,7 +458,7 @@ function ImageLightbox({
  */
 function ModulCard({ modul }: { modul: ProfilModulItem }) {
   return (
-    <div className="group w-[calc((100%-1.5rem)/2)] sm:w-[calc((100%-4rem)/3)]">
+    <div className="group w-[calc((100%-1.5rem)/2)] sm:w-[calc((100%-2rem)/2)]">
       <div className="relative">
         {/* Page edges behind the cover */}
         <span className="absolute inset-y-1.5 left-0 right-0 rounded-r-sm border border-slate-200 bg-white transition-transform duration-300 group-hover:translate-x-2.5 group-focus-within:translate-x-2.5" />
@@ -466,7 +466,7 @@ function ModulCard({ modul }: { modul: ProfilModulItem }) {
 
         <div className="relative aspect-[1/1.414] overflow-hidden rounded-sm bg-slate-100 shadow-[0_10px_24px_rgba(15,23,42,0.22)] transition-all duration-300 group-hover:-translate-x-1 group-hover:-translate-y-1.5 group-hover:shadow-[0_18px_36px_rgba(15,23,42,0.3)] group-focus-within:-translate-x-1 group-focus-within:-translate-y-1.5">
           <img
-            src={sanityImageUrl(modul.cover, 500)}
+            src={sanityImageUrl(modul.cover, 800)}
             alt=""
             loading="lazy"
             className="h-full w-full object-cover"
