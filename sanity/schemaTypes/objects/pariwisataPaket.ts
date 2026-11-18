@@ -117,7 +117,7 @@ export const pariwisataPaket = defineType({
     }),
     defineField({
       name: "total",
-      title: "Total Akomodasi (Rp)",
+      title: "Total Harga Paket (Rp)",
       type: "number",
       description:
         "Angka resmi yang ditampilkan di website. Akan muncul peringatan jika berbeda dari hitungan rincian di atas.",

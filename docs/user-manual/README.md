@@ -91,7 +91,7 @@ Pilih destinasi lewat tombol tab. Setiap destinasi menampilkan:
 
 - galeri foto dan video;
 - deskripsi, fasilitas, dan tips;
-- **paket dan harga** beserta rincian biaya dan Total Akomodasi;
+- **paket dan harga** beserta rincian biaya dan Total Harga Paket;
 - tombol **Hubungi Pengelola Wisata** (WhatsApp).
 
 ![Paket wisata](gambar/site-pariwisata-destinasi.jpg)
@@ -384,7 +384,7 @@ Jika ada pergantian pengurus, cukup ganti namanya lalu Publish.
     - *Per orang*: dikali jumlah peserta.
     - *Per jam*: dikali durasi.
     - *Per paket*: sekali bayar.
-  - **Total Akomodasi**: angka resmi yang tampil di website. Muncul peringatan kuning jika berbeda dari hitungan rincian.
+  - **Total Harga Paket**: angka resmi yang tampil di website. Muncul peringatan kuning jika berbeda dari hitungan rincian.
 
 ## B7. Halaman UMKM
 

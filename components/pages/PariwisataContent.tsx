@@ -293,7 +293,7 @@ function PaketCard({ paket }: { paket: PariwisataPaket }) {
       {/* mt-auto keeps the total bar at the bottom when cards in a row differ in length. */}
       <div className="mt-auto pt-8">
         <div className="flex items-center justify-between gap-4 rounded-xl bg-primary-blue px-5 py-4 text-white">
-          <p className="text-sm">Total Akomodasi</p>
+          <p className="text-sm">Total Harga Paket</p>
           <p className="font-heading text-2xl font-bold text-primary-yellow">
             {formatRupiah(paket.total)}
           </p>
